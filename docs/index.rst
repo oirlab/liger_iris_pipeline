@@ -75,6 +75,15 @@ Subarrays
    :maxdepth: 1
 
    subarrays
+   
+ROP Pipeline
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   rop_pipeline
+
 
 Reference/API
 =============
