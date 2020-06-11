@@ -23,6 +23,7 @@ Requirements
 You need following packages to run ROP pipeline
 
 libcfitsio
+cython
 
 Install the iris_pipeline using 
 
@@ -34,8 +35,10 @@ Install the iris_pipeline using
 
 Running the Examples
 ---------------------
-There is a example run in the iris_pipeline/readout/tests directory. The sample ramp is given in the sample_ramp_new.fits. 
-sampling.cfg gives the configurations for the pipeline
+There is a example run in the iris_pipeline/readout/tests directory. The sample ramp is given in the sample_ramp_new.fits. This file can be extracted from `Figshare <https://figshare.com/articles/sample_ramp_new_fits/12462491>`_.
+There is a minimal pytest script that is in 'iris_pipeline/tests'. THis also requires the 'sample_ramp_new.fits' from the link above.
+
+The sampling.cfg gives the configurations for the pipeline
 
 ``sampling.cfg``:
 
@@ -85,4 +88,4 @@ here is the output log:
 
 
 
-This creates a sample_rop.fits file in the working directory that is the processed 
+This creates a sample_ramp_new_rop.fits file in the working directory that is the processed 
