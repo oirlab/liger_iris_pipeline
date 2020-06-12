@@ -36,7 +36,7 @@ Install the iris_pipeline using
 Running the Examples
 ---------------------
 There is a example run in the iris_pipeline/readout/tests directory. The sample ramp is given in the sample_ramp_new.fits. This file can be extracted from `Figshare <https://figshare.com/articles/sample_ramp_new_fits/12462491>`_.
-There is a minimal pytest script that is in 'iris_pipeline/tests'. THis also requires the 'sample_ramp_new.fits' from the link above.
+There is a minimal pytest script that is in 'iris_pipeline/tests'. This also requires the 'sample_ramp_new.fits' from the link above to be downloaded into iris_pipeline/tests/data.
 
 The sampling.cfg gives the configurations for the pipeline
 
@@ -64,8 +64,14 @@ We can use ``tmtrun`` from a terminal to execute the pipeline:
 
 ::
 
-   tmt sampling.cfg sample_ramp.fits
+   tmtrun sampling.cfg sample_ramp.fits
 
+or run using python script
+::
+
+   python run.py
+   
+   
 here is the output log:
 
 .. code:: bash
