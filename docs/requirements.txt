@@ -1,3 +1,3 @@
 sphinx==2.2.1
 sphinx-astropy
-sphinx-multiversion
+https://github.com/Holzhaus/sphinx-multiversion/archive/master.zip
