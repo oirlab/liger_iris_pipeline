@@ -82,9 +82,9 @@ import_module(setup_cfg["name"])
 package = sys.modules[setup_cfg["name"]]
 
 # The short X.Y version.
-version = 0.3.0
+version = package.__version__.split("-", 1)[0]
 # The full version, including alpha/beta/rc tags.
-release = version
+release = package.__version__
 
 
 # -- Options for HTML output --------------------------------------------------
