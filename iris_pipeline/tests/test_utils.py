@@ -21,4 +21,6 @@ def get_data_from_url(filename):
     ):
         warnings.warn(f"Retrieve data for {filename} (if not cached already)")
         local_path = data.get_pkg_data_filename(filename, show_progress=True)
-    return local_path
+        local_path_suffix = local_path + ".fits"
+        os.symlink(local_path, local_path_suffix)
+    return local_path_suffix
