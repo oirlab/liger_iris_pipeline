@@ -2,7 +2,7 @@ Data Reduction System (DRS) for the Thirty Meter Telescope IRIS imager/spectrogr
 -----------------------------------------------------------------------------------
 
 [![Powered by Astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://astropy.org)
-[![Build Status](https://travis-ci.org/oirlab/iris_pipeline.svg?branch=master)](https://travis-ci.org/oirlab/iris_pipeline)
+![Github action test](https://github.com/oirlab/iris_pipeline/workflows/Python%20package/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/iris-pipeline/badge/?version=latest)](https://iris-pipeline.readthedocs.io/en/latest/?badge=latest)
 
 Data Reduction System (DRS) for the instrument [IRIS (InfraRed Imaging Spectrometer)](https://oirlab.ucsd.edu/IRIS.html), IRIS is a first light instrument for the [TMT (Thirty Meter Telescope)](https://tmt.org) observatory.
