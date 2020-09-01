@@ -44,9 +44,9 @@ def test_image2_subarray(tmp_path):
     input_model.meta.subarray.ysize = ysize
     subarray_slice = np.s_[ystart:ystart+ysize, xstart:xstart+xsize]
 
-    input_model.data = input_model.data[subarray_slice]
-    input_model.dq = input_model.dq[subarray_slice]
-    input_model.err = input_model.err[subarray_slice]
+    input_model.data = np.array(input_model.data[subarray_slice])
+    input_model.dq = np.array(input_model.dq[subarray_slice])
+    input_model.err = np.array(input_model.err[subarray_slice])
 
     raw_science_subarray_filename = tmp_path / "temp_subarray_science.fits"
     input_model.write(raw_science_subarray_filename)
