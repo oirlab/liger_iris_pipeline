@@ -37,5 +37,6 @@ from .normalize import *
 from .parse_subarray_map import *
 from .merge_subarrays import *
 from .assign_wcs import *
+from .resample import *
 
-from .datamodels import  monkeypatch_jwst_datamodels
+from .datamodels import  *
