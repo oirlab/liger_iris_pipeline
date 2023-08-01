@@ -48,7 +48,7 @@ jobs:
         python -m pip install -r docs/requirements.txt && cd docs && make html
     - name: Deploy
       if: ${{ matrix.python-version==3.7 && contains(github.ref, 'master') }}
-      uses: JamesIves/github-pages-deploy-action@4.1.1
+      uses: JamesIves/github-pages-deploy-action@v4.4.3
       with:
         branch: master
         folder: docs/_build/html
