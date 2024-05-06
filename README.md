@@ -13,7 +13,6 @@ Documentation
 
 [oirlab.github.io/iris-pipeline](https://oirlab.github.io/iris-pipeline)
 
-
 License
 -------
 
