@@ -8,7 +8,7 @@ __all__ = ["MergeSubarraysStep"]
 
 class MergeSubarraysStep(Step):
     """
-    ParseSubarrayMapStep: Parse a subarray map
+    MergeSubarraysStep: Parse a subarray map
     extension, if available, and create header metadata
     and data quality flag accordingly
     """
@@ -18,12 +18,14 @@ class MergeSubarraysStep(Step):
         input = datamodels.open(input)
 
         # If single input, wrap in a ModelContainer
+        # NOTE: stdatamodels.jwst.datamodels does not have an attribute ModelContainer, but jwst.datamodels still does.
         if not isinstance(input, datamodels.ModelContainer):
             self.log.info("No subarray files provided, return the original model")
             return input
         else:
             input_models = input
 
+        # Get full frame
         for model in input_models:
             if model.meta.subarray.id == 0:
                 result = model.copy()
