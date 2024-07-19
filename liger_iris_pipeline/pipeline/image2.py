@@ -21,7 +21,7 @@ __all__ = ["ProcessImagerL2Pipeline"]
 
 class ProcessImagerL2Pipeline(Pipeline):
     """
-    ProcessImagerL2Pipeline: Processes JWST imaging-mode slope data from Level-2a to
+    ProcessImagerL2Pipeline: Processes Liger/IRIS imaging-mode slope data from Level-2a to
     Level-2b.
 
     Included steps are:
