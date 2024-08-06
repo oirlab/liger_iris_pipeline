@@ -1,6 +1,6 @@
 import os
 import liger_iris_pipeline
-
+from liger_iris_pipeline.tests.test_utils import get_data_from_url
 liger_iris_pipeline.monkeypatch_jwst_datamodels()
 import numpy as np
 
@@ -60,8 +60,9 @@ def setup_inputs(
 
 
 def test_rop1():
+    raw_readout_filename = get_data_from_url("48191977")
     liger_iris_pipeline.pipeline.ROPPipeline.call(
-        "liger_iris_pipeline/tests/data/test_ramp.fits", config_file="liger_iris_pipeline/tests/data/drsrop.cfg"
+        raw_readout_filename, config_file="liger_iris_pipeline/tests/data/drsrop.cfg"
     )
     return 1
 

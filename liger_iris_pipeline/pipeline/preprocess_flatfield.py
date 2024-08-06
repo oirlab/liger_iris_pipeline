@@ -93,7 +93,7 @@ class ProcessFlatfieldL2(Pipeline):
         science = science[0]
 
         self.log.info("Working on input %s ...", science)
-        if isinstance(science, datamodels.DataModel):
+        if isinstance(science, datamodels.JwstDataModel):
             input = science
         else:
             input = datamodels.open(science)
@@ -101,7 +101,6 @@ class ProcessFlatfieldL2(Pipeline):
         # Record ASN pool and table names in output
         input.meta.asn.pool_name = pool_name
         input.meta.asn.table_name = asn_file
-
         input = self.dark_current(input)
         input = self.normalize(input)
 

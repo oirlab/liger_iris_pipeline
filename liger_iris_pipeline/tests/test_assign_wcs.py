@@ -13,7 +13,7 @@ from astropy.tests.helper import assert_quantity_allclose
 
 def test_assign_wcs_step():
     # Grab simulated raw frame
-    raw_science_filename = get_data_from_url("47090569")
+    raw_science_filename = get_data_from_url("48191524")
     input_model = datamodels.open(raw_science_filename)
 
     # Ensure we haven't already performed the correction.

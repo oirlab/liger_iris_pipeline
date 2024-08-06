@@ -25,7 +25,7 @@ class DarkCurrentStep(Step):
     def process(self, input):
 
         # Open the input data model
-        with datamodels.LigerIrisDataModel(input) as input_model:
+        with self.open_model(input) as input_model:
 
             # Get the name of the dark reference file to use
             self.dark_name = self.get_reference_file(input_model, "dark")

@@ -8,7 +8,7 @@ from liger_iris_pipeline.dark_current.dark_sub import do_correction
 
 def test_dark_subtraction():
     # Grab simulated raw frame
-    raw_science_filename = get_data_from_url("47090569")
+    raw_science_filename = get_data_from_url("48191524")
     input_model = datamodels.open(raw_science_filename)
 
     # Create a dark image with randomized vals centered around zero
@@ -22,7 +22,7 @@ def test_dark_subtraction():
     np.testing.assert_allclose(output.data, expected_output_data)
 
 def test_dark_step():
-    raw_science_filename = get_data_from_url("47090569")
+    raw_science_filename = get_data_from_url("48191524")
     input_model = datamodels.open(raw_science_filename)
 
     # Test DarkCurrentStep class

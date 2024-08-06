@@ -41,7 +41,7 @@ jobs:
           C_INCLUDE_PATH: /usr/include/cfitsio/
     - name: Test
       run: |
-        source setup_local_crds.sh && pytest -v liger_iris_pipeline/tests/test_datamodels.py liger_iris_pipeline/tests/test_dark.py liger_iris_pipeline/tests/test_rop.py liger_iris_pipeline/tests/test_utils.py liger_iris_pipeline/tests/test_normalize.py liger_iris_pipeline/tests/test_assign_wcs.py liger_iris_pipeline/tests/test_asdf_schema.py
+        source setup_local_crds.sh && pytest -v liger_iris_pipeline/tests/test_datamodels.py liger_iris_pipeline/tests/test_dark.py liger_iris_pipeline/tests/test_rop.py liger_iris_pipeline/tests/test_utils.py liger_iris_pipeline/tests/test_normalize.py liger_iris_pipeline/tests/test_assign_wcs.py liger_iris_pipeline/tests/test_asdf_schema.py liger_iris_pipeline/tests/test_preprocess_flatfield.py
         #- name: Build docs
         #  if: ${{ matrix.python-version==3.11 }}
         #  run: |
