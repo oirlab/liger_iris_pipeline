@@ -1,37 +1,52 @@
-import json
-import pytest
+# Imports
+import liger_iris_pipeline
+liger_iris_pipeline.monkeypatch_jwst_datamodels()
 import numpy as np
-import warnings
-import os
-from astropy.utils import data
+from astropy.io import fits
+from liger_iris_pipeline.tests.test_utils import get_data_from_url
+from jwst import datamodels
+import json
 from jwst.associations import load_asn
 
-import iris_pipeline
-
-iris_pipeline.monkeypatch_jwst_datamodels()
-
-from iris_pipeline.tests.test_utils import get_data_from_url
-
 def test_image2():
-    with open("iris_pipeline/tests/data/asn_subtract_bg_flat.json") as fp:
+
+    # Load the association file
+    with open("liger_iris_pipeline/tests/data/asn_subtract_bg_flat.json") as fp:
         asn = load_asn(fp)
-    raw_science_filename = get_data_from_url("17903858")
-    raw_background_filename = get_data_from_url("17903855")
+
+    # Download the raw science frame
+    raw_science_filename = get_data_from_url("48191524")
+
+    # Download the master dark frame
+    raw_dark_filename = get_data_from_url("48191518")
+
+    # Sky backgorund???? (ref_filename below)
+    raw_background_filename = '/Users/cale/Desktop/IRIS_Test_Data/test_iris_subtract_bg_flat_cal.fits'
+
+    # Add science and dark to ASN
     asn["products"][0]["members"][0]["expname"] = raw_science_filename
-    asn["products"][0]["members"][1]["expname"] = raw_background_filename
+    asn["products"][0]["members"][1]["expname"] = raw_dark_filename
+
+    # Save the ASN
     with open("test_asn.json", "w") as out_asn:
         json.dump(asn, out_asn)
-    iris_pipeline.pipeline.ProcessImagerL2Pipeline.call("test_asn.json", config_file="iris_pipeline/tests/data/image2_iris.cfg")
-    ref_filename = get_data_from_url("17905553")
-    with iris_pipeline.datamodels.IRISImageModel("test_iris_subtract_bg_flat_cal.fits") as out, \
-         iris_pipeline.datamodels.IRISImageModel(ref_filename) as ref:
+
+    # Create and call the pipeline object
+    liger_iris_pipeline.ProcessImagerL2Pipeline.call("test_asn.json", config_file="liger_iris_pipeline/tests/data/image2_iris.cfg")
+
+    # Download the sky background???
+    #ref_filename = get_data_from_url("17905553")
+
+    # Test the local output file with the reference file
+    with liger_iris_pipeline.datamodels.LigerIRISImageModel('test_iris_subtract_bg_flat_cal.fits') as out, \
+        liger_iris_pipeline.datamodels.LigerIRISImageModel(raw_background_filename) as ref:
         np.testing.assert_allclose(out.data, ref.data, rtol=1e-6)
 
 def test_image2_subarray(tmp_path):
-    with open("iris_pipeline/tests/data/asn_subtract_bg_flat.json") as fp:
+    with open("liger_iris_pipeline/tests/data/asn_subtract_bg_flat.json") as fp:
         asn = load_asn(fp)
-    raw_science_filename = get_data_from_url("17903858")
-    input_model = iris_pipeline.datamodels.IRISImageModel(raw_science_filename)
+    raw_science_filename = get_data_from_url("48191524")
+    input_model = liger_iris_pipeline.datamodels.LigerIRISImageModel(raw_science_filename)
 
     xstart = 100
     ystart = 200
@@ -51,16 +66,15 @@ def test_image2_subarray(tmp_path):
     raw_science_subarray_filename = tmp_path / "temp_subarray_science.fits"
     input_model.write(raw_science_subarray_filename)
 
-    raw_background_filename = get_data_from_url("17903855")
+    raw_dark_filename = get_data_from_url("48191518")
+    raw_background_filename = '/Users/cale/Desktop/IRIS_Test_Data/test_iris_subtract_bg_flat_cal.fits'
     asn["products"][0]["members"][0]["expname"] = str(raw_science_subarray_filename)
     asn["products"][0]["members"][1]["expname"] = raw_background_filename
     with open("test_asn.json", "w") as out_asn:
         json.dump(asn, out_asn)
-    iris_pipeline.pipeline.ProcessImagerL2Pipeline.call("test_asn.json", config_file="iris_pipeline/tests/data/image2_iris.cfg")
+    liger_iris_pipeline.pipeline.ProcessImagerL2Pipeline.call("test_asn.json", config_file="iris_pipeline/tests/data/image2_iris.cfg")
     ref_filename = get_data_from_url("17905553")
-    with iris_pipeline.datamodels.IRISImageModel("test_iris_subtract_bg_flat_cal.fits") as out, \
-         iris_pipeline.datamodels.IRISImageModel(ref_filename) as ref:
+    with liger_iris_pipeline.datamodels.LigerIRISImageModel("test_iris_subtract_bg_flat_cal.fits") as out, \
+        liger_iris_pipeline.datamodels.LigerIRISImageModel(ref_filename) as ref:
         np.testing.assert_allclose(out.data, ref.data[subarray_slice], rtol=1e-6)
 
-if __name__ == "__main__":
-    test_image2()

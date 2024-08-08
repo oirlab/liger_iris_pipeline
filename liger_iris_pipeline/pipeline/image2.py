@@ -48,7 +48,7 @@ class ProcessImagerL2Pipeline(Pipeline):
 
     def process(self, input):
 
-        self.log.info("Starting calwebb_image2 ...")
+        self.log.info("Starting ProcessImagerL2Pipeline ...")
 
         # Retrieve the input(s)
         asn = LoadAsLevel2Asn.load(input, basename=self.output_file)
