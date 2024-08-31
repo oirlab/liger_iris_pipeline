@@ -50,3 +50,15 @@ Testing Data
 #### test_iris_subtract_bg_flat_cal_20240822.fits
 - Processed Level 2 image data
 - https://figshare.com/articles/dataset/IRIS_Liger_DRS_Test_Data/26492029?file=48737014
+
+#### reduced_science_frame_sci_subarray_1_20240831.fits
+- Subarray image
+- https://figshare.com/articles/dataset/IRIS_Liger_DRS_Test_Data/26492029?file=48911917
+
+#### reduced_science_frame_sci_subarray_2_20240831.fits
+- Subarray image
+- https://figshare.com/articles/dataset/IRIS_Liger_DRS_Test_Data/26492029?file=48911914
+
+#### reduced_science_frame_sci_with_subarrays_20240831.fits
+- Starting point for merging subarrays 1 & 2 above with nans where subarrays are
+- https://figshare.com/articles/dataset/IRIS_Liger_DRS_Test_Data/26492029?file=48911932

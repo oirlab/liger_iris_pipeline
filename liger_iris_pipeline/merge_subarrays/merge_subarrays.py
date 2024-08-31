@@ -10,14 +10,14 @@ class MergeSubarraysStep(Step):
     """
     ParseSubarrayMapStep: Parse a subarray map
     extension, if available, and create header metadata
-    and data quality flag accordingly
+    and data quality flag accordingly.
     """
 
     def process(self, input):
 
         input = datamodels.open(input)
 
-        # If single input, wrap in a ModelContainer
+        # If single input, just return it
         if not isinstance(input, datamodels.ModelContainer):
             self.log.info("No subarray files provided, return the original model")
             return input
@@ -31,14 +31,13 @@ class MergeSubarraysStep(Step):
         else:
             raise ValueError("Cannot identify the full frame, it should have SUBARRID=0")
 
-
         # Assume subarrays are in order
         for model in input_models:
 
             i_sub = model.meta.subarray.id
 
+            # Skip the full frame
             if i_sub == 0:
-                # skip the full frame
                 continue
             
             subarray_mask = result.subarr_map == i_sub
