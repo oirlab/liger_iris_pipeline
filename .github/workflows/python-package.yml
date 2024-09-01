@@ -52,4 +52,9 @@ jobs:
         branch: master
         folder: docs/_build/html
         repository-name: oirlab/liger-iris-pipeline
-        ssh-key: ${{ secrets.DEPLOY_KEY }}
+        token: ${{ secrets.PAT }}
+      # the token expires every year, create a new Github Personal Access Token where:
+      # resource owner is oirlab
+      # repo is oirlab/liger-iris-pipeline (notice dashes, this is the docs repo)
+      # permission is read/write to Contents
+      # then save it under the secrets of this repository
