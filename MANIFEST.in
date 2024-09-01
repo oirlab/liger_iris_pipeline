@@ -3,13 +3,13 @@ include CHANGES.rst
 
 include setup.cfg
 
-recursive-include iris_pipeline *.py *.pyx *.c *.pxd *.yaml
+recursive-include liger_iris_pipeline *.py *.pyx *.c *.pxd *.yaml
 recursive-include docs *
 recursive-include licenses *
 recursive-include cextern *
 recursive-include scripts *
-recursive-include iris_pipeline/tests *.py *.ipynb
-recursive-include iris_pipeline/tests/data *
+recursive-include liger_iris_pipeline/tests *.py *.ipynb
+recursive-include liger_iris_pipeline/tests/data *
 
 prune build
 prune docs/_build
