@@ -1,33 +1,48 @@
 from astropy.time import Time
+from stdatamodels import DataModel
 
-from stdatamodels.jwst.datamodels import JwstDataModel as _DataModel
+__all__ = ["LigerIRISDataModel"]
 
-
-__all__ = ["LigerIrisDataModel"]
-
-
-class LigerIrisDataModel(_DataModel):
-
-    schema_url = "https://oirlab.github.io/schemas/liger_iris_core.schema"
+class LigerIRISDataModel(DataModel):
+    """
+    The base data model for Liger and IRIS.
+    This class should not be instantiated on its own.
+    """
+    schema_url = "https://oirlab.github.io/schemas/liger_iris_data_model.schema"
 
     @property
     def crds_observatory(self):
         """
-        Get CRDS observatory code for this model.
+        The CRDS observatory for this model.
 
-        Returns
-        -------
-        str
+        Returns:
+        str : the CRDS observatory.  Returns "wmko" for Liger, and "tmt" for IRIS.
         """
-        return "ligeriri"
+        if self.telescope is None:
+            return None
+        tel = self.telescope.lower()
+        if tel == "wmko":
+            return "wmko"
+        elif tel == "tmt":
+            return "tmt"
+        else:
+            raise ValueError(f"Property `datamodel.instrument` invalid for {self}: {self.instrument}")
+        
+    @property
+    def telescope(self):
+        return self.meta.telescope
+    
+    @property
+    def instrument(self):
+        return self.meta.instrument.name
+    
 
     def get_crds_parameters(self):
         """
         Get parameters used by CRDS to select references for this model.
 
-        Returns
-        -------
-        dict
+        Returns:
+        dict : the CRDS parameters
         """
         return {
             key: val
@@ -51,5 +66,4 @@ class LigerIrisDataModel(_DataModel):
         to a file (FITS or ASDF).
         """
         super().on_save(init)
-
-        self.meta.date = Time.now().isot
+        self.meta.origin.time = Time.now().isot

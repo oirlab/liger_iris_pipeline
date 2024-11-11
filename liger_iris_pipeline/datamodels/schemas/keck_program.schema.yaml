@@ -1,0 +1,30 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/keck_program.schema"
+type: object
+properties:
+  program:
+    title: Keck program information
+    type: object
+    properties:
+      title:
+        title: Proposal title
+        type: string
+        fits_keyword: TITLE
+        blend_table: True
+      pi_name:
+        title: Principal investigator name
+        type: string
+        fits_keyword: PI_NAME
+        blend_table: True
+      category:
+        title: Program category
+        type: string
+        fits_keyword: CATEGORY
+        blend_table: True
+      sub_category:
+        title: Program sub-category
+        type: string
+        fits_keyword: SUBCAT
+        blend_table: True

@@ -1,5 +1,5 @@
 import logging
-from ..datamodels import FlatModel, DarkModel, LigerIrisImageModel
+from ..datamodels import LigerFlatModel, LigerDarkModel, LigerImagerModel
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)

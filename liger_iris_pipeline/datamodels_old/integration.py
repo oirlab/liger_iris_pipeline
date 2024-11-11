@@ -1,5 +1,5 @@
 """
-This module supports the entry points for ASDF support for the `liger_iris_pipeline.datamodels`.
+This module supports the entry points for ASDF support for the `jwst.datamodels`.
 """
 
 import importlib.resources

@@ -1,0 +1,76 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/liger_instrument.schema"
+type: object
+properties:
+  instrument:
+    title: Liger instrument configuration information
+    type: object
+    properties:
+      name:
+        title: Instrument used to acquire the data
+        type: string
+        enum: [Liger] # NOTE: Unsure if we should split between IFU/Imager here and/or below.
+        fits_keyword: INSTRUME
+        blend_table: True
+      detector:
+        title: Name of detector used to acquire the data
+        type: string
+        enum: [LIGERIMAGER, LIGERIFU, N/A, MULTIPLE] # NOTE: Shorten these in the future?
+        fits_keyword: DETECTOR
+        blend_table: True
+        blend_rule: multi
+      channel: # NOTE: Unsure if we should split between IFU/Imager here and/or above.
+        title: Instrument channel
+        type: string
+        - enum:
+          [IMAGER, IFU, N/A]
+        fits_keyword: CHANNEL
+        blend_table: True
+        blend_rule: multi
+      filter:
+        title: Name of the filter element used
+        type: string
+        enum: [
+          ANY, CLEAR, OPAQUE, N/A, MULTIPLE,
+          Zbb, Ybb, Jbb, Hbb, Kbb,
+          Z, Y, J, H, Ks, K,
+          ZN1, ZN2, ZN3, ZN4,
+          YN1, YN2, YN3,
+          JN1, JN2, JN3, JN4,
+          HN1, HN2, HN3, HN4, HN5,
+          KN1, KN2, KN3, KN4, KN5,
+          CaIIw, PaBetaw, FeIIw, Br_Gammaw, COw,
+          HeI,
+          Jcont,
+          PaBeta,
+          Hcont,
+          FeII,
+          H2one,
+          Kcont,
+          Br_Gamma,
+          H2two,
+          CO,
+        ]
+        fits_keyword: FILTER
+        blend_table: True
+        blend_rule: multi
+      pupil:
+        title: Name of the pupil element used
+        type: string
+        enum: [ANY, CLEAR, N/A]
+        fits_keyword: PUPIL
+        blend_table: True
+      pupil_imaging_lens:
+        title: Pupil imaging lens in the optical path?
+        type: boolean
+        fits_keyword: PILIN
+        blend_table: True
+      grating:
+        title: Name of the grating element used
+        type: string
+        enum: [MIRROR, N/A, ANY, UNKNOWN, MULTIPLE] # NOTE: Add grating names here
+        fits_keyword: GRATING
+        blend_table: True
+        blend_rule: multi
