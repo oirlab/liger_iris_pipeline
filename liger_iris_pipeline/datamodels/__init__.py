@@ -6,12 +6,14 @@ from .dark import DarkModel
 from .flat import FlatModel
 from .ifu import IFUImageModel, IFUCubeModel
 from .dq import DQModel
+from .utils import open
 
 
 __all__ = [
     "LigerIRISDataModel",
     "RampModel",
     "ImagerModel",
+    "DEFINED_MODELS",
     "ReferenceFileModel",
     "DarkModel", "FlatModel",
     "IFUImageModel", "IFUCubeModel",

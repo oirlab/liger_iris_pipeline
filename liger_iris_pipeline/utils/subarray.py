@@ -1,5 +1,5 @@
 import logging
-from ..datamodels import LigerFlatModel, LigerDarkModel, LigerImagerModel
+from ..datamodels import FlatModel, DarkModel, ImagerModel
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -99,11 +99,11 @@ def get_subarray_model(sci_model, ref_model):
             sub_dq = ref_model.dq[ystart:ystop, xstart:xstop]
             sub_model = DarkModel(data=sub_data, err=sub_err, dq=sub_dq)
             sub_model.update(ref_model)
-        elif isinstance(ref_model, LigerIrisImageModel):
+        elif isinstance(ref_model, ImagerModel):
             sub_data = ref_model.data[ystart:ystop, xstart:xstop]
             sub_err = ref_model.err[ystart:ystop, xstart:xstop]
             sub_dq = ref_model.dq[ystart:ystop, xstart:xstop]
-            sub_model = LigerIrisImageModel(data=sub_data, err=sub_err, dq=sub_dq)
+            sub_model = ImagerModel(data=sub_data, err=sub_err, dq=sub_dq)
             sub_model.update(ref_model)
         else:
             log.warning("Unsupported reference file model type")

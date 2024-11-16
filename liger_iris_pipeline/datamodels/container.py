@@ -10,11 +10,11 @@ from astropy.io import fits
 from asdf import AsdfFile
 
 from jwst.associations import load_asn
-from stdatamodels.jwst.datamodels.util import is_association
+from stdatamodels.jwst.datamodels.utils import is_association
 from stdatamodels import properties
 
 from .model_base import LigerIRISDataModel
-from . import open as datamodel_open
+from .utils import open as datamodel_open
 
 __all__ = ['ModelContainer']
 
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
-class ModelContainer(JwstDataModel, Sequence):
+class ModelContainer(LigerIRISDataModel, Sequence):
     """
     A list-like container for storing `LigerIRISDataModel`'s.
 

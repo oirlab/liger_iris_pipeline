@@ -1,8 +1,7 @@
-from jwst.stpipe import Step
 from .. import datamodels
+from ..step import Step
 from ..datamodels import DarkModel
 from . import dark_sub
-import stdatamodels
 
 from ..utils.subarray import get_subarray_model
 

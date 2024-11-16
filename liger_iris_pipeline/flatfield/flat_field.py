@@ -3,20 +3,18 @@
 #
 
 import logging
-import math
 
 import numpy as np
 
 from ..utils.subarray import get_subarray_model
-from jwst import datamodels
-from jwst.datamodels import dqflags
+from .. import datamodels
+from ..datamodels import dqflags
 from jwst.lib import reffile_utils
-from jwst.assign_wcs import nirspec  # for NIRSpec IFU data
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-MICRONS_100 = 1.0e-4  # 100 microns, in meters
+MICRONS_100 = 1.0E-4  # 100 microns, in meters
 
 # Dispersion direction, predominantly horizontal or vertical.  These values
 # are to be compared with keyword DISPAXIS from the input header.

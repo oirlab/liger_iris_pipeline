@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 
-from jwst.stpipe import Step
+from ..step import Step
 from ..datamodels import RampModel
 from ..drsrop_clib import uptheramp_c, mcds_c, nonlin_c
 import numpy as np
-import liger_iris_pipeline
 from astropy.io import fits
 
 __all__ = ["NonlincorrStep"]

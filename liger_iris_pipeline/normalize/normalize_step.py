@@ -1,4 +1,4 @@
-from jwst.stpipe import Step
+from ..base_step import LigerIRISStep
 from .. import datamodels
 from . import normalize
 
@@ -6,7 +6,7 @@ from . import normalize
 __all__ = ["NormalizeStep"]
 
 
-class NormalizeStep(Step):
+class NormalizeStep(LigerIRISStep):
     """
     NormalizeStep: Normalize a frame by dividing
     by its own mean, median or mode

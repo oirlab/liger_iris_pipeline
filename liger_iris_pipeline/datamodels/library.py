@@ -1,7 +1,3 @@
-import io
-
-import asdf
-from astropy.io import fits
 from .util import datamodels_open
 from stpipe.library import AbstractModelLibrary
 

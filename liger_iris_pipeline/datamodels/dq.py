@@ -11,12 +11,12 @@ class DQModel(ReferenceFileModel):
     Parameters
     __________
     dq : numpy uint32 array
-         The mask
+        The mask
 
     dq_def : numpy table
-         DQ flag definitions
+        DQ flag definitions
     """
-    schema_url = "https://oirlab.github.io/schemas/dq.schema"
+    schema_url = "https://oirlab.github.io/schemas/LigerDQModel.schema"
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)

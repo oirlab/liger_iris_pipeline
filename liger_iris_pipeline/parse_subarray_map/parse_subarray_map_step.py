@@ -1,8 +1,7 @@
 import numpy as np
 
-from jwst.stpipe import Step
+from ..base_step import LigerIRISStep
 from .. import datamodels
-import stdatamodels
 
 __all__ = ["ParseSubarrayMapStep"]
 

@@ -13,7 +13,7 @@ class ImagerModel(LigerIRISDataModel):
     dq (np.ndarray): 2D data quality array.
     """
 
-    schema_url = "https://oirlab.github.io/schemas/imager.schema"
+    schema_url = "https://oirlab.github.io/schemas/LigerImagerModel.schema"
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)

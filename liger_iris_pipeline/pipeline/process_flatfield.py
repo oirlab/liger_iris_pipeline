@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 from collections import defaultdict
-import os.path as op
+import os.path
 
-from jwst import datamodels
 from jwst.associations.load_as_asn import LoadAsLevel2Asn
-from jwst.stpipe import Pipeline
 
+import liger_iris_pipeline.datamodels as datamodels
+from .base_pipeline import LigerIRISPipeline
 from ..dark_current import dark_current_step
 from ..normalize import normalize_step
 
 
-__all__ = ["ProcessFlatfieldL2"]
+__all__ = ["ProcessFlatfield"]
 
 
-class ProcessFlatfieldL2(Pipeline):
+class ProcessFlatfield(LigerIRISPipeline):
     """
-    ProcessFlatfieldL2: Remove dark and normalize exposure to create
+    ProcessFlatfield: Remove dark and normalize exposure to create
     a flat field to be later added to the CRDS.
 
     Included steps are:
@@ -47,7 +47,7 @@ class ProcessFlatfieldL2(Pipeline):
             except AttributeError:
                 asn.filename = "singleton"
             result = self.process_exposure_product(
-                product, asn["asn_pool"], op.basename(asn.filename)
+                product, asn["asn_pool"], os.path.basename(asn.filename)
             )
 
             # Save result
@@ -93,10 +93,7 @@ class ProcessFlatfieldL2(Pipeline):
         science = science[0]
 
         self.log.info("Working on input %s ...", science)
-        if isinstance(science, datamodels.JwstDataModel):
-            input = science
-        else:
-            input = datamodels.open(science)
+        input = datamodels.open(science)
 
         # Record ASN pool and table names in output
         input.meta.asn.pool_name = pool_name

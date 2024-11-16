@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 
 import liger_iris_pipeline
-from jwst.stpipe import Step
-from jwst import datamodels
+from ..base_step import LigerIRISStep
+from .. import datamodels
 from . import flat_field
 
 # For the following types of data, it is OK -- and in some cases
@@ -13,7 +13,7 @@ EXTRACT_2D_IS_OK = []
 __all__ = ["FlatFieldStep"]
 
 
-class FlatFieldStep(Step):
+class FlatFieldStep(LigerIRISStep):
     """Flat-field a science image using a flatfield reference image.
     """
 

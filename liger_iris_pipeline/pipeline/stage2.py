@@ -2,11 +2,10 @@
 from collections import defaultdict
 import os.path as op
 
-from jwst import datamodels
 from jwst.associations.load_as_asn import LoadAsLevel2Asn
-from jwst.stpipe import Pipeline
 
-# calwebb IMAGE2 step imports
+from .base_pipeline import LigerIRISPipeline
+
 from ..background import background_step
 from ..dark_current import dark_current_step
 from jwst.assign_wcs import assign_wcs_step
@@ -16,14 +15,11 @@ from jwst.photom import photom_step
 from jwst.resample import resample_step
 
 
-__all__ = ["ProcessImagerL2Pipeline"]
+__all__ = ["ImagerStage2Pipeline"]
 
 
-class ProcessImagerL2Pipeline(Pipeline):
+class ImagerStage2Pipeline(LigerIRISPipeline):
     """
-    ProcessImagerL2Pipeline: Processes JWST imaging-mode slope data from Level-2a to
-    Level-2b.
-
     Included steps are:
     background_subtraction, assign_wcs, flat_field, photom and resample.
     """

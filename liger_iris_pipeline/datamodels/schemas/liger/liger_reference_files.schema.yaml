@@ -3,12 +3,12 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/liger_reference_files.schema"
 type: object
-properties: 
+properties:
   ref_file:
     title: Reference file information
     type: object
     properties:
-      # NOTE: R_ is for Reference
+      # NOTE: fits_keyword R_ is for Reference
       crds:
         title: CRDS parameters
         type: object

@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 
-from jwst.stpipe import Step
-from jwst import datamodels
-from liger_iris_pipeline.datamodels import LigerIrisImageModel, RampModel
+from ..step import Step
+
+from ..datamodels import ImagerModel, RampModel
 from ..drsrop_clib import uptheramp_c, mcds_c, nonlin_c
 import numpy as np
 
-
-def utr(a):
-    return a
+# def utr(a):
+#     return a
 
 
 __all__ = ["ReadoutsampStep"]

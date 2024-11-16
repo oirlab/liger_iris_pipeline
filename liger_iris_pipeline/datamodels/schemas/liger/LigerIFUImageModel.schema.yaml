@@ -1,4 +1,4 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/liger_ifu_image.schema"
+id: "https://oirlab.github.io/schemas/LigerIFUImageModel.schema"

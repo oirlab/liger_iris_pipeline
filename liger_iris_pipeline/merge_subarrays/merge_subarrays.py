@@ -1,12 +1,12 @@
 import numpy as np
 
-from jwst.stpipe import Step
-from jwst import datamodels
+from ..base_step import LigerIRISStep
+from .. import datamodels
 
 __all__ = ["MergeSubarraysStep"]
 
 
-class MergeSubarraysStep(Step):
+class MergeSubarraysStep(LigerIRISStep):
     """
     ParseSubarrayMapStep: Parse a subarray map
     extension, if available, and create header metadata
