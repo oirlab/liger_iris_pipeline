@@ -1,4 +1,3 @@
-
 from .model_base import LigerIRISDataModel
 from .ramp import RampModel
 from .imager import ImagerModel

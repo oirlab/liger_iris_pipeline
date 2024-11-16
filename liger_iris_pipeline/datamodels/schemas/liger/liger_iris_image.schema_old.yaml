@@ -1,0 +1,40 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/liger_iris_image.schema"
+allOf:
+- $ref: liger_iris_core.schema
+- $ref: wcsinfo.schema
+- type: object
+  properties:
+    data:
+      title: The science data
+      fits_hdu: SCI
+      default: 0.0
+      ndim: 2
+      datatype: float32
+    dq:
+      title: Data quality array
+      fits_hdu: DQ
+      default: 0
+      datatype: uint32
+    subarr_map:
+      title: Subarray map
+      fits_hdu: SUBARR_MAP
+      default: 0
+      datatype: uint16
+    err:
+      title: Error array
+      fits_hdu: ERR
+      default: 0.0
+      datatype: float32
+    zeroframe:
+      title: Zeroframe array
+      fits_hdu: ZEROFRAME
+      default: 0.0
+      datatype: float32
+    area:
+      title: Pixel area map array
+      fits_hdu: AREA
+      default: 0.0
+      datatype: float32
