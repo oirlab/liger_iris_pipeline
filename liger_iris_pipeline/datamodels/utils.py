@@ -1,16 +1,15 @@
 from pathlib import Path
 import sys
 import os
+import warnings
 
 import numpy as np
 from astropy.io import fits
 
+from jwst.associations import is_association
+
 import asdf
-from .model_base import LigerIRISDataModel
-import liger_iris_pipeline.datamodels
 from stdatamodels import filetype
-from . import DEFINED_MODELS
-from .container import ModelContainer
 from stdatamodels.model_base import _FileReference
 
 import logging
@@ -38,6 +37,9 @@ def open(init=None, memmap=False, **kwargs):
     Returns:
     LigerIRISDataModel: The specific LigerIRISDataModel instance.
     """
+
+    from .model_base import LigerIRISDataModel
+    from .container import ModelContainer
 
     # If init is already a datamodel, copy and return
     if isinstance(init, LigerIRISDataModel):
@@ -82,7 +84,7 @@ def open(init=None, memmap=False, **kwargs):
             
             if model_class is None:
                 # No model class found, so return generic model.
-                warnings.warn(f"model_type not found with key {DATAMODL}. Opening {file_name} as a {class_name}")
+                warnings.warn(f"model_type not found with key 'DATAMODL'. Opening {file_name} as a LigerIRISDataModel")
                 model = LigerIRISDataModel(asdffile, **kwargs)
             else:
                 model = model_class(asdffile, **kwargs)
@@ -148,6 +150,7 @@ def class_from_model_type(init):
     type | None: The LigerIRISDataModel class if found.
     """
 
+    from . import DEFINED_MODELS
     if init:
         if isinstance(init, fits.hdu.hdulist.HDUList):
             primary = init[0]
