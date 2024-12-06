@@ -1,19 +1,21 @@
 #! /usr/bin/env python
-from jwst.stpipe import Step
-from jwst import datamodels
-from ..datamodels import LigerIrisImageModel
+from ..base_step import LigerIRISStep
+from .. import datamodels
+from ..datamodels import ImagerModel
+
 import logging
+
 from .assign_wcs import load_wcs
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-__all__ = ["AssignWcsStep"]
+__all__ = ["AssignWCSStep"]
 
 
-class AssignWcsStep(Step):
+class AssignWCSStep(LigerIRISStep):
     """
-    AssignWcsStep: Create a gWCS object and store it in ``Model.meta``.
+    AssignWCSStep: Create a gWCS object and store it in ``Model.meta``.
 
     Reference file types (none for now):
 
@@ -38,9 +40,9 @@ class AssignWcsStep(Step):
             input_model = input
 
         # If input type is not supported, log warning, set to 'skipped', exit
-        if not (isinstance(input_model, LigerIrisImageModel)):
+        if not (isinstance(input_model, ImagerModel)):
             log.warning("Input dataset type is not supported.")
-            log.warning("assign_wcs expects IRISImageModel as input.")
+            log.warning("assign_wcs expects ImageModel as input.")
             log.warning("Skipping assign_wcs step.")
             result = input_model.copy()
             result.meta.cal_step.assign_wcs = "SKIPPED"

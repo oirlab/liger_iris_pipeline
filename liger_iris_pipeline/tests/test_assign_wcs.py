@@ -1,22 +1,17 @@
-# Imports
-import liger_iris_pipeline
-
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
-import numpy as np
-
 # See README.md for notes on testing data
 from liger_iris_pipeline.tests.test_utils import get_data_from_url
+from liger_iris_pipeline import datamodels, AssignWCSStep
 
-from jwst import datamodels
-from liger_iris_pipeline.assign_wcs.assign_wcs import load_wcs
 import astropy.units as u
 from astropy import wcs
 from astropy.tests.helper import assert_quantity_allclose
 
 
 def test_assign_wcs_step():
+
     # Grab simulated raw frame
-    raw_science_filename = get_data_from_url("48191524")
+    #raw_science_filename = get_data_from_url("48191524")
+    raw_science_filename = "/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits"
     input_model = datamodels.open(raw_science_filename)
 
     # Ensure we haven't already performed the correction.
@@ -35,7 +30,7 @@ def test_assign_wcs_step():
 
     # Assign WCS for now just parses the `wcsinfo` metadata assigned above and creates a
     # `gwcs.WCS` instance with the proper coordinate transformations using `astropy.modeling`.
-    step = liger_iris_pipeline.AssignWcsStep()
+    step = AssignWCSStep()
     output_model = step.run(input_model)
 
     # Test

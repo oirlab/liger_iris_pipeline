@@ -3,4 +3,4 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/LigerIRISDataModel.schema"
 allOf:
-- $ref: stpipe.schema
+- $ref: core.schema

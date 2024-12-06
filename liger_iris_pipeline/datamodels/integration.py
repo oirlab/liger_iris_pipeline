@@ -27,16 +27,20 @@ def get_resource_mappings():
         raise RuntimeError(f"Missing resources directory: {resources_root=}")
 
     return [
-        # DirectoryResourceMapping(
-        #     resources_root / "schemas",
-        #     "https://oirlab.github.io/schemas/",
-        # ),
+        DirectoryResourceMapping(
+            resources_root / "schemas",
+            "https://oirlab.github.io/schemas/",
+        ),
+        DirectoryResourceMapping(
+            resources_root / ("schemas" + os.sep + "common"),
+            "https://oirlab.github.io/schemas/",
+        ),
         DirectoryResourceMapping(
            resources_root / ("schemas" + os.sep + "liger"),
            "https://oirlab.github.io/schemas/",
         ),
-        # DirectoryResourceMapping(
-        #    resources_root / ("schemas" + os.sep + "iris"),
-        #    "https://oirlab.github.io/schemas/",
-        # )
+        DirectoryResourceMapping(
+           resources_root / ("schemas" + os.sep + "iris"),
+           "https://oirlab.github.io/schemas/",
+        )
     ]

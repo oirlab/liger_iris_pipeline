@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ..step import Step
+from ..base_step import LigerIRISStep
 from ..datamodels import RampModel
 from ..drsrop_clib import uptheramp_c, mcds_c, nonlin_c
 import numpy as np
@@ -9,7 +9,7 @@ from astropy.io import fits
 __all__ = ["NonlincorrStep"]
 
 
-class NonlincorrStep(Step):
+class NonlincorrStep(LigerIRISStep):
     """
     ReadoutsampStep:  Sampling
     """

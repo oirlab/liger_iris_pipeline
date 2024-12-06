@@ -1,0 +1,106 @@
+# For common header keywords we can force between Liger and IRIS either at Keck/TMT or in the DRS
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/iris_observation.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      observation:
+        title: Observation identifiers
+        type: object
+        properties:
+          date:
+            anyOf:
+              - $ref: http://stsci.edu/schemas/asdf/time/time-1.0.0
+              - type: string
+            title: "[yyyy-mm-dd] UTC date at start of exposure"
+            fits_keyword: DATE-OBS
+            blend_table: True
+            blend_rule: first
+          time:
+            title: "[hh:mm:ss.sss] UTC time at start of exposure"
+            type: string
+            fits_keyword: TIME-OBS
+            blend_table: True
+            blend_rule: first
+          date_beg:
+            type: string
+            title: "Date-time start of data acquisition"
+            fits_keyword: DATE-BEG
+            blend_table: True
+            blend_rule: first
+          date_end:
+            type: string
+            title: "[yyyy-mm-dd] UTC date at end of exposure"
+            fits_keyword: DATE-END
+            blend_table: True
+            blend_rule: last
+          time_end:
+            title: "[hh:mm:ss.sss] UTC time at end of exposure"
+            type: string
+            fits_keyword: TIME-END
+            blend_table: True
+            blend_rule: last
+          obs_id:
+            title: Programmatic observation identifier
+            type: string
+            fits_keyword: OBS_ID
+            blend_table: True
+          visit_id:
+            title: Visit identifier
+            type: string
+            fits_keyword: VISIT_ID
+            blend_table: True
+          program_number:
+            title: Program number
+            type: string
+            fits_keyword: PROGRAM
+            blend_table: True
+          observation_number:
+            title: Observation number
+            type: string
+            fits_keyword: OBSERVTN
+            blend_table: True
+          visit_number:
+            title: Visit number
+            type: string
+            fits_keyword: VISIT
+            blend_table: True
+          visit_group:
+            title: Visit group identifier
+            type: string
+            fits_keyword: VISITGRP
+            blend_table: True
+          sequence_id:
+            title: Parallel sequence identifier
+            type: string
+            fits_keyword: SEQ_ID
+            blend_table: True
+          activity_id:
+            title: Activity identifier
+            type: string
+            fits_keyword: ACT_ID
+            blend_table: True
+          exposure_number:
+            title: Exposure request number
+            type: string
+            fits_keyword: EXPOSURE
+            blend_table: True
+          bkgdtarg:
+            title: Background target
+            type: boolean
+            fits_keyword: BKGDTARG
+            blend_table: True
+          template:
+            title: Observation template used
+            type: string
+            fits_keyword: TEMPLATE
+            blend_table: True
+          observation_label:
+            title: Proposer label for the observation
+            type: string
+            fits_keyword: OBSLABEL
+            blend_table: True

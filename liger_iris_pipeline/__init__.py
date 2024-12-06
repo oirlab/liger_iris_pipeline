@@ -7,7 +7,8 @@
 import sys
 
 __version__ = "0.5.dev"
-__minimum_python_version__ = "3.6"
+__version_commit__ = "0.5.dev"
+__minimum_python_version__ = "3.11"
 
 
 class UnsupportedPythonError(Exception):
@@ -29,4 +30,7 @@ from .dq_init import DQInitStep
 from .normalize import NormalizeStep
 from .parse_subarray_map import ParseSubarrayMapStep
 from .merge_subarrays import MergeSubarraysStep
-from .assign_wcs import AssignWcsStep
+from .assign_wcs import AssignWCSStep
+
+
+from .datamodels import *

@@ -1,6 +1,5 @@
 # Imports
 import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
 import numpy as np
 
 # See README.md for notes on testing data
@@ -10,8 +9,9 @@ from liger_iris_pipeline.tests.test_utils import get_data_from_url
 def test_dark_subarray(tmp_path):
 
     # Download the science frame and open
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(raw_science_filename)
+    #raw_science_filename = get_data_from_url("48191524")
+    raw_science_filename = '/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits'
+    input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
 
     # Setup the subarray params
     xstart = 100
@@ -33,7 +33,7 @@ def test_dark_subarray(tmp_path):
     assert input_model.data.shape == (ysize, xsize)
 
     # Setup the Dark step
-    step = liger_iris_pipeline.dark_current.DarkCurrentStep()
+    step = liger_iris_pipeline.DarkCurrentStep()
 
     # Run on the subarray
     step_output = step.run(input_model)
@@ -42,7 +42,7 @@ def test_dark_subarray(tmp_path):
     assert step_output.data.shape == (ysize, xsize)
 
     # Open the dark cal that was used
-    dark_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(step.dark_name)
+    dark_model = liger_iris_pipeline.ImagerModel(step.dark_name)
 
     # Compare the output with a manual dark subtraction
     np.testing.assert_allclose(

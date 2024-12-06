@@ -6,7 +6,7 @@ import warnings
 import numpy as np
 from astropy.io import fits
 
-from jwst.associations import is_association
+from stdatamodels.jwst.datamodels.util import is_association
 
 import asdf
 from stdatamodels import filetype
@@ -108,10 +108,10 @@ def open(init=None, memmap=False, **kwargs):
     model_class = class_from_model_type(hdulist)
 
     # Throw an error if these attempts were unsuccessful
+    if model_class is None and file_to_close is not None:
+        file_to_close.close()
     if model_class is None:
         raise TypeError("Can't determine datamodel class from argument to open")
-    if file_to_close is not None:
-        file_to_close.close()
 
     # Log a message about how the model was opened
     if file_name:

@@ -30,7 +30,7 @@ class ProcessFlatfield(LigerIRISPipeline):
 
     def process(self, input):
 
-        self.log.info("Starting preprocess flatfield ...")
+        self.log.info("Starting Process flatfield ...")
 
         # Retrieve the input(s)
         asn = LoadAsLevel2Asn.load(input, basename=self.output_file)
@@ -55,7 +55,7 @@ class ProcessFlatfield(LigerIRISPipeline):
             result.meta.filename = self.make_output_path(suffix=suffix)
             results.append(result)
 
-        self.log.info("... ending preprocess flatfield")
+        self.log.info("... ending Process flatfield")
 
         self.output_use_model = True
         self.suffix = False

@@ -4,6 +4,7 @@ import os.path as op
 
 from jwst.associations.load_as_asn import LoadAsLevel2Asn
 
+from liger_iris_pipeline import datamodels
 from .base_pipeline import LigerIRISPipeline
 
 from ..background import background_step
@@ -40,7 +41,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
     }
 
     # List of normal imaging exp_types
-    image_exptypes = ["MIR_IMAGE", "NRC_IMAGE", "NIS_IMAGE"]
+    image_exptypes = ["Liger_IMAGE", "IRIS_IMAGE"]
 
     def process(self, asn_filename : str):
 
@@ -66,12 +67,12 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
 
             # Save result
             suffix = "cal"
-            if isinstance(result, datamodels.CubeModel):
+            if isinstance(result, datamodels.IFUCubeModel):
                 suffix = "calints"
             result.meta.filename = self.make_output_path(suffix=suffix)
             results.append(result)
 
-        self.log.info("... ending calwebb_image2")
+        self.log.info("... ending ImagerStage2Pipeline")
 
         self.output_use_model = True
         self.suffix = False
@@ -111,7 +112,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         science = science[0]
 
         self.log.info(f"Processing input {science} ...")
-        if isinstance(science, datamodels.JwstDataModel):
+        if isinstance(science, datamodels.LigerIRISDataModel):
             input_model = science
         else:
             input_model = datamodels.open(science)
@@ -126,7 +127,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
             # Setup for saving
             if self.bkg_subtract.suffix is None:
                 self.bkg_subtract.suffix = "bsub"
-            if isinstance(input_model, datamodels.CubeModel):
+            if isinstance(input_model, datamodels.IFUCubeModel):
                 self.bkg_subtract.suffix = "bsubints"
 
             # Backwards compatibility

@@ -6,6 +6,9 @@ from .dark import DarkModel
 from .flat import FlatModel
 from .ifu import IFUImageModel, IFUCubeModel
 from .dq import DQModel
+
+from .container import ModelContainer
+
 from .utils import open
 
 
@@ -18,6 +21,7 @@ __all__ = [
     "DarkModel", "FlatModel",
     "IFUImageModel", "IFUCubeModel",
     "DQModel",
+    "ModelContainer",
     "open"
 ]
 

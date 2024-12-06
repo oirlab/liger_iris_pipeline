@@ -143,7 +143,7 @@ def apply_flat_field(science, flat):
     flat_data[np.where(flat_bad)] = 1.0
 
     # For CubeModel science data, apply flat to each integration
-    if isinstance(science, datamodels.CubeModel):
+    if isinstance(science, datamodels.IFUCubeModel):
         for integ in range(science.data.shape[0]):
             # Flatten data and error arrays
             science.data[integ] /= flat_data

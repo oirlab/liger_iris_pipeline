@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 
-from jwst.stpipe import Step
-from jwst import datamodels
-from . import background_sub
 
+from .. import datamodels
+from ..base_step import LigerIRISStep
+from . import background_sub
 
 __all__ = ["BackgroundStep"]
 
 
-class BackgroundStep(Step):
+class BackgroundStep(LigerIRISStep):
     """
     BackgroundStep:  Subtract background exposures from target exposures.
     """

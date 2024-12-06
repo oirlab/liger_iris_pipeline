@@ -14,7 +14,7 @@ class IFUImageModel(LigerIRISDataModel):
     dq (np.ndarray): The 2D data quality array.
     """
 
-    schema_url = "https://oirlab.github.io/schemas/LigerIFUImageModel.schema"
+    schema_url = "https://oirlab.github.io/schemas/IFUImageModel.schema"
 
     def __init__(self, init=None, **kwargs):
 
@@ -37,7 +37,7 @@ class IFUCubeModel(LigerIRISDataModel):
     dq (np.ndarray): The 3D data quality array cube.
     """
 
-    schema_url = "https://oirlab.github.io/schemas/LigerIFUCubeModel.schema"
+    schema_url = "https://oirlab.github.io/schemas/IFUCubeModel.schema"
 
     def __init__(self, init=None, **kwargs):
 

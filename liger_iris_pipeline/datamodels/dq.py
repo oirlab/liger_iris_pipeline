@@ -16,7 +16,7 @@ class DQModel(ReferenceFileModel):
     dq_def : numpy table
         DQ flag definitions
     """
-    schema_url = "https://oirlab.github.io/schemas/LigerDQModel.schema"
+    schema_url = "https://oirlab.github.io/schemas/DQModel.schema"
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)

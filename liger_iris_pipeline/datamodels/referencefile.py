@@ -14,14 +14,12 @@ class ReferenceFileModel(LigerIRISDataModel):
     """
     A base data model for Liger and IRIS calibration reference data.
     """
-    schema_url = "https://oirlab.github.io/schemas/LigerReferenceFileModel.schema"
+    schema_url = "https://oirlab.github.io/schemas/ReferenceFileModel.schema"
 
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)
         self._no_asdf_extension = True
-        self.meta.telescope = "keck"
-
 
     def validate(self):
         """

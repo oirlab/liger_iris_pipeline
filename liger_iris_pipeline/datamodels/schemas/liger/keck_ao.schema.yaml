@@ -4,43 +4,46 @@ $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/keck_ao.schema"
 type: object
 properties:
-  ao:
-    title: Keck Adaptive Optics (AO)
+  meta:
     type: object
     properties:
-      TRKWTYST:
-        title: NIRTT weighting factorY ST
-        type: number
-        fits_keyword: TRKWTYST
-      TRKWTXST:
-        title: NIRTT weighting factorX ST
-        type: number
-        fits_keyword: TRKWTXST
-      TRKWTY3:
-        title: NIRTT weighting factorY ROI3
-        type: number
-        fits_keyword: TRKWTY3
-      TRKWTX3:
-        title: NIRTT weighting factorX ROI3
-        type: number
-        fits_keyword: TRKWTX3
-      TRKWTY2:
-        title: NIRTT weighting factorY ROI2
-        type: number
-        fits_keyword: TRKWTY2
-      TRKWTX2:
-        title: NIRTT weighting factorX ROI2
-        type: number
-        fits_keyword: TRKWTX2
-      TRKWTY1:
-        title: NIRTT weighting factorY ROI1
-        type: number
-        fits_keyword: TRKWTY1
-      TRKWTX1:
-        title: NIRTT weighting factorX ROI1
-        type: number
-        fits_keyword: TRKWTX1
-      TRKMASTR:
-        title: NIRTT Master (1)
-        type: number
-        fits_keyword: TRKMASTR
+      ao:
+        title: Keck Adaptive Optics (AO)
+        type: object
+        properties:
+          TRKWTYST:
+            title: NIRTT weighting factorY ST
+            type: number
+            fits_keyword: TRKWTYST
+          TRKWTXST:
+            title: NIRTT weighting factorX ST
+            type: number
+            fits_keyword: TRKWTXST
+          TRKWTY3:
+            title: NIRTT weighting factorY ROI3
+            type: number
+            fits_keyword: TRKWTY3
+          TRKWTX3:
+            title: NIRTT weighting factorX ROI3
+            type: number
+            fits_keyword: TRKWTX3
+          TRKWTY2:
+            title: NIRTT weighting factorY ROI2
+            type: number
+            fits_keyword: TRKWTY2
+          TRKWTX2:
+            title: NIRTT weighting factorX ROI2
+            type: number
+            fits_keyword: TRKWTX2
+          TRKWTY1:
+            title: NIRTT weighting factorY ROI1
+            type: number
+            fits_keyword: TRKWTY1
+          TRKWTX1:
+            title: NIRTT weighting factorX ROI1
+            type: number
+            fits_keyword: TRKWTX1
+          TRKMASTR:
+            title: NIRTT Master (1)
+            type: number
+            fits_keyword: TRKMASTR

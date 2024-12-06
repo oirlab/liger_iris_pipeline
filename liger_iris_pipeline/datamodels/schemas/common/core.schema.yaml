@@ -1,0 +1,48 @@
+# For common header keywords we can force between Liger and IRIS either at Keck/TMT or in the DRS
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/core.schema"
+allOf:
+- $ref: stpipe.schema
+- $ref: asn.schema
+- $ref: instrument.schema
+- $ref: reference_files.schema
+- $ref: subarray.schema
+- $ref: subarray_map.schema
+- $ref: cal_steps.schema
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      date:
+        title: "UTC date file created"
+        type: string
+        fits_keyword: DATE
+        blend_table: True
+      origin:
+        title: Origin
+        type: string
+        fits_keyword: ORIGIN
+        blend_table: True
+      organization:
+        title: Organization responsible for creating file
+        type: string
+        fits_keyword: ORIGIN
+        blend_table: True
+      filename:
+        title: Name of the file
+        type: string
+        fits_keyword: FILENAME
+        blend_table: True
+      filetype:
+        title: Type of data in the file
+        type: string
+        fits_keyword: FILETYPE
+      telescope:
+        title: Telescope used to acquire the data
+        type: string
+        fits_keyword: TELESCOP
+        blend_table: True
+        blend_rule: multi

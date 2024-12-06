@@ -81,11 +81,11 @@ def average_background(bkg_list, sigma, maxiters):
     # Loop over the images to be used as background
     for i, bkg_file in enumerate(bkg_list):
         log.debug(" Accumulate bkg from {}".format(bkg_file))
-        bkg_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(bkg_file)
+        bkg_model = liger_iris_pipeline.ImagerModel(bkg_file)
 
         # Initialize the avg_bkg model, if necessary
         if avg_bkg is None:
-            avg_bkg = liger_iris_pipeline.datamodels.LigerIrisImageModel(bkg_model.shape)
+            avg_bkg = liger_iris_pipeline.ImagerModel(bkg_model.shape)
 
         if cdata is None:
             cdata = np.zeros(((num_bkg,) + bkg_model.shape))

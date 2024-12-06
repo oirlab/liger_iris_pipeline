@@ -1,9 +1,10 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/LigerImagerModel.schema"
+id: "https://oirlab.github.io/schemas/ImagerModel.schema"
 allOf:
-- $ref: liger_core.schema
+- $ref: core.schema
+- $ref: iris_core.schema
 - $ref: wcsinfo.schema
 - type: object
   properties:

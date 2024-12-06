@@ -25,7 +25,7 @@ def parse_subarray_map(subarray_map):
     return subarray_metadata
 
 
-class ParseSubarrayMapStep(Step):
+class ParseSubarrayMapStep(LigerIRISStep):
     """
     ParseSubarrayMapStep: Parse a subarray map
     extension, if available, and create header metadata

@@ -1,7 +1,7 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/liger_resample_parameters.schema"
+id: "https://oirlab.github.io/schemas/resample_parameters.schema"
 resample:
   title: Resample Parameters
   type: object

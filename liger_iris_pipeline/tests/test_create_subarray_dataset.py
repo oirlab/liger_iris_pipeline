@@ -1,6 +1,5 @@
 # Imports
 import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
 import numpy as np
 
 # See README.md for notes on testing data
@@ -24,8 +23,9 @@ def slice_subarray_mask(mask_array, xstart, ystart, xsize, ysize):
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(raw_science_filename)
+    #raw_science_filename = get_data_from_url("48191524")
+    raw_science_filename = "/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits"
+    input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
 
     # Setup the subarray params
     s1 = 300
@@ -84,7 +84,7 @@ def test_create_subarray_dataset(tmp_path):
         sub_model.write(subarray_filenames_temp[k])
 
     # Create and run the pipeline on the full frame
-    pipeline = liger_iris_pipeline.ProcessImagerL2Pipeline()
+    pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
     reduced_full_frame = pipeline.call(full_frame_filename_temp, config_file="liger_iris_pipeline/tests/data/image2_iris.cfg")[0]
 
     # Set the subarray metadata id to 0 (full frame)

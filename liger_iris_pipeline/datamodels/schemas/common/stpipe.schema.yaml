@@ -1,0 +1,19 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/stpipe.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      model_type:
+        title: Type of data model
+        type: string
+        fits_keyword: DATAMODL
+        blend_table: True
+      data_processing_software_version:
+        title: DRP version used to process data.
+        type: string
+        fits_keyword: DRS_VER
+        blend_table: True

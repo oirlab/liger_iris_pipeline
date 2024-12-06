@@ -3,9 +3,8 @@ import logging
 from collections import defaultdict
 import os.path as op
 
-from jwst import datamodels
 from jwst.associations.load_as_asn import LoadAsLevel2Asn
-from jwst.stpipe import Pipeline
+from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
 
 # step imports
@@ -18,7 +17,7 @@ log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
 
-class ROPPipeline(Pipeline):
+class ROPPipeline(LigerIRISPipeline):
     """
     Detector1Pipeline for IRIS
     """
@@ -29,10 +28,9 @@ class ROPPipeline(Pipeline):
 
     # Define aliases to steps
     step_defs = {
-    
-         "nonlincorr": nonlincorr_step.NonlincorrStep,
-                 "readoutsamp": readoutsamp_step.ReadoutsampStep,
-                 }
+        "nonlincorr": nonlincorr_step.NonlincorrStep,
+        "readoutsamp": readoutsamp_step.ReadoutsampStep,
+    }
 
     # start the actual processing
     def process(self, input):

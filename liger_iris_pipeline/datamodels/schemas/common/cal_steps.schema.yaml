@@ -1,0 +1,192 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/cal_steps.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      cal_step:
+        title: "Calibration Steps performed by the DRS"
+        type: object
+        properties:
+        # NOTE: This is actually all of the steps, but typically every step corresponds to a calibration step or file
+        # NOTE: S_ is for Step
+        title: Calibration step information
+        type: object
+        properties:
+          assign_wcs:
+            title: Assign World Coordinate System
+            type: string
+            fits_keyword: S_WCS
+            blend_table: True
+          assign_mtwcs:
+            title: Assign Moving Target World Coordinate System
+            type: string
+            fits_keyword: S_MTWCS
+            blend_table: True
+          back_sub:
+            title: Background subtraction
+            type: string
+            fits_keyword: S_BKDSUB
+            blend_table: True
+          badpix_selfcal:
+            title: Bad Pixel Self-Calibration
+            type: string
+            fits_keyword: S_BPXSLF
+            blend_table: True
+          bias:
+            title: Bias subtraction
+            type: string
+            fits_keyword: S_BIAS
+            blend_table: True
+          charge_migration:
+            title: Charge Migration
+            type: string
+            fits_keyword: S_CHGMIG
+            blend_table: True
+          combine_1d:
+            title: 1-D Spectral Combination
+            type: string
+            fits_keyword: S_COMB1D
+            blend_table: True
+          cube_build:
+            title: IFU Cube Creation
+            type: string
+            fits_keyword: S_IFUCUB
+            blend_table: True
+          dark_sub:
+            title: Dark Subtraction
+            type: string
+            fits_keyword: S_DARK
+            blend_table: True
+          dq_init:
+            title: Data Quality Initialization
+            type: string
+            fits_keyword: S_DQINIT
+            blend_table: True
+          emission:
+            title: Telescope Emission Correction
+            type: string
+            fits_keyword: S_TELEMI
+            blend_table: True
+          err_init:
+            title: Error Initialization
+            type: string
+            fits_keyword: S_ERRINI
+            blend_table: True
+          extract_1d:
+            title: 1-D Spectral Extraction
+            type: string
+            fits_keyword: S_EXTR1D
+            blend_table: True
+          extract_2d:
+            title: 2-D Spectral Extraction
+            type: string
+            fits_keyword: S_EXTR2D
+            blend_table: True
+          flat_field:
+            title: Flat Field Correction
+            type: string
+            fits_keyword: S_FLAT
+            blend_table: True
+          gain_scale:
+            title: Gain Scale Correction
+            type: string
+            fits_keyword: S_GANSCL
+            blend_table: True
+          ipc:
+            title: Interpixel Capacitance Correction
+            type: string
+            fits_keyword: S_IPC
+            blend_table: True
+          jump:
+            title: Jump Detection
+            type: string
+            fits_keyword: S_JUMP
+            blend_table: True
+          linearity:
+            title: Linearity Correction
+            type: string
+            fits_keyword: S_LINEAR
+            blend_table: True
+          nsclean:
+            title: 1/f Noise Correction
+            type: string
+            fits_keyword: S_NSCLEN
+          outlier_detection:
+            title: Outlier Detection
+            type: string
+            fits_keyword: S_OUTLIR
+            blend_table: True
+          pathloss:
+            title: Pathloss Correction
+            type: string
+            fits_keyword: S_PTHLOS
+            blend_table: True
+          persistence:
+            title: Persistence Correction
+            type: string
+            fits_keyword: S_PERSIS
+            blend_table: True
+          photom:
+            title: Photometric Calibration
+            type: string
+            fits_keyword: S_PHOTOM
+            blend_table: True
+          pixel_replace:
+            title: Pixel Replacment
+            type: string
+            fits_keyword: S_PXREPL
+            blend_table: True
+          ramp_fit:
+            title: Ramp Fitting
+            type: string
+            fits_keyword: S_RAMP
+            blend_table: True
+          refpix:
+            title: Reference Pixel Correction
+            type: string
+            fits_keyword: S_REFPIX
+            blend_table: True
+          resample:
+            title: Image resampling
+            type: string
+            fits_keyword: S_RESAMP
+            blend_table: True
+          saturation:
+            title: Saturation Checking
+            type: string
+            fits_keyword: S_SATURA
+            blend_table: True
+          skymatch:
+            title: Sky Background Equalization or Subtraction
+            type: string
+            fits_keyword: S_SKYMAT
+            blend_table: True
+          source_catalog:
+            title: Source Photometry and Morphology
+            type: string
+            fits_keyword: S_SRCCAT
+            blend_table: True
+          srctype:
+            title: Source Type Determination
+            type: string
+            fits_keyword: S_SRCTYP
+            blend_table: True
+          tso_photometry:
+            title: TSO Imaging Photometry
+            type: string
+            fits_keyword: S_TSPHOT
+            blend_table: True
+          tweakreg:
+            title: Image Alignment via Astronomical Sources
+            type: string
+            fits_keyword: S_TWKREG
+            blend_table: True
+          wavecal:
+            title: Wavelength calibration
+            type: string
+            fits_keyword: S_WAVCAL
+            blend_table: True

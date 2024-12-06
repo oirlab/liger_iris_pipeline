@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from jwst.stpipe import LigerIRISStep
+from ..base_step import LigerIRISStep
 from .. import datamodels
 from . import dq_initialization
 

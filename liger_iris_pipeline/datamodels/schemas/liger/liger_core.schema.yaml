@@ -2,35 +2,9 @@
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/liger_core.schema"
-type: object
-properties:
-  meta:
-    type: object
-    properties:
-      date:
-        title: "UTC ISO 8601 date file was created"
-        type: string
-        fits_keyword: DATE
-        blend_table: True
-      organization:
-        title: Organization responsible for creating file
-        type: string
-        fits_keyword: ORIGIN
-        blend_table: True
-      filename:
-        title: Name of the file
-        type: string
-        fits_keyword: FILENAME
-        blend_table: True
-      telescope:
-        title: Telescope used to acquire the data
-        type: string
-        fits_keyword: TELESCOP
-        blend_table: True
-      - $ref: stpipe.schema
-      - $ref: liger_asn.schema
-      - $ref: keck_program.schema
-      - $ref: liger_instrument.schema
-      - $ref: liger_exposure.schema
-      - $ref: liger_subarray.schema
-      - $ref: liger_time.schema
+allOf:
+- $ref: keck_program.schema
+- $ref: keck_ao.schema
+- $ref: liger_exposure.schema
+- $ref: liger_target.schema
+- $ref: liger_time.schema

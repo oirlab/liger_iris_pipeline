@@ -1,5 +1,5 @@
-from .. import datamodels
-from ..step import Step
+#from .. import datamodels
+from ..base_step import LigerIRISStep
 from ..datamodels import DarkModel
 from . import dark_sub
 
@@ -9,7 +9,7 @@ from ..utils.subarray import get_subarray_model
 __all__ = ["DarkCurrentStep"]
 
 
-class DarkCurrentStep(Step):
+class DarkCurrentStep(LigerIRISStep):
     """
     DarkCurrentStep: Performs dark current correction by subtracting
     dark current reference data from the input science data model.

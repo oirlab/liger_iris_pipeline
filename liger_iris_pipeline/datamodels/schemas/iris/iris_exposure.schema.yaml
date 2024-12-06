@@ -1,0 +1,162 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/iris_exposure.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      exposure:
+        title: "IRIS exposure information"
+        type: object
+        properties:
+          prime_parallel:
+            title: Prime or parallel exposure
+            type: string
+            enum: [PRIME, PARALLEL_COORDINATED, PARALLEL_PURE]
+            fits_keyword: EXPRIPAR
+            blend_table: True
+          type:
+            title: Type of data in the exposure
+            type: string
+            fits_keyword: EXP_TYPE # NOTE: This may drive a lot of the pipeline logic
+            blend_table: True
+          start_time:
+            title: "[d] exposure start time in MJD"
+            type: number
+            fits_keyword: EXPSTART
+            blend_table: True
+            blend_rule: min
+          mid_time:
+            title: "[d] exposure mid time in MJD"
+            type: number
+            fits_keyword: EXPMID
+            blend_table: True
+            blend_rule: mean
+          end_time:
+            title: "[d] exposure end time in MJD"
+            type: number
+            fits_keyword: EXPEND
+            blend_table: True
+            blend_rule: max
+          start_time_tdb:
+            title: "[d] TDB time of exposure start in MJD"
+            type: number
+            fits_keyword: TDB-BEG
+            blend_table: True
+            blend_rule: min
+          mid_time_tdb:
+            title: "[d] TDB time of exposure mid-point in MJD"
+            type: number
+            fits_keyword: TDB-MID
+            blend_table: True
+            blend_rule: mean
+          end_time_tdb:
+            title: "[d] TDB time of exposure end in MJD"
+            type: number
+            fits_keyword: TDB-END
+            blend_table: True
+            blend_rule: max
+          readpatt:
+            title: Readout pattern
+            type: string
+            #enum: []
+            fits_keyword: READPATT
+            blend_table: True
+          nints:
+            title: Number of integrations in exposure
+            type: integer
+            fits_keyword: NINTS
+            blend_table: True
+          integration_start:
+            title: Starting integration number in this segment
+            type: integer
+            fits_keyword: INTSTART
+            blend_table: True
+            blend_rule: min
+          integration_end:
+            title: Ending integration number in this segment
+            type: integer
+            fits_keyword: INTEND
+            blend_table: True
+            blend_rule: max
+          ngroups:
+            title: Number of groups in integration
+            type: integer
+            fits_keyword: NGROUPS
+            blend_table: True
+          nframes:
+            title: Number of frames per group
+            type: integer
+            fits_keyword: NFRAMES
+            blend_table: True
+          nsamples:
+            title: Number of A/D samples per pixel
+            type: integer
+            fits_keyword: NSAMPLES
+            blend_table: True
+          sample_time:
+            title: "[us] Time between samples"
+            type: number
+            fits_keyword: TSAMPLE
+            blend_table: True
+          frame_time:
+            title: "[s] Time between frames"
+            type: number
+            fits_keyword: TFRAME
+            blend_table: True
+          group_time:
+            title: "[s] Time between groups"
+            type: number
+            fits_keyword: TGROUP
+            blend_table: True
+          integration_time:
+            title: "[s] Effective integration time"
+            type: number
+            fits_keyword: EFFINTTM
+            blend_table: True
+          exposure_time:
+            title: "[s] Effective exposure time"
+            type: number
+            fits_keyword: EFFEXPTM
+            blend_rule: sum
+            blend_table: True
+          effective_exposure_time:
+            title: "[s] Effective exposure time"
+            type: number
+            fits_keyword: XPOSURE
+            blend_rule: sum
+            blend_table: True
+          duration:
+            title: "[s] Total duration of exposure"
+            type: number
+            fits_keyword: DURATION
+            blend_rule: sum
+            blend_table: True
+          elapsed_exposure_time:
+            title: "[s] Total elapsed exposure time"
+            type: number
+            fits_keyword: TELAPSE
+            blend_rule: sum
+            blend_table: True
+          nresets_at_start:
+            title: Number of resets at start of exposure
+            type: integer
+            fits_keyword: NRSTSTRT
+            blend_table: True
+          nresets_between_ints:
+            title: Number of resets between integrations
+            type: integer
+            fits_keyword: NRESETS
+            blend_table: True
+          data_problem:
+            title: Science telemetry indicated a problem
+            type: boolean
+            fits_keyword: DATAPROB
+            blend_table: True
+          gain_factor:
+            title: Gain scale factor
+            type: number
+            fits_keyword: GAINFACT
+            blend_table: True

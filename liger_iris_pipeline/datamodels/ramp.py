@@ -13,12 +13,12 @@ class RampModel(LigerIRISDataModel):
     staticdq (np.ndarray): 2-D data quality array for all reads.
     dq (np.ndarray): 4-D data quality array for each read.
     """
-    schema_url = "https://oirlab.github.io/schemas/LigerRampModel.schema"
+    schema_url = "https://oirlab.github.io/schemas/RampModel.schema"
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)
 
         # Implicitly create arrays
-        self.data = self.data
-        self.staticdq = self.staticdq
-        self.dq = self.dq
+        self.pixeldq = self.pixeldq
+        self.groupdq = self.groupdq
+        self.err = self.err

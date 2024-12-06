@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from ..step import Step
+from ..base_step import LigerIRISStep
 
 from ..datamodels import ImagerModel, RampModel
 from ..drsrop_clib import uptheramp_c, mcds_c, nonlin_c
@@ -13,7 +13,7 @@ import numpy as np
 __all__ = ["ReadoutsampStep"]
 
 
-class ReadoutsampStep(Step):
+class ReadoutsampStep(LigerIRISStep):
     """
     ReadoutsampStep:  Sampling
     """
@@ -52,7 +52,7 @@ class ReadoutsampStep(Step):
                 im_list.append(result)
             result = np.sum(im_list, axis=0)
             print(result.shape)
-            result = LigerIrisImageModel(data=result)
+            result = ImagerModel(data=result)
             result.update(input_model)
 
         return result

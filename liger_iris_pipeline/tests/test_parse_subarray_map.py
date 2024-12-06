@@ -1,6 +1,5 @@
 # Imports
 import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
 from liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step import parse_subarray_map
 from liger_iris_pipeline import ParseSubarrayMapStep
 import numpy as np
@@ -30,7 +29,7 @@ def test_parse_subarray_map():
     assert subarray_maps_metadata == parse_subarray_map_output
 
     # Create toy Image object with these subarrays
-    image = liger_iris_pipeline.datamodels.LigerIrisImageModel(data=np.zeros((100, 100)))
+    image = liger_iris_pipeline.ImagerModel(data=np.zeros((100, 100)))
     image.dq[25, 25] = 16
     image.dq[26, 26] = 1
     image["subarr_map"] = subarr_map

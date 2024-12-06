@@ -10,7 +10,7 @@ from astropy.io import fits
 from asdf import AsdfFile
 
 from jwst.associations import load_asn
-from stdatamodels.jwst.datamodels.utils import is_association
+from stdatamodels.jwst.datamodels.util import is_association
 from stdatamodels import properties
 
 from .model_base import LigerIRISDataModel
