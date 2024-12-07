@@ -1,4 +1,4 @@
-from .util import datamodels_open
+# TBD how this file will be used
 from stpipe.library import AbstractModelLibrary
 
 from jwst.associations import AssociationNotValidError, load_asn
