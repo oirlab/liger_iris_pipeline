@@ -22,3 +22,8 @@ class ImagerModel(LigerIRISDataModel):
         self.data = self.data
         self.err = self.err
         self.dq = self.dq
+
+class LigerImagerModel(ImagerModel):
+    schema_url = "https://oirlab.github.io/schemas/LigerImagerModel.schema"
+class IRISImagerModel(ImagerModel):
+    schema_url = "https://oirlab.github.io/schemas/IRISImagerModel.schema"

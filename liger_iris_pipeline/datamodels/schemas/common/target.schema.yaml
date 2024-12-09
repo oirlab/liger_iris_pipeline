@@ -1,7 +1,7 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/iris_target.schema"
+id: "https://oirlab.github.io/schemas/target.schema"
 type: object
 properties:
   target:

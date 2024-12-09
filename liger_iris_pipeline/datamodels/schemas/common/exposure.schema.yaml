@@ -1,68 +1,79 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/iris_exposure.schema"
+id: "https://oirlab.github.io/schemas/exposure.schema"
 type: object
 properties:
   meta:
     type: object
     properties:
       exposure:
-        title: "IRIS exposure information"
+        title: "Exposure information"
         type: object
         properties:
-          prime_parallel:
-            title: Prime or parallel exposure
-            type: string
-            enum: [PRIME, PARALLEL_COORDINATED, PARALLEL_PURE]
-            fits_keyword: EXPRIPAR
-            blend_table: True
           type:
-            title: Type of data in the exposure
+            title: Type of data in the exposure  # NOTE: This may drive a lot of the pipeline logic
             type: string
-            fits_keyword: EXP_TYPE # NOTE: This may drive a lot of the pipeline logic
+            fits_keyword: IMTYPE
             blend_table: True
-          start_time:
-            title: "[d] exposure start time in MJD"
+          start_jd:
+            title: "Exposure start time in MJD"
             type: number
-            fits_keyword: EXPSTART
+            fits_keyword: EXPSTJD
+            blend_table: True
+            blend_rule: min
+          mid_jd:
+            title: "Exposure mid time in MJD"
+            type: number
+            fits_keyword: EXPMIDJD
+            blend_table: True
+            blend_rule: mean
+          end_jd:
+            title: "Exposure end time in MJD"
+            type: number
+            fits_keyword: EXPENDJD
+            blend_table: True
+            blend_rule: max
+          start_date:
+            title: "Exposure start date in YYYYMMDD"
+            type: number
+            fits_keyword: EXPSTDT
+            blend_table: True
+            blend_rule: min
+          mid_date:
+            title: "Exposure mid date in YYYYMMDD"
+            type: number
+            fits_keyword: EXPMIDDT
+            blend_table: True
+            blend_rule: mean
+          end_date:
+            title: "Exposure end date in YYYYMMDD"
+            type: number
+            fits_keyword: EXPENDDT
+            blend_table: True
+            blend_rule: max
+          start_time:
+            title: "Exposure start time in hh:mm:ss.ss"
+            type: number
+            fits_keyword: EXPSTTM
             blend_table: True
             blend_rule: min
           mid_time:
-            title: "[d] exposure mid time in MJD"
+            title: "Exposure mid time in hh:mm:ss.ss"
             type: number
-            fits_keyword: EXPMID
+            fits_keyword: EXPMIDTM
             blend_table: True
             blend_rule: mean
           end_time:
-            title: "[d] exposure end time in MJD"
+            title: "Exposure end time in hh:mm:ss.ss"
             type: number
-            fits_keyword: EXPEND
+            fits_keyword: EXPENDTM
             blend_table: True
             blend_rule: max
-          start_time_tdb:
-            title: "[d] TDB time of exposure start in MJD"
-            type: number
-            fits_keyword: TDB-BEG
-            blend_table: True
-            blend_rule: min
-          mid_time_tdb:
-            title: "[d] TDB time of exposure mid-point in MJD"
-            type: number
-            fits_keyword: TDB-MID
-            blend_table: True
-            blend_rule: mean
-          end_time_tdb:
-            title: "[d] TDB time of exposure end in MJD"
-            type: number
-            fits_keyword: TDB-END
-            blend_table: True
-            blend_rule: max
-          readpatt:
-            title: Readout pattern
+          readmode:
+            title: Readout mode
             type: string
-            #enum: []
-            fits_keyword: READPATT
+            fits_keyword: READMODE
             blend_table: True
           nints:
             title: Number of integrations in exposure
@@ -155,8 +166,13 @@ properties:
             type: boolean
             fits_keyword: DATAPROB
             blend_table: True
-          gain_factor:
-            title: Gain scale factor
-            type: number
-            fits_keyword: GAINFACT
+          number:
+            title: Exposure number in a sequence
+            type: integer
+            fits_keyword: EXPNUM
+            blend_table: True
+          sequence_tot:
+            title: Total in this sequence
+            type: integer
+            fits_keyword: EXPSQTOT
             blend_table: True

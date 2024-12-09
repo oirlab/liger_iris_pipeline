@@ -5,7 +5,3 @@ id: "https://oirlab.github.io/schemas/iris_core.schema"
 allOf:
 - $ref: tmt_program.schema
 - $ref: tmt_ao.schema
-- $ref: iris_observation.schema
-- $ref: iris_target.schema
-- $ref: iris_exposure.schema
-- $ref: iris_time.schema

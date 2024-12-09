@@ -14,20 +14,25 @@ properties:
           title:
             title: Proposal title
             type: string
-            fits_keyword: TITLE
+            fits_keyword: PROGTITL
             blend_table: True
           pi_name:
             title: Principal investigator name
             type: string
-            fits_keyword: PI_NAME
+            fits_keyword: PROGPI
             blend_table: True
           category:
             title: Program category
             type: string
-            fits_keyword: CATEGORY
+            fits_keyword: PROGCAT
             blend_table: True
           sub_category:
             title: Program sub-category
             type: string
-            fits_keyword: SUBCAT
+            fits_keyword: PROGSCAT
+            blend_table: True
+          id:
+            title: Program ID
+            type: string
+            fits_keyword: PROGID
             blend_table: True

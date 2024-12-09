@@ -8,7 +8,7 @@ properties:
     type: object
     properties:
       ao:
-        title: Keck Adaptive Optics (AO)
+        title: Keck All-Sky Precision Adaptive Optics System (KAPA)
         type: object
         properties:
           TRKWTYST:

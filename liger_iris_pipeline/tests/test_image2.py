@@ -55,6 +55,7 @@ def test_image2_subarray(tmp_path):
     # Download the raw science frame
     #raw_science_filename = get_data_from_url("48191524")
     raw_science_filename = '/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits'
+    #input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
     input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
 
     # Subarray params

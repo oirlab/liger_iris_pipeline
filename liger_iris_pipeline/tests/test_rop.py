@@ -39,12 +39,13 @@ def setup_inputs(
         data=data, err=err, pixeldq=pixdq, groupdq=gdq, times=times, instrument='IRIS'
     )
     model_ramp.meta.telescope = "TMT"
-    model_ramp.meta.observation.time = "00:00:00"
-    model_ramp.meta.observation.date = "2020-07-13"
+    model_ramp.meta.date = "2020-07-13 00:00:00"
+    model_ramp.meta.exposure.start_time = "00:00:00"
+    model_ramp.meta.exposure.start_date = "2020-07-13"
     model_ramp.meta.instrument.name = "IRIS"
-    model_ramp.meta.instrument.detector = "IRIS1"
+    model_ramp.meta.instrument.detector = "IMG1"
     model_ramp.meta.instrument.filter = "K"
-    model_ramp.meta.observation.date = "2015-10-13"
+    #model_ramp.meta.observation.date = "2015-10-13"
     model_ramp.meta.exposure.type = "IRIS_IMAGE"
     model_ramp.meta.exposure.group_time = deltatime
     model_ramp.meta.subarray.name = "CUSTOM"
@@ -75,7 +76,7 @@ def test_rop2():
     image_model = liger_iris_pipeline.pipeline.ROPPipeline.call(
         model_ramp, config_file="liger_iris_pipeline/tests/data/drsrop.cfg"
     )
-    #assert np.mean(image_model.data) == 8048.5
+    assert np.mean(image_model.data) == 8048.5
 
 
 #test_rop1()

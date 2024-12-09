@@ -1,7 +1,7 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/liger_iris_instrument.schema"
+id: "https://oirlab.github.io/schemas/instrument.schema"
 type: object
 properties:
   meta:

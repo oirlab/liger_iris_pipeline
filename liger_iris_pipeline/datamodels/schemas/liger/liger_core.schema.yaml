@@ -5,6 +5,3 @@ id: "https://oirlab.github.io/schemas/liger_core.schema"
 allOf:
 - $ref: keck_program.schema
 - $ref: keck_ao.schema
-- $ref: liger_exposure.schema
-- $ref: liger_target.schema
-- $ref: liger_time.schema

@@ -4,7 +4,6 @@ $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/RampModel.schema"
 allOf:
 - $ref: core.schema
-- $ref: wcsinfo.schema
 - type: object
   properties:
     data:
@@ -29,22 +28,4 @@ allOf:
       title: Error array
       fits_hdu: ERR
       default: 0.0
-      datatype: float32
-    zeroframe:
-      title: Zeroframe array
-      fits_hdu: ZEROFRAME
-      default: 0.0
-      ndim: 3
-      datatype: float32
-    refout:
-      title: Reference Output
-      fits_hdu: REFOUT
-      default: 0.0
-      ndim: 4
-      datatype: float32
-    average_dark_current:
-      title: Average dark current
-      fits_hdu: AVDRKCUR
-      default: 0.0
-      ndim: 2
       datatype: float32

@@ -19,17 +19,17 @@ class LigerIRISDataModel(DataModel):
         # Pass to super if already a datamodel, schema already known
         if isinstance(init, LigerIRISDataModel):
             super().__init__(init=init, **kwargs)
-
-        # Get the schema from instrument name
-        if instrument is not None:
-            self.set_schema_from_instrument(instrument)
-        elif isinstance(init, str | Path):
-            self.set_schema_from_fits_filename(init)
-        elif isinstance(init, fits.HDUList):
-            self.set_schema_from_hdulist(init)
-        
-        # Call super with schema_url now set
-        super().__init__(init=init, **kwargs)
+        else:
+            # Get the schema from instrument name
+            if instrument is not None:
+                self.set_schema_from_instrument(instrument)
+            elif isinstance(init, str | Path):
+                self.set_schema_from_fits_filename(init)
+            elif isinstance(init, fits.HDUList):
+                self.set_schema_from_hdulist(init)
+            
+            # Call super with schema_url now set
+            super().__init__(init=init, **kwargs)
 
     def set_schema_from_instrument(self, instrument : str):
         s = self.schema_url.rsplit('/', 1)
@@ -48,8 +48,11 @@ class LigerIRISDataModel(DataModel):
             raise KeyError(f"Keyword 'INSTRUME' not found in file {init}")
         
     def set_schema_from_hdulist(self, init : fits.HDUList):
-        instrument = init[0].header['INSTRUME']
-        self.set_schema_from_instrument(instrument)
+        try:
+            instrument = init[0].header['INSTRUME']
+            self.set_schema_from_instrument(instrument)
+        except KeyError:
+            raise KeyError(f"Keyword 'INSTRUME' not found in file {init}")
         
     def __setattr__(self, attr, value): # :)
         if attr == 'schema_url':

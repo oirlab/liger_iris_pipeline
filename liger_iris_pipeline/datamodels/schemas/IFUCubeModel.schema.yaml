@@ -23,11 +23,6 @@ allOf:
       fits_hdu: ERR
       default: 0.0
       datatype: float32
-    zeroframe:
-      title: Zero frame array
-      fits_hdu: ZEROFRAME
-      default: 0.0
-      datatype: float32
     area:
       title: Pixel area map array
       fits_hdu: AREA
