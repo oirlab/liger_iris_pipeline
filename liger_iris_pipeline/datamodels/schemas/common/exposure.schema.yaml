@@ -16,58 +16,58 @@ properties:
             type: string
             fits_keyword: IMTYPE
             blend_table: True
-          start_jd:
+          jd_start:
             title: "Exposure start time in MJD"
             type: number
-            fits_keyword: EXPSTJD
+            fits_keyword: EXPJDST
             blend_table: True
             blend_rule: min
-          mid_jd:
+          jd_mid:
             title: "Exposure mid time in MJD"
             type: number
-            fits_keyword: EXPMIDJD
+            fits_keyword: EXPJDMID
             blend_table: True
             blend_rule: mean
-          end_jd:
+          jd_end:
             title: "Exposure end time in MJD"
             type: number
-            fits_keyword: EXPENDJD
+            fits_keyword: EXPJDEND
             blend_table: True
             blend_rule: max
-          start_date:
+          date_start:
             title: "Exposure start date in YYYYMMDD"
-            type: number
-            fits_keyword: EXPSTDT
+            type: string
+            fits_keyword: EXPDTST
             blend_table: True
             blend_rule: min
-          mid_date:
+          date_mid:
             title: "Exposure mid date in YYYYMMDD"
-            type: number
-            fits_keyword: EXPMIDDT
+            type: string
+            fits_keyword: EXPDTMID
             blend_table: True
             blend_rule: mean
-          end_date:
+          date_end:
             title: "Exposure end date in YYYYMMDD"
-            type: number
-            fits_keyword: EXPENDDT
+            type: string
+            fits_keyword: EXPDTEND
             blend_table: True
             blend_rule: max
-          start_time:
+          time_start:
             title: "Exposure start time in hh:mm:ss.ss"
-            type: number
-            fits_keyword: EXPSTTM
+            type: string
+            fits_keyword: EXPTMST
             blend_table: True
             blend_rule: min
-          mid_time:
+          time_mid:
             title: "Exposure mid time in hh:mm:ss.ss"
-            type: number
-            fits_keyword: EXPMIDTM
+            type: string
+            fits_keyword: EXPTMMID
             blend_table: True
             blend_rule: mean
-          end_time:
+          time_end:
             title: "Exposure end time in hh:mm:ss.ss"
-            type: number
-            fits_keyword: EXPENDTM
+            type: string
+            fits_keyword: EXPTMEND
             blend_table: True
             blend_rule: max
           readmode:
@@ -75,91 +75,40 @@ properties:
             type: string
             fits_keyword: READMODE
             blend_table: True
-          nints:
-            title: Number of integrations in exposure
-            type: integer
-            fits_keyword: NINTS
-            blend_table: True
-          integration_start:
-            title: Starting integration number in this segment
-            type: integer
-            fits_keyword: INTSTART
-            blend_table: True
-            blend_rule: min
-          integration_end:
-            title: Ending integration number in this segment
-            type: integer
-            fits_keyword: INTEND
-            blend_table: True
-            blend_rule: max
           ngroups:
             title: Number of groups in integration
             type: integer
             fits_keyword: NGROUPS
             blend_table: True
+          nreads:
+            title: Number of reads per group
+            type: integer
+            fits_keyword: NREADS
+            blend_table: True
           nframes:
-            title: Number of frames per group
+            title: Total number of integrations
             type: integer
             fits_keyword: NFRAMES
             blend_table: True
-          nsamples:
-            title: Number of A/D samples per pixel
-            type: integer
-            fits_keyword: NSAMPLES
-            blend_table: True
-          sample_time:
-            title: "[us] Time between samples"
+          group_gap_time:
+            title: "Time between groups [s]"
             type: number
-            fits_keyword: TSAMPLE
-            blend_table: True
-          frame_time:
-            title: "[s] Time between frames"
-            type: number
-            fits_keyword: TFRAME
-            blend_table: True
-          group_time:
-            title: "[s] Time between groups"
-            type: number
-            fits_keyword: TGROUP
+            fits_keyword: TGROUPGP
             blend_table: True
           integration_time:
-            title: "[s] Effective integration time"
+            title: "Effective light integration time [s]"
             type: number
-            fits_keyword: EFFINTTM
+            fits_keyword: ITIME
             blend_table: True
           exposure_time:
-            title: "[s] Effective exposure time"
+            title: "Effective exposure time [s]"
             type: number
-            fits_keyword: EFFEXPTM
-            blend_rule: sum
-            blend_table: True
-          effective_exposure_time:
-            title: "[s] Effective exposure time"
-            type: number
-            fits_keyword: XPOSURE
-            blend_rule: sum
-            blend_table: True
-          duration:
-            title: "[s] Total duration of exposure"
-            type: number
-            fits_keyword: DURATION
-            blend_rule: sum
-            blend_table: True
-          elapsed_exposure_time:
-            title: "[s] Total elapsed exposure time"
-            type: number
-            fits_keyword: TELAPSE
-            blend_rule: sum
+            fits_keyword: EXPTIME
             blend_table: True
           nresets_at_start:
             title: Number of resets at start of exposure
             type: integer
             fits_keyword: NRSTSTRT
-            blend_table: True
-          nresets_between_ints:
-            title: Number of resets between integrations
-            type: integer
-            fits_keyword: NRESETS
             blend_table: True
           data_problem:
             title: Science telemetry indicated a problem
@@ -167,12 +116,12 @@ properties:
             fits_keyword: DATAPROB
             blend_table: True
           number:
-            title: Exposure number in a sequence
+            title: Exposure number in the sequence
             type: integer
             fits_keyword: EXPNUM
             blend_table: True
           sequence_tot:
-            title: Total in this sequence
+            title: Total number of exposures in the sequence
             type: integer
             fits_keyword: EXPSQTOT
             blend_table: True

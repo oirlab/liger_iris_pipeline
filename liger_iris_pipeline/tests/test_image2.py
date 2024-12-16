@@ -102,7 +102,12 @@ def test_image2_subarray(tmp_path):
     #ref_filename = get_data_from_url("48737014")
     ref_filename = '/Users/cale/Desktop/IRIS_Test_Data/test_iris_subtract_bg_flat_cal_20240822.fits'
 
-    # Test the local output file with the reference file
+    # Test the local output file with the reference file (ground truth L2 file)
     with liger_iris_pipeline.ImagerModel("test_iris_subtract_bg_flat_cal.fits") as out, \
         liger_iris_pipeline.ImagerModel(ref_filename) as ref:
         np.testing.assert_allclose(out.data, ref.data[subarray_slice], rtol=1e-6)
+
+
+from pathlib import Path
+path = Path("/Users/cale/Desktop/")
+test_image2(path)

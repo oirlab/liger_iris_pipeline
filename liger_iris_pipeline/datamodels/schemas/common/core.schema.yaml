@@ -3,15 +3,14 @@
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/core.schema"
-allOf: # NOTE: We drop observation from jwst
-- $ref: stpipe.schema
+allOf: # NOTE: We drop observation schema from jwst
 - $ref: asn.schema
 - $ref: instrument.schema
 - $ref: reference_files.schema
 - $ref: exposure.schema
 - $ref: instrument.schema
 - $ref: target.schema
-- $ref: time.schema
+- $ref: barycenter.schema
 - $ref: subarray.schema # REMIND ME: Why do we have subarray and subarray_map in the metadata?
 - $ref: subarray_map.schema
 - $ref: cal_steps.schema
@@ -21,7 +20,7 @@ properties:
     type: object
     properties:
       date:
-        title: "ISO 8601 date of exposure start" # FIXME: This is inherited from jwst. Use meta.exposure.date_beg instead?
+        title: "ISO 8601 datetime" # NOTE: TBD what this represents
         type: string
         fits_keyword: DATE
         blend_table: True
@@ -29,6 +28,11 @@ properties:
         title: "UTC date file created"
         type: string
         fits_keyword: DATECRT
+        blend_table: True
+      data_level:
+        title: Data level
+        type: integer
+        fits_keyword: DATALVL
         blend_table: True
       origin:
         title: Origin
@@ -55,3 +59,13 @@ properties:
         fits_keyword: TELESCOP
         blend_table: True
         blend_rule: multi
+      model_type:
+        title: Type of data model
+        type: string
+        fits_keyword: DATAMODL
+        blend_table: True
+      drs_version:
+        title: DRS version used to process data
+        type: string
+        fits_keyword: DRSVER
+        blend_table: True
