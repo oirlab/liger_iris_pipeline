@@ -52,16 +52,6 @@ properties:
             type: integer
             fits_keyword: SLOWAXIS
             blend_table: True
-          detxcor:
-            title: Starting pixel in detector x-axis direction
-            type: integer
-            fits_keyword: DETXCOR
-            blend_table: True
-          detycor:
-            title: Starting pixel in detector y-axis direction
-            type: integer
-            fits_keyword: DETYCOR
-            blend_table: True
           detxsiz:
             title: Number of pixels in detector x-axis direction
             type: integer
