@@ -11,17 +11,19 @@ properties:
         title: Association information
         type: object
         properties:
-          pool_name:
-            title: Name of the ASN pool
+          asn_name:
+            title: Unique Name of the ASN
             type: string
-            fits_keyword: ASNPOOL
+            fits_keyword: ASNNAME
             blend_table: True
-          table_name:
-            title: Name of the ASN table
+          asn_type:
+            title: Type of association
             type: string
-            fits_keyword: ASNTABLE
+            fits_keyword: ASNTYPE
             blend_table: True
           exptype:
             title: Exposure type provided for this exposure in the association
             type: string
-            default: 'science'
+            fits_keyword: IMTYPE
+            blend_table: True
+            default: SCI

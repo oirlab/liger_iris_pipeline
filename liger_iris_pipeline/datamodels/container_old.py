@@ -16,7 +16,7 @@ from stdatamodels import properties
 from .model_base import LigerIRISDataModel
 from .utils import open as datamodel_open
 
-__all__ = ['ModelContainer']
+__all__ = ['LigerIRISModelContainer']
 
 _ONE_MB = 1 << 20
 RECOGNIZED_MEMBER_FIELDS = ['group_id']
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
-class ModelContainer(LigerIRISDataModel, Sequence):
+class LigerIRISModelContainer(LigerIRISDataModel, Sequence):
     """
     A list-like container for storing `LigerIRISDataModel`'s.
 
@@ -45,10 +45,9 @@ class ModelContainer(LigerIRISDataModel, Sequence):
     def __init__(self, init=None, asn_exptypes=None, asn_n_members=None,
                  iscopy=False, **kwargs):
 
-        super().__init__(init=None, **kwargs)
-
         self._models = []
         self._iscopy = iscopy
+        super().__init__(init=None, **kwargs)
         self.asn_exptypes = asn_exptypes
         self.asn_n_members = asn_n_members
         self.asn_table = {}
@@ -59,6 +58,7 @@ class ModelContainer(LigerIRISDataModel, Sequence):
         self._memmap = kwargs.get("memmap", False)
         self._return_open = kwargs.get('return_open', True)
         self._save_open = kwargs.get('save_open', True)
+        
 
         if init is None:
             # Don't populate the container with models

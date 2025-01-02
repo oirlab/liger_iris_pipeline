@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 from collections import defaultdict
-import os.path as op
-
-from jwst.associations.load_as_asn import LoadAsLevel2Asn
+import os
+import json
 
 from liger_iris_pipeline import datamodels
+from ..associations import IRISImagerL1Association
 from .base_pipeline import LigerIRISPipeline
 
-from ..background import background_step
-from ..dark_current import dark_current_step
+from ..sky_subtraction import sky_subtraction_imager_step
+from ..dark_subtraction import dark_step
 from jwst.assign_wcs import assign_wcs_step
 from ..flatfield import flat_field_step
 from ..parse_subarray_map import parse_subarray_map_step
 from jwst.photom import photom_step
 from jwst.resample import resample_step
-
 
 __all__ = ["ImagerStage2Pipeline"]
 
@@ -31,70 +30,51 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
 
     # Define alias to steps
     step_defs = {
-        "bkg_subtract": background_step.BackgroundStep,
-        "assign_wcs": assign_wcs_step.AssignWcsStep,
         "parse_subarray_map": parse_subarray_map_step.ParseSubarrayMapStep,
-        "dark_current": dark_current_step.DarkCurrentStep,
+        "dark_sub": dark_step.DarkSubtractionStep,
         "flat_field": flat_field_step.FlatFieldStep,
+        "sky_sub": sky_subtraction_imager_step.SkySubtractionImagerStep,
         "photom": photom_step.PhotomStep,
+        "assign_wcs": assign_wcs_step.AssignWcsStep,
         "resample": resample_step.ResampleStep,
     }
 
-    # List of normal imaging exp_types
-    image_exptypes = ["Liger_IMAGE", "IRIS_IMAGE"]
+    def process(self, input):
 
-    def process(self, asn_filename : str):
-
-        self.log.info("Starting ProcessImagerL2Pipeline ...")
-
-        # Retrieve the input(s)
-        asn = LoadAsLevel2Asn.load(asn_filename, basename=self.output_file)
+        # Load the association
+        if os.path.splitext(input)[1] == '.json':
+            asn = IRISImagerL1Association.load(input)
+        else:
+            asn = IRISImagerL1Association.from_product(input)
+        
+        self.log.info("Starting ImagerStage2Pipeline ...")
 
         # Each exposure is a product in the association.
         # Process each exposure.
         results = []
         for product in asn["products"]:
-            self.log.info("Processing product {}".format(product["name"]))
+            self.log.info(f"Processing product {product['name']}")
             if self.save_results:
                 self.output_file = product["name"]
-            try:
-                getattr(asn, 'filename')
-            except AttributeError:
-                asn.filename = "singleton"
-            result = self.process_exposure_product(
-                product, asn["asn_pool"], op.basename(asn.filename)
-            )
+            result = self.process_exposure_product(product)
 
             # Save result
-            suffix = "cal"
-            if isinstance(result, datamodels.IFUCubeModel):
-                suffix = "calints"
-            result.meta.filename = self.make_output_path(suffix=suffix)
+            result.meta.filename = self.output_file
             results.append(result)
 
-        self.log.info("... ending ImagerStage2Pipeline")
+        self.log.info("ImagerStage2Pipeline completed")
 
         self.output_use_model = True
-        self.suffix = False
 
         return results
 
 
     # Process each exposure
-    def process_exposure_product(self, exp_product, pool_name=" ", asn_file=" "):
-        """Process an exposure found in the association product
+    def process_exposure_product(self, exp_product):
+        """Process an exposure product.
 
-        Parameters
-        ----------
-        exp_product: dict
-            A Level2b association product.
-
-        pool_name: str
-            The pool file name. Used for recording purposes only.
-
-        asn_file: str
-            The name of the association file.
-            Used for recording purposes only.
+        Parameters:
+            exp_product (dict): The exposure product.
         """
         # Find all the member types in the product
         members_by_type = defaultdict(list)
@@ -105,60 +85,22 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         # one. We'll just get the first one found.
         science = members_by_type["science"]
         if len(science) != 1:
-            self.log.warning(
-                f"Wrong number of science files found in {exp_product['name']}"
-            )
+            self.log.warning(f"Wrong number of science files found in {exp_product['name']}")
             self.log.warning("Using only first member.")
         science = science[0]
 
         self.log.info(f"Processing input {science} ...")
-        if isinstance(science, datamodels.LigerIRISDataModel):
-            input_model = science
-        else:
-            input_model = datamodels.open(science)
+        input_model = datamodels.open(science)
 
-        # Record ASN pool and table names in output
-        input_model.meta.asn.pool_name = pool_name
-        input_model.meta.asn.table_name = asn_file
-
-        # Do background processing, if necessary
-        if len(members_by_type["background"]) > 0:
-
-            # Setup for saving
-            if self.bkg_subtract.suffix is None:
-                self.bkg_subtract.suffix = "bsub"
-            if isinstance(input_model, datamodels.IFUCubeModel):
-                self.bkg_subtract.suffix = "bsubints"
-
-            # Backwards compatibility
-            if self.save_bsub:
-                self.bkg_subtract.save_results = True
-
-            # Call the background subtraction step
-            input_model = self.bkg_subtract(input_model, members_by_type["background"])
-
-        # Parse the subarray map
+        # Run remaining steps
         input_model = self.parse_subarray_map(input_model)
-
-        # Dark current subtraction
-        input_model = self.dark_current(input_model)
-
-        # Flat division
+        input_model = self.dark_sub(input_model)
         input_model = self.flat_field(input_model)
-
-        # Assign WCS
+        if len(members_by_type["sky"]) > 0:
+            input_model = self.sky_sub(input_model, members_by_type["sky"][0])
         input_model = self.assign_wcs(input_model)
-
-        # Flux calibration
         input_model = self.photom(input_model)
 
-        # Resample individual exposures, but only if it's one of the regular science image types.
-        # NOTE: cls.image_exptypes needs updated
-        if input_model.meta.exposure.type.upper() in self.image_exptypes:
-            self.resample(input_model)
+        self.log.info(f"Finished processing product {exp_product['name']}")
 
-        # That's all folks
-        self.log.info("Finished processing product {}".format(exp_product["name"]))
-
-        # Return the processed model
         return input_model

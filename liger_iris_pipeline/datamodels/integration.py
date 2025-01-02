@@ -25,7 +25,6 @@ def get_resource_mappings():
     resources_root = importlib.resources.files(datamodels)
     if not resources_root.is_dir():
         raise RuntimeError(f"Missing resources directory: {resources_root=}")
-
     return [
         DirectoryResourceMapping(
             resources_root / "schemas",

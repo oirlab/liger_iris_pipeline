@@ -1,10 +1,7 @@
 import os
-import liger_iris_pipeline
-
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
-
 import numpy as np
+
+import liger_iris_pipeline
 
 
 def setup_inputs(
@@ -63,7 +60,6 @@ def setup_inputs(
 
 
 def test_rop1():
-    #raw_readout_filename = get_data_from_url("48191977")
     raw_readout_filename = '/Users/cale/Desktop/IRIS_Test_Data/raw_readout_20240805.fits'
     liger_iris_pipeline.pipeline.ROPPipeline.call(
         raw_readout_filename, config_file="liger_iris_pipeline/tests/data/drsrop.cfg"

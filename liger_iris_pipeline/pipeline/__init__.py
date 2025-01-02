@@ -1,4 +1,4 @@
+from .stage1 import Stage1Pipeline
 from .imager_stage2 import ImagerStage2Pipeline
-from .process_flatfield import ProcessFlatfield
-from .rop import ROPPipeline
-__all__ = ["ImagerStage2Pipeline", "ProcessFlatfield", "ROPPipeline"]
+from .create_flatfield import CreateFlatfield
+__all__ = ["Stage1Pipeline", "ImagerStage2Pipeline", "CreateFlatfield"]

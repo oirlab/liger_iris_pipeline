@@ -4,7 +4,6 @@
 
 import numpy as np
 import logging
-from jwst import datamodels
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -74,9 +73,6 @@ def subtract_dark(input, dark):
         dark-subtracted science data
 
     """
-
-    instrument = input.meta.instrument.name
-    dark_nints = 1
 
     log.debug("subtract_dark: size=%d,%d", input.data.shape[0], input.data.shape[1])
 

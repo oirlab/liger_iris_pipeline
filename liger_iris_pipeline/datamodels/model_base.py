@@ -27,9 +27,17 @@ class LigerIRISDataModel(DataModel):
                 self.set_schema_from_fits_filename(init)
             elif isinstance(init, fits.HDUList):
                 self.set_schema_from_hdulist(init)
+            # TODO: FIX CASE WHEN NO INSTRUMENT IS PROVIDED. CRDS REQUIRES THIS.
+            #else:
+                #raise ValueError(f"Cannot determine schema from {init}")
             
             # Call super with schema_url now set
             super().__init__(init=init, **kwargs)
+
+        if isinstance(init, str | Path):
+            self.filename = str(init)
+        else:
+            self.filename = None
 
     def set_schema_from_instrument(self, instrument : str):
         s = self.schema_url.rsplit('/', 1)
@@ -54,40 +62,11 @@ class LigerIRISDataModel(DataModel):
         except KeyError:
             raise KeyError(f"Keyword 'INSTRUME' not found in file {init}")
         
-    def __setattr__(self, attr, value): # :)
+    def __setattr__(self, attr, value):
         if attr == 'schema_url':
             self.__dict__[attr] = value
         else:
             super().__setattr__(attr, value)
-
-
-    @property
-    def crds_observatory(self):
-        return "ligeriri"
-    #     """
-    #     The CRDS observatory for this model.
-
-    #     Returns:
-    #     str : the CRDS observatory.  Returns "wmko" for Liger, and "tmt" for IRIS.
-    #     """
-    #     if self.telescope is None:
-    #         return None
-    #     tel = self.telescope.lower()
-    #     if tel == "wmko":
-    #         return "wmko"
-    #     elif tel == "tmt":
-    #         return "tmt"
-    #     else:
-    #         raise ValueError(f"Property `datamodel.instrument` invalid for {self}: {self.instrument}")
-
-
-    @property
-    def telescope(self):
-        return self.meta.telescope
-    
-    @property
-    def instrument(self):
-        return self.meta.instrument.name
     
 
     def get_crds_parameters(self):
@@ -119,4 +98,60 @@ class LigerIRISDataModel(DataModel):
         to a file (FITS or ASDF).
         """
         super().on_save(init)
-        self.meta.date = Time.now().isot
+        if self.meta.filename is None and isinstance(init, str | Path):
+            self.meta.filename = str(os.path.basename(init))
+        elif isinstance(self.meta.filename, str | Path) and isinstance(init, str | Path):
+            if self.meta.filename != str(init):
+                self.meta.filename = str(init)
+        self.meta.date_created = Time.now().isot
+
+    @property
+    def filename(self):
+        return self._filename
+        
+    @filename.setter
+    def filename(self, value):
+        self.filename = value
+
+    @property
+    def input_path(self):
+        if self.filename is not None:
+            return os.path.split(os.path.abspath(self.filename))[0]
+        else:
+            return None
+        
+    @property
+    def crds_observatory(self):
+        return "ligeriri"
+
+    @property
+    def telescope(self):
+        return self.meta.telescope
+    
+    @property
+    def instrument(self):
+        return self.meta.instrument.name
+    
+    @staticmethod
+    def generate_filename(
+        instrument : str,
+        obsid : str,
+        detector : str, obstype : str, level : int | str = 0,
+        exp : int | str = '0001', subarray : int | str | None = None
+    ):
+        if instrument.lower() == 'iris':
+            instrument = 'IRIS'
+        elif instrument.lower() == 'liger':
+            instrument = 'Liger'
+        else:
+            raise ValueError(f"Unknown instrument {instrument}")
+        if isinstance(exp, int):
+            exp = str(exp).zfill(4)
+        if type(subarray) in (int, str):
+            subarray = '-' + str(subarray).zfill(2)
+        else:
+            subarray = '-00'
+        return f"{obsid}_{instrument}_{detector.upper()}_{obstype}_LVL{int(level)}_{exp}{subarray}.fits"
+
+    def get_primary_array_name(self):
+        return 'DATA'

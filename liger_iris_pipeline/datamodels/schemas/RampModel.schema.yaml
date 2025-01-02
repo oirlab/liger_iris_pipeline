@@ -6,26 +6,19 @@ allOf:
 - $ref: core.schema
 - type: object
   properties:
+    times:
+        title: 2-D times array
+        fits_hdu: TIMES
+        ndim: 2
+        datatype: float64
     data:
-      title: The science data
-      fits_hdu: SCI
-      default: 0.0
+      title: 4-D data array
+      fits_hdu: DATA
       ndim: 4
-      datatype: float32
-    pixeldq:
-      title: 2-D data quality array for all planes
-      fits_hdu: PIXELDQ
-      default: 0
-      ndim: 2
-      datatype: uint32
-    groupdq:
-      title: 4-D data quality array for each plane
-      fits_hdu: GROUPDQ
+      datatype: uint16
+    dq:
+      title: 4-D data quality array
+      fits_hdu: DQ
       default: 0
       ndim: 4
-      datatype: uint8
-    err:
-      title: Error array
-      fits_hdu: ERR
-      default: 0.0
-      datatype: float32
+      datatype: uint16

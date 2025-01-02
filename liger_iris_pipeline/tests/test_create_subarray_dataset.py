@@ -1,9 +1,7 @@
 # Imports
 import liger_iris_pipeline
 import numpy as np
-
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
+import os
 
 
 # Converts 1->0 indexing, sets the subarray index
@@ -19,13 +17,30 @@ def slice_subarray_mask(mask_array, xstart, ystart, xsize, ysize):
     ystart = ystart - 1
     return mask_array[ystart:ystart+ysize, xstart:xstart+xsize].copy()
 
+def create_config():
+    conf = """
+    name = "ImagerStage2Pipeline"
+    class = "liger_iris_pipeline.pipeline.ImagerStage2Pipeline"
+    save_results = True
+
+    [steps]
+        [[dark_sub]]
+        [[flat_field]]
+        [[sky_sub]]
+        [[assign_wcs]]
+            skip = True
+        [[photom]]
+            skip = True
+        [[resample]]
+            skip = True
+    """
+    return conf
 
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    #raw_science_filename = get_data_from_url("48191524")
-    raw_science_filename = "/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits"
-    input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
+    sci_L1_filename = "/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
+    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
     s1 = 300
@@ -74,30 +89,38 @@ def test_create_subarray_dataset(tmp_path):
     input_model.data[input_model.subarr_map != 0] = np.nan
 
     # Write the full frame
-    full_frame_filename_temp = tmp_path / "raw_science_frame_sci_with_subarrays.fits"
+    #full_frame_filename_temp = tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', '-01.fits'))
+    full_frame_filename_temp = tmp_path / os.path.basename(sci_L1_filename)
     input_model.write(full_frame_filename_temp)
 
     # Write the subarrays
     subarray_filenames_temp = {}
     for k, sub_model in subarray_models.items():
-        subarray_filenames_temp[k] = tmp_path / f"raw_science_frame_sci_subarray_{k}.fits"
+        subarray_filenames_temp[k] = tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', f'-0{k}.fits'))
         sub_model.write(subarray_filenames_temp[k])
 
+    # Create the config file
+    conf = create_config()
+    config_file = tmp_path / "test_config.cfg"
+    with open(config_file, "w") as f:
+        f.write(conf)
+
     # Create and run the pipeline on the full frame
-    pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
-    reduced_full_frame = pipeline.call(full_frame_filename_temp, config_file="liger_iris_pipeline/tests/data/image2_iris.cfg")[0]
+    #pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
+    results = liger_iris_pipeline.ImagerStage2Pipeline.call(full_frame_filename_temp, config_file=config_file)
+    reduced_full_frame = results[0]
 
     # Set the subarray metadata id to 0 (full frame)
     reduced_full_frame.meta.subarray.id = 0
 
     # Write the reduced full frame
-    reduced_full_frame.write(str(full_frame_filename_temp).replace("raw", "reduced"))
+    reduced_full_frame.write(str(full_frame_filename_temp).replace('_LVL1', '_LVL2'))
 
     # Call the pipeline on the subarrays
     reduced_subarrays = {}
     for k in subarray_filenames_temp:
-        reduced_subarrays[k] = pipeline.call(subarray_filenames_temp[k], config_file="liger_iris_pipeline/tests/data/image2_iris.cfg")[0]
-        reduced_subarrays[k].write(str(subarray_filenames_temp[k]).replace("raw", "reduced"))
+        reduced_subarrays[k] = liger_iris_pipeline.ImagerStage2Pipeline.call(subarray_filenames_temp[k], config_file=config_file)[0]
+        reduced_subarrays[k].save(str(subarray_filenames_temp[k]).replace(('_LVL1', '-_LVL2')))
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
     for k, full_frame_meta, each_input in zip(

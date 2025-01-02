@@ -6,8 +6,12 @@
 # This is the same check as the one at the top of setup.py
 import sys
 
-__version__ = "0.5.dev"
-__version_commit__ = "0.5.dev"
+try:
+    from setuptools_scm import get_version
+    __version__ = get_version(root="..", relative_to=__file__)
+except ImportError:
+    __version__ = "unknown"
+
 __minimum_python_version__ = "3.11"
 
 
@@ -22,15 +26,15 @@ if sys.version_info < tuple(
         "iris_pipeline does not support Python < {}".format(__minimum_python_version__)
     )
 
+
 from .flatfield import FlatFieldStep
-from .background import BackgroundStep
-from .dark_current import DarkCurrentStep
-from .pipeline import ProcessFlatfield, ImagerStage2Pipeline
+from .sky_subtraction import SkySubtractionImagerStep
+from .dark_subtraction import DarkSubtractionStep
+from .pipeline import Stage1Pipeline, ImagerStage2Pipeline, CreateFlatfield
 from .dq_init import DQInitStep
 from .normalize import NormalizeStep
 from .parse_subarray_map import ParseSubarrayMapStep
 from .merge_subarrays import MergeSubarraysStep
 from .assign_wcs import AssignWCSStep
-
-
+from .readout import NonlinCorrectionStep, FitRampStep
 from .datamodels import *

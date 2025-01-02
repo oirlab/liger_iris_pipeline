@@ -39,7 +39,8 @@ def open(init=None, memmap=False, **kwargs):
     """
 
     from .model_base import LigerIRISDataModel
-    from .container import ModelContainer
+    #from .container import LigerIRISModelContainer
+    from ..associations import load_asn
 
     # If init is already a datamodel, copy and return
     if isinstance(init, LigerIRISDataModel):
@@ -70,7 +71,7 @@ def open(init=None, memmap=False, **kwargs):
 
         # Read the file as an association / model container
         if file_type == "asn":
-            return ModelContainer(init, **kwargs)
+            return load_asn(init)
 
         # Load FITS or ASDF file
         if file_type == "fits":

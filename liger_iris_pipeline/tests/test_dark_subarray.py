@@ -6,23 +6,32 @@ import numpy as np
 from liger_iris_pipeline.tests.test_utils import get_data_from_url
 
 
-def test_dark_subarray(tmp_path):
+
+def create_subarray_model(name, xstart, ystart, xsize, ysize):
 
     # Download the science frame and open
-    #raw_science_filename = get_data_from_url("48191524")
-    raw_science_filename = '/Users/cale/Desktop/IRIS_Test_Data/raw_frame_sci_20240805.fits'
-    input_model = liger_iris_pipeline.ImagerModel(raw_science_filename)
+    sci_L1_filename = "/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001.fits"
+    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
-    xstart = 100
-    ystart = 200
-    xsize = 50
-    ysize = 60
-    input_model.meta.subarray.name = "CUSTOM"
+    input_model.meta.subarray.name = name
     input_model.meta.subarray.xstart = xstart
     input_model.meta.subarray.ystart = ystart
     input_model.meta.subarray.xsize = xsize
     input_model.meta.subarray.ysize = ysize
+
+    return input_model
+
+
+def test_dark_subarray(tmp_path):
+
+    # Get model
+    name = "CUSTOM"
+    xstart = 100
+    ystart = 200
+    xsize = 50
+    ysize = 60
+    input_model = create_subarray_model(name, xstart, ystart, xsize, ysize)
 
     # Slice the data
     subarray_slice = np.s_[ystart:ystart+ysize, xstart:xstart+xsize]

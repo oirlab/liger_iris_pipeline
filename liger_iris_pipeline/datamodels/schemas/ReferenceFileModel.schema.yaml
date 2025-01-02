@@ -4,4 +4,3 @@ $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/ReferenceFileModel.schema"
 allOf:
 - $ref: core.schema
-- $ref: reference_file.schema

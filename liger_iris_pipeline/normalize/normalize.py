@@ -63,20 +63,14 @@ def apply_norm(input, method):
     # Create output as a copy of the input science data model
     output = input.copy()
 
-    # Only consider valid data
-    valid_data = input.dq == 0
-
-    if valid_data.sum() == 0:  # no valid data
+    if method is None:
         norm_factor = 1
-    else:
-        if method is None:
-            norm_factor = 1
-        elif method == "mean":
-            norm_factor = np.mean(input.data)
-        elif method == "median":
-            norm_factor = np.median(input.data)
-        elif method == "mode":
-            norm_factor = scipy.stats.mode(input.data, axis=None).mode
+    elif method == "mean":
+        norm_factor = np.mean(input.data)
+    elif method == "median":
+        norm_factor = np.median(input.data)
+    elif method == "mode":
+        norm_factor = scipy.stats.mode(input.data, axis=None).mode
 
     log.info("running normalize with method %s", method)
     output.data /= norm_factor

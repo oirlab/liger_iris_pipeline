@@ -6,12 +6,12 @@ from . import dark_sub
 from ..utils.subarray import get_subarray_model
 
 
-__all__ = ["DarkCurrentStep"]
+__all__ = ["DarkSubtractionStep"]
 
 
-class DarkCurrentStep(LigerIRISStep):
+class DarkSubtractionStep(LigerIRISStep):
     """
-    DarkCurrentStep: Performs dark current correction by subtracting
+    DarkSubtractionStep: Performs dark current correction by subtracting
     dark current reference data from the input science data model.
     """
 
@@ -27,11 +27,11 @@ class DarkCurrentStep(LigerIRISStep):
         with self.open_model(input) as input_model:
 
             # Get the name of the dark reference file to use
-            self.dark_name = self.get_reference_file(input_model, "dark")
-            self.log.info("Using DARK reference file %s", self.dark_name)
+            self.dark_filename = self.get_reference_file(input_model, "dark")
+            self.log.info("Using DARK reference file %s", self.dark_filename)
 
             # Check for a valid reference file
-            if self.dark_name == "N/A":
+            if self.dark_filename == "N/A":
                 self.log.warning("No DARK reference file found")
                 self.log.warning("Dark current step will be skipped")
                 result = input_model.copy()
@@ -45,9 +45,8 @@ class DarkCurrentStep(LigerIRISStep):
                     None, basepath=dark_output, ignore_use_model=True
                 )
 
-            # Open the dark ref file data model - based on Instrument
-            dark_model = DarkModel(self.dark_name)
-
+            # Open the dark ref file data model
+            dark_model = DarkModel(self.dark_filename)
             dark_model = get_subarray_model(input_model, dark_model)
 
             # Do the dark correction

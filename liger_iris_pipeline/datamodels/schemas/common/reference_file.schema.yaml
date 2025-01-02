@@ -12,18 +12,6 @@ properties:
         type: string
         fits_keyword: REFTYPE
       pedigree:
-        title: The pedigree of the reference file # ORIGIN ?
+        title: The pedigree of the reference file
         type: string
         fits_keyword: PEDIGREE
-      description:
-        title: Description of the reference file
-        type: string
-        fits_keyword: DESCRIP
-      author:
-        title: Author of the reference file
-        type: string
-        fits_keyword: AUTHOR
-      useafter:
-        title: Use after date of the reference file
-        type: string
-        fits_keyword: USEAFTER

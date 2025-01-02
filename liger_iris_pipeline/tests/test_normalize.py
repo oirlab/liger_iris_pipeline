@@ -8,9 +8,7 @@ import scipy.stats
 
 def test_normalize():
     # Create an test image with a specified row
-    input_model = liger_iris_pipeline.ImagerModel(
-        data=np.random.rand(4096, 4096)
-    )
+    input_model = liger_iris_pipeline.ImagerModel(data=np.random.rand(4096, 4096))
     input_model.data[3, :] = 0.6  # for mode calc
 
     # Loop over methods

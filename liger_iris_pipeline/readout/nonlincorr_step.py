@@ -1,52 +1,40 @@
-#! /usr/bin/env python
+
 
 from ..base_step import LigerIRISStep
-from ..datamodels import RampModel
-from ..drsrop_clib import uptheramp_c, mcds_c, nonlin_c
+from ..datamodels import RampModel, NonlinearReadoutParametersModel
+from .nonlinear_correction_numba import correct_nonlinearity
+
 import numpy as np
-from astropy.io import fits
 
-__all__ = ["NonlincorrStep"]
+__all__ = ["NonlinCorrectionStep"]
 
 
-class NonlincorrStep(LigerIRISStep):
-    """
-    ReadoutsampStep:  Sampling
-    """
+class NonlinCorrectionStep(LigerIRISStep):
 
-    spec = """
-        sigma = float(default=3.0)  # Clipping threshold
-        maxiters = integer(default=None)  # Number of clipping iterations
-    """
     reference_file_types = ["nonlincoeff"]
 
     def process(self, input):
         """
-        Step for Nonlinearity Correction
+        Step for Nonlinearity correction
         """
-
         # Load the input data model
         with RampModel(input) as input_model:
-            nonlin_coeff_file = self.get_reference_file(input_model, "nonlincoeff")
-            nonlin_coeff_data = fits.getdata(nonlin_coeff_file).astype(np.float32)
-            c0 = nonlin_coeff_data[0]
-            c1 = nonlin_coeff_data[1]
-            c2 = nonlin_coeff_data[2]
-            c3 = nonlin_coeff_data[3]
-            c4 = nonlin_coeff_data[4]
-            # Get the reference file names
-            input_data = input_model.data[:, :, :, :].astype(np.int32)
-            ramp_list = []
-            for it in range(len(input_data)):
-                ramp_data = input_data[it]
-                num_reads = len(ramp_data)
-                time_arr = np.arange(0, num_reads, 1).astype(np.int32)
-                result = nonlin_c(ramp_data, time_arr, c0, c1, c2, c3, c4)
-                result = result.astype(np.int32)
-                ramp_list.append(result)
-            # result = uptheramp_c(result,time_arr)
-            output_data = np.array(ramp_list).astype(np.int32)
-            result = RampModel(data=output_data)
-            result.update(input_model)
 
-        return result
+            # Result
+            model_result = input_model.copy()
+
+            # Get the reference file of coefficients
+            nonlin_coeff_file = self.get_reference_file(input_model, "nonlincoeff")
+            nonlin_model = NonlinearReadoutParametersModel(nonlin_coeff_file)
+            coeffs = nonlin_model.coeffs
+
+            # Vector of read times for all pixels
+            input_times = model_result.times
+
+            # Correct the nonlinearity
+            model_result.data = correct_nonlinearity(input_times.astype(np.float32), model_result.data.astype(np.float32), coeffs.astype(np.float32))
+
+            # Close the nonlinearity file
+            nonlin_model.close()
+
+        return model_result

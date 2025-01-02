@@ -1,13 +1,12 @@
 from .model_base import LigerIRISDataModel
 from .ramp import RampModel
 from .imager import ImagerModel
+from .nonlin_readout_params import NonlinearReadoutParametersModel
 from .referencefile import ReferenceFileModel
 from .dark import DarkModel
 from .flat import FlatModel
 from .ifu import IFUImageModel, IFUCubeModel
 from .dq import DQModel
-
-from .container import ModelContainer
 
 from .utils import open
 
@@ -21,7 +20,7 @@ __all__ = [
     "DarkModel", "FlatModel",
     "IFUImageModel", "IFUCubeModel",
     "DQModel",
-    "ModelContainer",
+    "NonlinearReadoutParametersModel",
     "open"
 ]
 

@@ -1,0 +1,18 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/NonlinearReadoutParametersModel.schema"
+allOf:
+- $ref: core.schema
+- type: object
+  properties:
+    coeffs:
+      title: 3-D data array of coeffs
+      fits_hdu: COEFFS
+      ndim: 3
+      datatype: float32
+    coeffs_err:
+      title: 3-D error array for coeffs
+      fits_hdu: COEFFS_ERR
+      ndim: 3
+      datatype: float32

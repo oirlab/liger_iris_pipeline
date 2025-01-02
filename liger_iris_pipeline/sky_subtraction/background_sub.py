@@ -40,7 +40,7 @@ def background_sub(input_model, bkg_list, sigma, maxiters):
 
     # Compute the average of the background images associated with
     # the target exposure
-    bkg_model = average_background(bkg_list, sigma, maxiters)
+    #bkg_model = average_background(bkg_list, sigma, maxiters)
 
     bkg_model = get_subarray_model(input_model, bkg_model)
 

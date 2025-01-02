@@ -38,7 +38,7 @@ properties:
           ifumode:
             title: IFU mode of the instrument (LENSLET or SLICER)
             type: string
-            enum: [LENSLET, SLICER]
+            enum: [LENSLET, SLICER, ANY, NONE, None]
             fits_keyword: IFUMODE
             blend_table: True
             blend_rule: multi
@@ -46,7 +46,7 @@ properties:
             title: Name of the filter element used
             type: string
             enum: [
-              ANY, CLEAR, OPAQUE, N/A, MULTIPLE,
+              ANY, CLEAR, OPAQUE, N/A, MULTIPLE, NONE, None,
               Zbb, Ybb, Jbb, Hbb, Kbb,
               Z, Y, J, H, Ks, K,
               ZN1, ZN2, ZN3, ZN4,

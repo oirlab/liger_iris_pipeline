@@ -21,24 +21,6 @@ class ReferenceFileModel(LigerIRISDataModel):
         super().__init__(init=init, **kwargs)
         self._no_asdf_extension = True
 
-    def validate(self):
-        """
-        Convenience function to be run when files are created.
-        Checks that required reference file keywords are set.
-        """
-        to_fix = []
-        to_check = ['description', 'reftype', 'author', 'pedigree', 'useafter']
-        for field in to_check:
-            if getattr(self.meta, field) is None:
-                to_fix.append(field)
-        if self.meta.instrument.name is None:
-            to_fix.append('instrument.name')
-        if self.meta.telescope != 'keck':
-            to_fix.append('telescope')
-        if to_fix:
-            self.print_err(f'Model.meta is missing values for {to_fix}')
-        super().validate()
-
 
     def save(self, path, dir_path=None, *args, **kwargs):
         """
@@ -64,3 +46,19 @@ class ReferenceFileModel(LigerIRISDataModel):
             raise ValueError(message)
         else:
             warnings.warn(message, ValidationWarning)
+
+
+    @staticmethod
+    def generate_filename(
+        instrument : str,
+        detector : str, reftype : str,
+        date : str, version : str
+    ):
+        """IRIS_IMG1_FLAT_20240101T000000_0.0.1.fits"""
+        if instrument.lower() == 'iris':
+            instrument = 'IRIS'
+        elif instrument.lower() == 'liger':
+            instrument = 'Liger'
+        else:
+            raise ValueError(f"Unknown instrument {instrument}")
+        return f"{instrument}_{detector.upper()}_{reftype}_{date}_{version}.fits"
