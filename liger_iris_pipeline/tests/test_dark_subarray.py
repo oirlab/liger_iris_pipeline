@@ -2,15 +2,12 @@
 import liger_iris_pipeline
 import numpy as np
 
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
-
 
 
 def create_subarray_model(name, xstart, ystart, xsize, ysize):
 
     # Download the science frame and open
-    sci_L1_filename = "/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001.fits"
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
     input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
@@ -19,6 +16,10 @@ def create_subarray_model(name, xstart, ystart, xsize, ysize):
     input_model.meta.subarray.ystart = ystart
     input_model.meta.subarray.xsize = xsize
     input_model.meta.subarray.ysize = ysize
+    input_model.meta.subarray.detxsiz = 4096
+    input_model.meta.subarray.detysiz = 4096
+    input_model.meta.subarray.fastaxis = 0
+    input_model.meta.subarray.slowaxis = 1
 
     return input_model
 
@@ -42,7 +43,7 @@ def test_dark_subarray(tmp_path):
     assert input_model.data.shape == (ysize, xsize)
 
     # Setup the Dark step
-    step = liger_iris_pipeline.DarkCurrentStep()
+    step = liger_iris_pipeline.DarkSubtractionStep()
 
     # Run on the subarray
     step_output = step.run(input_model)
@@ -51,7 +52,7 @@ def test_dark_subarray(tmp_path):
     assert step_output.data.shape == (ysize, xsize)
 
     # Open the dark cal that was used
-    dark_model = liger_iris_pipeline.ImagerModel(step.dark_name)
+    dark_model = liger_iris_pipeline.ImagerModel(step.dark_filename)
 
     # Compare the output with a manual dark subtraction
     np.testing.assert_allclose(

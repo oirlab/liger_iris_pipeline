@@ -154,4 +154,10 @@ class LigerIRISDataModel(DataModel):
         return f"{obsid}_{instrument}_{detector.upper()}_{obstype}_LVL{int(level)}_{exp}{subarray}.fits"
 
     def get_primary_array_name(self):
-        return 'DATA'
+        return 'data'
+    
+    @classmethod
+    def from_model(cls, input_model):
+        model = cls(instrument=input_model.instrument)
+        model.__dict__.update(input_model.__dict__)
+        return model

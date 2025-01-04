@@ -55,6 +55,7 @@ class ReferenceFileModel(LigerIRISDataModel):
         date : str, version : str
     ):
         """IRIS_IMG1_FLAT_20240101T000000_0.0.1.fits"""
+        # TODO: Automate versioning
         if instrument.lower() == 'iris':
             instrument = 'IRIS'
         elif instrument.lower() == 'liger':

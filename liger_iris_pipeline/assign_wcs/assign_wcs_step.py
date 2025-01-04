@@ -15,18 +15,6 @@ __all__ = ["AssignWCSStep"]
 
 class AssignWCSStep(LigerIRISStep):
     """
-    AssignWCSStep: Create a gWCS object and store it in ``Model.meta``.
-
-    Reference file types (none for now):
-
-    distortion         Spatial distortion model (FGS, MIRI, NIRCAM, NIRISS)
-    specwcs            Wavelength calibration models (MIRI, NIRCAM, NIRISS)
-    wavelengthrange    Typical wavelength ranges (MIRI, NIRCAM, NIRISS, NIRSPEC)
-
-    Parameters
-    ----------
-    input : `LigerIrisImageModel`
-        Input model.
     """
 
     # eventually ['distortion' , 'specwcs', 'wavelengthrange']

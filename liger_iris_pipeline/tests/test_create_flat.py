@@ -1,10 +1,22 @@
 # Imports
 import numpy as np
-import os
 import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
 from liger_iris_pipeline.tests.test_utils import add_meta_data
-from liger_iris_pipeline.associations import IRISImagerL1Association
+
+def create_config():
+    conf = """
+    name = "ImagerStage2Pipeline"
+    class = "liger_iris_pipeline.pipeline.CreateFlatfield"
+    save_results = True
+
+    [steps]
+        [[dark_sub]]
+        [[normalize]]
+            method = "median"
+    """
+    return conf
+
 
 def test_create_flat(tmp_path):
 
@@ -30,40 +42,36 @@ def test_create_flat(tmp_path):
     }
 
     # Create a simulated raw flat
-    raw_flat_model = datamodels.ImagerModel(instrument='IRIS', data=np.ones((4096, 4096)))
+    raw_flat_model = datamodels.ImagerModel(instrument='IRIS', data=np.random.normal(loc=1, scale=0.01, size=(4096, 4096)))
     add_meta_data(raw_flat_model, meta)
     raw_flat_model.save(raw_flat_filename)
 
     # ASN
-    asn_file = str(tmp_path / 'temp_asn.json')
-    output_file = datamodels.ReferenceFileModel.generate_filename(
-        instrument='IRIS', detector='IMG1',
-        reftype='FLAT', date='20250102T000000', version='0.0.1'
-    )
-    asn = IRISImagerL1Association.from_product({
-        "name": output_file,
+    product ={
+        "name": "Test",
         "members": [
             {
                 "expname": raw_flat_filename,
                 "exptype": "flat",
             },
         ]
-    })
-    asn.dump(asn_file)
+    }
+
+    # Create a temporary config file
+    conf = create_config()
+    config_file = tmp_path / "test_config.cfg"
+    with open(config_file, "w") as f:
+        f.write(conf)
 
     # Initialize flatfield pipeline
-    model_result, pipeline = liger_iris_pipeline.CreateFlatfield.call(asn_file, return_step=True)
+    flat_model, pipeline = liger_iris_pipeline.CreateFlatfield.call(product, config_file=config_file, return_step=True)
 
     # Open dark
-    dark_current = datamodels.open(pipeline.dark_current.dark_name)
+    dark_model = datamodels.open(pipeline.dark_sub.dark_filename)
 
     # Manually create a dark subtracted master flat
-    expected = raw_flat_model.data - dark_current.data
+    expected = raw_flat_model.data - dark_model.data
     expected /= np.median(expected)
 
     # Test
-    np.testing.assert_allclose(model_result.data, expected)
-
-
-from pathlib import Path
-test_create_flat(Path('/Users/Cale/Desktop/'))
+    np.testing.assert_allclose(flat_model.data, expected)

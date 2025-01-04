@@ -22,7 +22,7 @@ class LigerIRISStep(Step):
     """
 
     @classmethod
-    def call(cls, *args, return_step : bool = True, **kwargs):
+    def call(cls, *args, return_step : bool = False, **kwargs):
         """
         Hack to allow the pipeline to return the step or pipeline object that is created
         """
@@ -36,7 +36,7 @@ class LigerIRISStep(Step):
 
         if "logcfg" in config:
             try:
-                log.load_configuration(config["logcfg"])
+                self.log.load_configuration(config["logcfg"])
             except Exception as e:
                 raise RuntimeError(
                     f"Error parsing logging config {config['logcfg']}"
@@ -69,7 +69,7 @@ class LigerIRISStep(Step):
                 result.meta.ref_file.crds.sw_version = crds_client.get_svn_version()
                 result.meta.ref_file.crds.context_used = crds_client.get_context_used(result.crds_observatory)
                 if self.parent is None:
-                    log.info(f"Results used CRDS context: {result.meta.ref_file.crds.context_used}")
+                    self.log.info(f"Results used CRDS context: {result.meta.ref_file.crds.context_used}")
 
 
     def remove_suffix(self, name):

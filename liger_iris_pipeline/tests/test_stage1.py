@@ -1,6 +1,5 @@
 # Imports
 import liger_iris_pipeline
-from liger_iris_pipeline.associations import IRISImagerL0Association
 import numpy as np
 from liger_iris_pipeline.tests.test_utils import create_ramp
 
@@ -21,7 +20,6 @@ def create_config():
 def test_imager_stage1(tmp_path):
 
     # Create a temporary ASN file
-    asn = create_asn()
     #asn.add(["members"][0]["expname"] = str(tmp_path / asn["products"][0]["members"][0]["expname"])
 
     meta = {
@@ -48,13 +46,19 @@ def test_imager_stage1(tmp_path):
     
     # Create a ramp model
     ramp_model = create_ramp(source, meta, readtime=1, n_reads_per_group=10, n_groups=5, nonlin_coeffs = None)
+    ramp_filename = tmp_path / "2024A-P123-044_IRIS_IMG1_SCI-Y_LVL0_0001-00.fits"
+    ramp_model.save(ramp_filename)
     
     # Save the ramp model
-    ramp_model.save(asn["products"][0]["members"][0]["expname"])
-
-    # Save ASN
-    asn_file = tmp_path / "test_asn.json"
-    asn.dump(asn_file)
+    product ={
+        "name": "Test",
+        "members": [
+            {
+                "expname": ramp_filename,
+                "exptype": "science",
+            },
+        ]
+    }
 
     # Create a temporary config file
     conf = create_config()
@@ -64,7 +68,7 @@ def test_imager_stage1(tmp_path):
 
     # Create and call the pipeline object
     # Pipeline saves L2 file: 2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL2_0001.fits
-    results, _ = liger_iris_pipeline.Stage1Pipeline.call(asn_file, config_file=config_file, return_step=True)
+    results, _ = liger_iris_pipeline.Stage1Pipeline.call(product, config_file=config_file, return_step=True)
     model_result = results[0]
 
     # Test MCDS
@@ -75,7 +79,7 @@ def test_imager_stage1(tmp_path):
     with open(config_file, "w") as f:
         f.write(conf)
     
-    results, _ = liger_iris_pipeline.Stage1Pipeline.call(asn_file, config_file=config_file, return_step=True)
+    results, _ = liger_iris_pipeline.Stage1Pipeline.call(product, config_file=config_file, return_step=True)
     model_result = results[0]
 
     # Test UTR

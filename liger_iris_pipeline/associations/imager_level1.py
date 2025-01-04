@@ -1,7 +1,8 @@
 from . import LigerIRISAssociation
 
+__all__ = ['ImagerL1Association']
 
-class IRISImagerL1Association(LigerIRISAssociation):
+class ImagerL1Association(LigerIRISAssociation):
     """
     IRIS Imager Level 1 Association
     TODO:

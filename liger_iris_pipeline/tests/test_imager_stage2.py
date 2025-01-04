@@ -1,7 +1,6 @@
 # Imports
 import liger_iris_pipeline
 import liger_iris_pipeline.datamodels as datamodels
-from liger_iris_pipeline.associations import IRISImagerL1Association
 import numpy as np
 import os
 
@@ -16,7 +15,7 @@ def create_config():
         [[flat_field]]
         [[sky_sub]]
         [[assign_wcs]]
-            skip = True
+            skip = False
         [[photom]]
             skip = True
         [[resample]]
@@ -28,39 +27,35 @@ def test_imager_stage2(tmp_path):
 
     # Create a temporary config file
     conf = create_config()
-    config_file = tmp_path / "test_config.cfg"
+    config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)
 
     # Association
-    sci_L1_filename = '/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits'
-    sky_bkg_L1_filename = '/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
-    asn_file = str(tmp_path / 'temp_asn.json')
-    asn = IRISImagerL1Association.from_product({
-        "name": sci_L1_filename.replace("_LVL1", "_LVL2"),
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
+    sky_bkg_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
+    product = {
         "members": [
             {
                 "expname": sci_L1_filename,
-                "exptype": "science",
+                "exptype": "SCI",
             },
             {
                 "expname": sky_bkg_L1_filename,
-                "exptype": "sky"
+                "exptype": "SKY"
             }
         ]
-    })
-    asn.dump(asn_file)
-
+    }
 
     # Create and call the pipeline object
-    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(asn_file, config_file=config_file, return_step=True)
+    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(product, config_file=config_file, return_step=True)
     model_result = results[0]
 
     # Manual L2 file
     with datamodels.open(pipeline.dark_sub.dark_filename) as dark_model, \
         datamodels.open(pipeline.flat_field.flat_filename) as flat_model, \
-        datamodels.open(asn.products[0]['members'][0]['expname']) as sci_model, \
-        datamodels.open(asn.products[0]['members'][1]['expname']) as bkg_model:
+        datamodels.open(product['members'][0]['expname']) as sci_model, \
+        datamodels.open(product['members'][1]['expname']) as bkg_model:
         ref_data = (sci_model.data - dark_model.data) / flat_model.data - bkg_model.data
         np.testing.assert_allclose(model_result.data, ref_data, rtol=1e-6)
 
@@ -74,8 +69,8 @@ def test_imager_stage2_subarray(tmp_path):
         f.write(conf)
 
     # Files
-    sci_L1_filename = '/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits'
-    sky_bkg_L1_filename = '/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
+    sci_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits'
+    sky_bkg_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
     sci_L1_filename_subarray = str(tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', '-01.fits')))
 
     # Load the science model
@@ -106,31 +101,28 @@ def test_imager_stage2_subarray(tmp_path):
     input_model.save(sci_L1_filename_subarray)
 
     # ASN
-    asn_file = str(tmp_path / 'temp_asn.json')
-    asn = IRISImagerL1Association.from_product({
-        "name": sci_L1_filename.replace("_LVL1", "_LVL2"),
+    product ={
         "members": [
             {
                 "expname": sci_L1_filename_subarray,
-                "exptype": "science",
+                "exptype": "SCI",
             },
             {
                 "expname": sky_bkg_L1_filename,
-                "exptype": "sky"
+                "exptype": "SKY"
             }
         ]
-    })
-    asn.dump(asn_file)
+    }
 
     # Call pipeline with test ASN
-    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(asn_file, config_file=config_file, return_step=True)
+    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(product, config_file=config_file, return_step=True)
     model_result = results[0]
 
     # Manual L2
     # Everntually update this to use a static result
     with datamodels.open(pipeline.dark_sub.dark_filename) as dark_model, \
         datamodels.open(pipeline.flat_field.flat_filename) as flat_model, \
-        datamodels.open(asn.products[0]['members'][0]['expname']) as sci_model, \
-        datamodels.open(asn.products[0]['members'][1]['expname']) as bkg_model:
+        datamodels.open(product['members'][0]['expname']) as sci_model, \
+        datamodels.open(product['members'][1]['expname']) as bkg_model:
         ref_data = (sci_model.data - dark_model.data[subarray_slice]) / flat_model.data[subarray_slice] - bkg_model.data[subarray_slice]
         np.testing.assert_allclose(model_result.data, ref_data, rtol=1e-6)

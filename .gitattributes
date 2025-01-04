@@ -1,0 +1,6 @@
+liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text
+liger_iris_pipeline/tests/data/2024A-P123-044_Liger_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001.fits filter=lfs diff=lfs merge=lfs -text
+liger_iris_pipeline/tests/data/2024A-P123-044_Liger_IMG_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text
+liger_iris_pipeline/tests/data/2024A-P123-044_Liger_IMG_SCI-J1458+1013-SIM-Y_LVL1_0001.fits filter=lfs diff=lfs merge=lfs -text
+liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL0_0001-00.fits filter=lfs diff=lfs merge=lfs -text
+liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text

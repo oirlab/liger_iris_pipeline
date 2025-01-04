@@ -1,14 +1,18 @@
 # Imports
-import liger_iris_pipeline
+from liger_iris_pipeline import datamodels
 from liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step import parse_subarray_map
 from liger_iris_pipeline import ParseSubarrayMapStep
 import numpy as np
 
 
-def set_subarray_mask(mask_array, subarray_index, xstart, ystart, xsize, ysize):
+def set_subarray_mask(mask_array, p):
+    xstart = p["xstart"]
+    ystart = p["ystart"]
+    xsize = p["xsize"]
+    ysize = p["ysize"]
     xstart = xstart - 1
     ystart = ystart - 1
-    mask_array[ystart:ystart + ysize, xstart:xstart + xsize] =  subarray_index
+    mask_array[ystart:ystart + ysize, xstart:xstart + xsize] =  p['id']
 
 
 def test_parse_subarray_map():
@@ -17,19 +21,19 @@ def test_parse_subarray_map():
     # Define simple subarray metadata and image ID map
     # ID is just the 1-based index in this list (1, 2, ...)
     subarray_maps_metadata = [
-        {"xstart" : 80, "ystart" : 70, "xsize" : 10, "ysize" : 10},
-        {"xstart" : 10, "ystart" : 20, "xsize" : 20, "ysize" : 20}
+        {"xstart" : 80, "ystart" : 70, "xsize" : 10, "ysize" : 10, "id" : 1, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
+        {"xstart" : 10, "ystart" : 20, "xsize" : 20, "ysize" : 20, "id" : 2, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
     ]
-    subarr_map = np.zeros((100,100), dtype=np.int16)
-    for i, shape in enumerate(subarray_maps_metadata):
-        set_subarray_mask(subarr_map, subarray_index=i+1, **shape)
+    subarr_map = np.zeros((100, 100), dtype=np.int16)
+    for i, p in enumerate(subarray_maps_metadata):
+        set_subarray_mask(subarr_map, p)
     
     # Test parse_subarray_map function
     parse_subarray_map_output = parse_subarray_map(subarr_map)
     assert subarray_maps_metadata == parse_subarray_map_output
 
     # Create toy Image object with these subarrays
-    image = liger_iris_pipeline.ImagerModel(data=np.zeros((100, 100)))
+    image = datamodels.ImagerModel(data=np.zeros((100, 100)))
     image.dq[25, 25] = 16
     image.dq[26, 26] = 1
     image["subarr_map"] = subarr_map

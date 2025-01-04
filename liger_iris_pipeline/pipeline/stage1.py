@@ -3,11 +3,10 @@ import logging
 from collections import defaultdict
 from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
-from ..associations import IRISImagerL0Association
+from ..associations import ImagerL0Association
 
 # step imports
-from ..readout import fit_ramp_step
-from ..readout import nonlincorr_step
+from ..readout import NonlinCorrectionStep, FitRampStep
 
 __all__ = ['Stage1Pipeline']
 
@@ -19,29 +18,28 @@ log.setLevel(logging.DEBUG)
 class Stage1Pipeline(LigerIRISPipeline):
     """
     Stage 1 pipeline to process a series of raw reads to slope maps.
+    
+    Steps:
+        NonlinCorrectionStep
+        FitRampStep
     """
 
-    spec = """
-        save_calibrated_ramp = boolean(default=False)
-    """
+    default_association = ImagerL0Association
 
     # Define aliases to steps
     step_defs = {
-        "nonlinear_correction": nonlincorr_step.NonlinCorrectionStep,
-        "ramp_fit": fit_ramp_step.FitRampStep,
+        "nonlinear_correction": NonlinCorrectionStep,
+        "ramp_fit": FitRampStep,
     }
 
     # start the actual processing
     def process(self, input):
+        self.asn = self.input_to_asn(input)
         log.info('Starting Stage 1 Pipeline ...')
-        if os.path.splitext(input)[1] == '.json':
-            self.asn = IRISImagerL0Association.load(asn_file)
-        else:
-            self.asn = IRISImagerL0Association.from_member(input)
         # Each exposure is a product in the association.
         # Process each exposure.
         results = []
-        for product in asn["products"]:
+        for product in self.asn.products:
             self.log.info("Processing product {}".format(product["name"]))
             if self.save_results:
                 self.output_file = product["name"]
@@ -64,10 +62,7 @@ class Stage1Pipeline(LigerIRISPipeline):
         Parameters:
             exp_product (dict): The exposure product.
         """
-        # Find all the member types in the product
-        members_by_type = defaultdict(list)
-        for member in exp_product["members"]:
-            members_by_type[member["exptype"].lower()].append(member["expname"])
+        members_by_type = self.asn_product_by_types(exp_product)
 
         science = members_by_type["science"][0]
         self.log.info(f"Processing input {science} ...")

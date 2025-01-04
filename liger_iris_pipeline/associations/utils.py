@@ -27,7 +27,7 @@ def class_from_association_type(init):
 
     from . import DEFINED_ASSOCIATIONS
     from . import LigerIRISAssociation
-    asn = LigerIRISAssociation.load(init)
+    asn = LigerIRISAssociation.load_as_json(init)
     class_name = asn['asn_type']
     if class_name in DEFINED_ASSOCIATIONS:
         _class = DEFINED_ASSOCIATIONS[class_name]

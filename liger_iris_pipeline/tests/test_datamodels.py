@@ -3,7 +3,7 @@
 from liger_iris_pipeline import ImagerModel
 
 def test_load_liger_image():
-    sci_L1_filename = "/Users/cale/Desktop/Liger_IRIS_Test_Data/Liger/2024A-P123-044_Liger_IMG_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_Liger_IMG_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
     input_model = ImagerModel(sci_L1_filename)
     
     assert input_model.meta.model_type == "ImagerModel"
@@ -17,7 +17,7 @@ def test_load_liger_image():
     assert input_model.data.shape == (2048, 2048)
 
 def test_load_iris_image():
-    sci_L1_filename = "/Users/cale/Desktop/Liger_IRIS_Test_Data/IRIS/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
     input_model = ImagerModel(sci_L1_filename)
     
     assert input_model.meta.model_type == "ImagerModel"

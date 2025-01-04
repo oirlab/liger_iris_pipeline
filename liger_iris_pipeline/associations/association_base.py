@@ -1,32 +1,46 @@
 # https://jwst-pipeline.readthedocs.io/en/latest/jwst/associations/association_reference.html#ref-asn-core-methods
 from jwst.associations import Association
+from .. import datamodels
 from pathlib import Path
 import json
+from datetime import datetime
+
+__all__ = ['LigerIRISAssociation']
 
 class LigerIRISAssociation(Association):
     """
     IRIS Association base class.
-    NOTE:
-        This is a crude implementation to get the DRS to run smoothly while developing.
-        Rulesets will be added later.
+    NOTE: This is a crude implementation to get the DRS to run smoothly while developing.
+    TODO: Rulesets and a better interface will be added later.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self["asn_rule"] = self.__class__.__name__
-        self["asn_type"] = self.__class__.__name__
-        self["asn_pool"] = "pool" # TODO: Invetigate if we need this?
-        self["products"] = []
+    def __init__(self, data : dict | None = None):
+        #super().__init__(*args, **kwargs)
+        self.data = {}
+        self.data["name"] = self.__class__.__name__ + datetime.now().strftime("%Y%m%dT%H%M%S")
+        self.data["asn_rule"] = self.__class__.__name__
+        self.data["asn_type"] = self.__class__.__name__
+        self.data["asn_pool"] = "pool" # TODO: Invetigate if we need this?
+        self.data["products"] = []
+        if data is not None:
+            self.data.update(data)
 
     @classmethod
-    def load(self, filename : str | Path):
+    def load(cls, filename : str | Path):
+        with open(str(filename), "r") as f:
+            return cls(json.load(f))
+        
+
+    @staticmethod
+    def load_as_json(cls, filename : str | Path):
         with open(str(filename), "r") as f:
             return json.load(f)
 
     @property
     def products(self):
-        return self["products"]
+        return self.data["products"]
     
+
     def add(self, item):
         self.products.append(item)
         return True, self.products
@@ -40,3 +54,20 @@ class LigerIRISAssociation(Association):
         asn = cls()
         asn.add(product)
         return asn
+    
+    @classmethod
+    def from_member(cls, filename : str):
+        input_model = datamodels.open(filename)
+        product = {
+            "members": [
+                {
+                    "expname": filename,
+                    "exptype": input_model.meta.exposure.type,
+                },
+            ]
+        }
+        return cls.from_product(product)
+    
+    @property
+    def name(self):
+        return self.data["name"]

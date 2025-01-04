@@ -1,61 +1,56 @@
-#!/usr/bin/env python
-from collections import defaultdict
-import os
-import json
-
-from liger_iris_pipeline import datamodels
-from ..associations import IRISImagerL1Association
+from ..associations import ImagerL1Association
 from .base_pipeline import LigerIRISPipeline
-
-from ..sky_subtraction import sky_subtraction_imager_step
-from ..dark_subtraction import dark_step
-from jwst.assign_wcs import assign_wcs_step
-from ..flatfield import flat_field_step
-from ..parse_subarray_map import parse_subarray_map_step
-from jwst.photom import photom_step
-from jwst.resample import resample_step
+from liger_iris_pipeline import datamodels
+from ..parse_subarray_map import ParseSubarrayMapStep
+from ..dark_subtraction import DarkSubtractionStep
+from ..flatfield import FlatFieldStep
+from ..assign_wcs import AssignWCSStep
+from ..sky_subtraction import SkySubtractionImagerStep
+from jwst.photom import PhotomStep as JWSTPhotomStep
+from jwst.resample import ResampleStep as JWSTResampleStep
 
 __all__ = ["ImagerStage2Pipeline"]
 
 
 class ImagerStage2Pipeline(LigerIRISPipeline):
+    
     """
-    Included steps are:
-    background_subtraction, assign_wcs, flat_field, photom and resample.
+    Standard pipeline for processing Liger and IRIS Imager data from L1 to L2.
+    
+    Steps:
+        ParseSubarrayMapStep
+        DarkSubtractionStep
+        FlatFieldStep
+        SkySubtractionImagerStep
+        AssignWCSStep
+        PhotomStep (JWST)
+        ResampleStep (JWST)
     """
 
-    spec = """
-        save_bsub = boolean(default=False) # Save background-subracted science
-    """
+    default_association = ImagerL1Association
 
     # Define alias to steps
     step_defs = {
-        "parse_subarray_map": parse_subarray_map_step.ParseSubarrayMapStep,
-        "dark_sub": dark_step.DarkSubtractionStep,
-        "flat_field": flat_field_step.FlatFieldStep,
-        "sky_sub": sky_subtraction_imager_step.SkySubtractionImagerStep,
-        "photom": photom_step.PhotomStep,
-        "assign_wcs": assign_wcs_step.AssignWcsStep,
-        "resample": resample_step.ResampleStep,
+        "parse_subarray_map": ParseSubarrayMapStep,
+        "dark_sub": DarkSubtractionStep,
+        "flat_field": FlatFieldStep,
+        "sky_sub": SkySubtractionImagerStep,
+        "photom": JWSTPhotomStep,
+        "assign_wcs": AssignWCSStep,
+        "resample": JWSTResampleStep,
     }
 
     def process(self, input):
 
         # Load the association
-        if os.path.splitext(input)[1] == '.json':
-            asn = IRISImagerL1Association.load(input)
-        else:
-            asn = IRISImagerL1Association.from_product(input)
-        
-        self.log.info("Starting ImagerStage2Pipeline ...")
+        self.asn = self.input_to_asn(input)
+
+        self.log.info(f"Starting ImagerStage2Pipeline ...")
 
         # Each exposure is a product in the association.
         # Process each exposure.
         results = []
-        for product in asn["products"]:
-            self.log.info(f"Processing product {product['name']}")
-            if self.save_results:
-                self.output_file = product["name"]
+        for product in self.asn["products"]:
             result = self.process_exposure_product(product)
 
             # Save result
@@ -64,32 +59,24 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
 
         self.log.info("ImagerStage2Pipeline completed")
 
-        self.output_use_model = True
-
         return results
-
-
+    
     # Process each exposure
-    def process_exposure_product(self, exp_product):
+    def process_exposure_product(self, exp_product : dict):
         """Process an exposure product.
 
-        Parameters:
+        Parameters:w
             exp_product (dict): The exposure product.
         """
-        # Find all the member types in the product
-        members_by_type = defaultdict(list)
-        for member in exp_product["members"]:
-            members_by_type[member["exptype"].lower()].append(member["expname"])
 
-        # Get the science member. Technically there should only be
-        # one. We'll just get the first one found.
-        science = members_by_type["science"]
-        if len(science) != 1:
-            self.log.warning(f"Wrong number of science files found in {exp_product['name']}")
-            self.log.warning("Using only first member.")
-        science = science[0]
+        # Members by type
+        members_by_type = self.asn_product_by_types(exp_product)
 
-        self.log.info(f"Processing input {science} ...")
+        # Get the science member. Assumes only one
+        # TODO: Enforce one science exposure per product in Association class
+        science = members_by_type["sci"][0]
+
+        self.log.info(f"Processing {science}")
         input_model = datamodels.open(science)
 
         # Run remaining steps
@@ -98,9 +85,12 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         input_model = self.flat_field(input_model)
         if len(members_by_type["sky"]) > 0:
             input_model = self.sky_sub(input_model, members_by_type["sky"][0])
+        elif not self.sky_sub.skip:
+            self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False.")
+
         input_model = self.assign_wcs(input_model)
         input_model = self.photom(input_model)
 
-        self.log.info(f"Finished processing product {exp_product['name']}")
+        self.log.info(f"Finished processing {input_model}")
 
         return input_model
