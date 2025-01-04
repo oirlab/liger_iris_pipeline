@@ -17,6 +17,7 @@ __all__ = [
 
 class LigerIRISStep(Step):
 
+    # NOTE: This is kind of a hack, change if possible
     spec = """
         output_ext = string(default='.fits')  # Output file type
     """
@@ -60,7 +61,7 @@ class LigerIRISStep(Step):
 
     def finalize_result(self, result, reference_files_used):
         if isinstance(result, datamodels.LigerIRISDataModel):
-            #result.meta.calibration_software_revision = __version__
+            result.meta.calibration_software_revision = __version__
 
             if len(reference_files_used) > 0:
                 for ref_name, filename in reference_files_used:
@@ -115,8 +116,6 @@ class LigerIRISStep(Step):
         config, config_file : ConfigObj, str
             The configuration and the config filename.
         """
-        logger_name = cls.__name__
-        #log_cls = logging.getLogger(logger_name)
         config = config_parser.ConfigObj()
 
         if "config_file" in kwargs:
