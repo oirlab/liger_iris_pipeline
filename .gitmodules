@@ -1,3 +1,0 @@
-[submodule "iris_pipeline/iris_readout"]
-	path = liger_iris_pipeline/iris_readout
-	url = https://github.com/oirlab/iris_readout
