@@ -1,4 +1,1 @@
-liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text
-liger_iris_pipeline/tests/data/2024B-P123-008_Liger_IMG_SCI-J1458+1013-Y-10.0_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text
-liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL0_0001-00.fits filter=lfs diff=lfs merge=lfs -text
-liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits filter=lfs diff=lfs merge=lfs -text
+*.fits filter=lfs diff=lfs merge=lfs -text
