@@ -56,12 +56,12 @@ class LigerIRISAssociation(Association):
         return asn
     
     @classmethod
-    def from_member(cls, filename : str):
-        input_model = datamodels.open(filename)
+    def from_member(cls, member : str | datamodels.LigerIRISDataModel):
+        input_model = datamodels.open(member)
         product = {
             "members": [
                 {
-                    "expname": filename,
+                    "expname": input_model.filename,
                     "exptype": input_model.meta.exposure.type,
                 },
             ]

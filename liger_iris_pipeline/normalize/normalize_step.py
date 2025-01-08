@@ -12,15 +12,16 @@ class NormalizeStep(LigerIRISStep):
     by its own mean, median or mode
     """
 
+    class_alias = "normalize"
+
     spec = """
         method = string(default='median')
     """
 
     def process(self, input):
-        if isinstance(input, str):
-            with datamodels.open(input) as input_model:
-                result = normalize.do_correction(input_model, method=self.method)
-        else:
-            result = normalize.do_correction(input, method=self.method)
+        with datamodels.open(input) as input_model:
+            result = normalize.do_correction(input_model, method=self.method)
+
+        self.status = "COMPLETE"
 
         return result

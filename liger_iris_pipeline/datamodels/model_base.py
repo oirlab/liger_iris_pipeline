@@ -3,6 +3,7 @@ from pathlib import Path
 
 from astropy.time import Time
 from astropy.io import fits
+from datetime import datetime
 from stdatamodels import DataModel
 
 __all__ = ["LigerIRISDataModel"]
@@ -35,9 +36,11 @@ class LigerIRISDataModel(DataModel):
             super().__init__(init=init, **kwargs)
 
         if isinstance(init, str | Path):
-            self.filename = str(init)
+            self._filename = str(init)
+        elif isinstance(init, fits.HDUList):
+            self._filename = init.filename()
         else:
-            self.filename = None
+            self._filename = None
 
     def set_schema_from_instrument(self, instrument : str):
         s = self.schema_url.rsplit('/', 1)
@@ -100,18 +103,10 @@ class LigerIRISDataModel(DataModel):
         super().on_save(init)
         if self.meta.filename is None and isinstance(init, str | Path):
             self.meta.filename = str(os.path.basename(init))
-        elif isinstance(self.meta.filename, str | Path) and isinstance(init, str | Path):
+        elif isinstance(init, str | Path):
             if self.meta.filename != str(init):
                 self.meta.filename = str(init)
         self.meta.date_created = Time.now().isot
-
-    @property
-    def filename(self):
-        return self._filename
-        
-    @filename.setter
-    def filename(self, value):
-        self.filename = value
 
     @property
     def input_path(self):
@@ -133,12 +128,24 @@ class LigerIRISDataModel(DataModel):
         return self.meta.instrument.name
     
     @staticmethod
-    def generate_filename(
+    def _generate_filename(
         instrument : str,
-        obsid : str,
-        detector : str, obstype : str, level : int | str = 0,
+        sem_id : str | None,
+        program_number : str | None, obs_number : str | None,
+        detector : str, exptype : str, level : int | str = 0,
         exp : int | str = '0001', subarray : int | str | None = None
     ):
+        if sem_id is None:
+            t = datetime.now()
+            sem_id = str(t.year)
+            if t.month < 8:
+                sem_id += 'A'
+            else:
+                sem_id += 'B'
+        if program_number is None:
+           program_number = 'P001' 
+        if obs_number is None:
+            obs_number = '001'
         if instrument.lower() == 'iris':
             instrument = 'IRIS'
         elif instrument.lower() == 'liger':
@@ -151,13 +158,50 @@ class LigerIRISDataModel(DataModel):
             subarray = '-' + str(subarray).zfill(2)
         else:
             subarray = '-00'
-        return f"{obsid}_{instrument}_{detector.upper()}_{obstype}_LVL{int(level)}_{exp}{subarray}.fits"
+        return f"{sem_id}-{program_number}-{obs_number}_{instrument}_{detector.upper()}_{exptype}_LVL{int(level)}_{exp}{subarray}.fits"
+    
+    def generate_filename(
+            self,
+            instrument : str | None = None,
+            sem_id : str | None = None,
+            program_number : str | None = None, obs_number : str | None = None,
+            detector : str | None = None, exptype : str | None = None, level : int | str | None = None,
+            exp : int | str | None = None, subarray : int | str | None = None
+        ):
+        instrument = instrument if instrument is not None else self.instrument
+        sem_id = sem_id if sem_id is not None else self.meta.program.sem_id
+        program_number = program_number if program_number is not None else self.meta.program.program_number
+        obs_number = obs_number if obs_number is not None else self.meta.program.obs_number
+        detector = detector if detector is not None else self.meta.instrument.detector
+        exptype = exptype if exptype is not None else self.meta.exposure.type
+        level = level if level is not None else self.meta.data_level
+        exp = exp if exp is not None else self.meta.exposure.number
+        subarray = subarray if subarray is not None else self.meta.subarray.id
+
+        # Override exptype for now to include additional info for development
+        # NOTE: Remove this eventually
+        exptype += f'-{self.meta.target.name}' + f'-{self.meta.instrument.filter}' + f'-{self.meta.instrument.scale}'
+
+        return self._generate_filename(
+            instrument=instrument,
+            sem_id=sem_id, program_number=program_number, obs_number=obs_number,
+            detector=detector, exptype=exptype,
+            level=level, exp=exp, subarray=subarray
+        )
 
     def get_primary_array_name(self):
         return 'data'
     
-    @classmethod
-    def from_model(cls, input_model):
-        model = cls(instrument=input_model.instrument)
-        model.__dict__.update(input_model.__dict__)
-        return model
+    # @classmethod
+    # def from_model(cls, input_model):
+    #     model = cls(instrument=input_model.instrument)
+    #     model.__dict__.update(input_model.__dict__)
+    #     return model
+    
+    def copy(self, memo=None):
+        """
+        Returns a deep copy of this model.
+        """
+        result = self.__class__(instrument=self.instrument)
+        self.clone(result, self, deepcopy=True, memo=memo)
+        return result

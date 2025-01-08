@@ -1,25 +1,30 @@
 # Imports
 import liger_iris_pipeline
 import liger_iris_pipeline.datamodels as datamodels
+from liger_iris_pipeline.associations import L1Association
 import numpy as np
 import os
 
+def create_dark_config():
+    conf = """
+    class = "liger_iris_pipeline.DarkSubtraction"
+    save_results = False
+    output_dir = "/Users/cale/Desktop/DRS_Testing2/"
+    """
+    return conf
+
 def create_config():
     conf = """
-    name = "ImagerStage2Pipeline"
-    class = "liger_iris_pipeline.pipeline.ImagerStage2Pipeline"
+    class = "liger_iris_pipeline.ImagerStage2Pipeline"
     save_results = True
 
     [steps]
         [[dark_sub]]
+            config_file = "dark_config.cfg"
         [[flat_field]]
         [[sky_sub]]
         [[assign_wcs]]
             skip = False
-        [[photom]]
-            skip = True
-        [[resample]]
-            skip = True
     """
     return conf
 
@@ -31,10 +36,18 @@ def test_imager_stage2(tmp_path):
     with open(config_file, "w") as f:
         f.write(conf)
 
+    # Create a temporary dark config file
+    conf = create_dark_config()
+    config_file_dark = str(tmp_path / "dark_config.cfg")
+    with open(config_file_dark, "w") as f:
+        f.write(conf)
+
     # Association
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
-    sky_bkg_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
-    product = {
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    sky_bkg_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    
+    # ASN
+    asn = L1Association.from_product({
         "members": [
             {
                 "expname": sci_L1_filename,
@@ -45,17 +58,18 @@ def test_imager_stage2(tmp_path):
                 "exptype": "SKY"
             }
         ]
-    }
+    })
 
     # Create and call the pipeline object
-    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(product, config_file=config_file, return_step=True)
+    pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+    results = pipeline.run(asn, output_dir=str(tmp_path))
     model_result = results[0]
 
     # Manual L2 file
     with datamodels.open(pipeline.dark_sub.dark_filename) as dark_model, \
         datamodels.open(pipeline.flat_field.flat_filename) as flat_model, \
-        datamodels.open(product['members'][0]['expname']) as sci_model, \
-        datamodels.open(product['members'][1]['expname']) as bkg_model:
+        datamodels.open(sci_L1_filename) as sci_model, \
+        datamodels.open(sky_bkg_L1_filename) as bkg_model:
         ref_data = (sci_model.data - dark_model.data) / flat_model.data - bkg_model.data
         np.testing.assert_allclose(model_result.data, ref_data, rtol=1e-6)
 
@@ -68,9 +82,21 @@ def test_imager_stage2_subarray(tmp_path):
     with open(config_file, "w") as f:
         f.write(conf)
 
+    # Create a temporary config file
+    conf = create_config()
+    config_file = str(tmp_path / "test_config.cfg")
+    with open(config_file, "w") as f:
+        f.write(conf)
+
+    # Create a temporary dark config file
+    conf = create_dark_config()
+    config_file_dark = str(tmp_path / "dark_config.cfg")
+    with open(config_file_dark, "w") as f:
+        f.write(conf)
+
     # Files
-    sci_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits'
-    sky_bkg_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SKY-SIM-Y_LVL1_0001-00.fits'
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    sky_bkg_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits"
     sci_L1_filename_subarray = str(tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', '-01.fits')))
 
     # Load the science model
@@ -101,7 +127,7 @@ def test_imager_stage2_subarray(tmp_path):
     input_model.save(sci_L1_filename_subarray)
 
     # ASN
-    product ={
+    asn = L1Association.from_product({
         "members": [
             {
                 "expname": sci_L1_filename_subarray,
@@ -112,17 +138,22 @@ def test_imager_stage2_subarray(tmp_path):
                 "exptype": "SKY"
             }
         ]
-    }
+    })
 
     # Call pipeline with test ASN
-    results, pipeline = liger_iris_pipeline.ImagerStage2Pipeline.call(product, config_file=config_file, return_step=True)
+    pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+    results = pipeline.run(asn, output_dir=str(tmp_path))
     model_result = results[0]
 
     # Manual L2
     # Everntually update this to use a static result
     with datamodels.open(pipeline.dark_sub.dark_filename) as dark_model, \
         datamodels.open(pipeline.flat_field.flat_filename) as flat_model, \
-        datamodels.open(product['members'][0]['expname']) as sci_model, \
-        datamodels.open(product['members'][1]['expname']) as bkg_model:
+        datamodels.open(sci_L1_filename_subarray) as sci_model, \
+        datamodels.open(sky_bkg_L1_filename) as bkg_model:
         ref_data = (sci_model.data - dark_model.data[subarray_slice]) / flat_model.data[subarray_slice] - bkg_model.data[subarray_slice]
         np.testing.assert_allclose(model_result.data, ref_data, rtol=1e-6)
+
+
+from pathlib import Path
+test_imager_stage2(Path("/Users/cale/Desktop/DRS_Testing/"))

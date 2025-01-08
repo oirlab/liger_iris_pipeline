@@ -13,6 +13,7 @@ class FlatFieldStep(LigerIRISStep):
     """
 
     reference_file_types = ["flat"]
+    class_alias = "flat_field"
 
     def process(self, input):
         input_model = datamodels.open(input)
@@ -30,6 +31,7 @@ class FlatFieldStep(LigerIRISStep):
             missing = True
         if missing:
             self.log.warning("Flat-field step will be skipped")
+            self.status = "SKIPPED"
             return self.skip_step(input_model)
 
         self.log.debug("Opening flat as FlatModel")
@@ -40,6 +42,8 @@ class FlatFieldStep(LigerIRISStep):
             input_model,
             flat_model,
         )
+
+        self.status = "COMPLETE"
 
         # Close the inputs
         input_model.close()

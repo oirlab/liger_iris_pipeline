@@ -14,34 +14,13 @@ Non-linearity correction step corrects for the non-linear response of the detect
 Detector Readout Sampling
 -------------------------
 The H4RG detecors are readout in non-destructive reads and sampling algorithms are used to estimate the accumulated electrons in the detector for an integration time. The sampling algorithms currently implemented in the pipeline are
-- Correlated Double Sampling
-- Multi Correlated Double Sampling
+- (Multi)-Correlated Double Sampling
 - Up-the-Ramp Sampling
-
-Requirements
-------------
-The sampling algorithms use the drsrop_clib module.
-https://github.com/oirlab/iris_readout
 
 Running the Examples
 --------------------
-There is a example run in the liger_iris_pipeline/readout/tests directory. The sample ramp is given in the sample_ramp.fits.
-sampling.cfg gives the configurations for the pipeline
-
-``sampling.cfg``:
-
-.. code-block:: ini
-
-    name = "rop"
-    class = "liger_iris_pipeline.pipeline.ROPPipeline"
-    save_results = True
-        [steps]
-          [[nonlincorr]]
-          [[readoutsamp]]
-           mode='mcds'
-
-The sampling mode is set by the ``mode`` keyword which can be ``mcds`` or ``utr``. MCDS algorithm also requires the group number, the number of reads to be co-added. This is currently hardcoded in this version.
-
+There is a example run in the liger_iris_pipeline/readout directory. The sample ramp is given in the sample_ramp.fits.
+sampling.cfg gives the configurations for the pipeline.
 
 Execute the pipeline from the command line
 ------------------------------------------

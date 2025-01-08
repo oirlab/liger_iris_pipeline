@@ -49,7 +49,7 @@ class ReferenceFileModel(LigerIRISDataModel):
 
 
     @staticmethod
-    def generate_filename(
+    def _generate_filename(
         instrument : str,
         detector : str, reftype : str,
         date : str, version : str
@@ -63,3 +63,21 @@ class ReferenceFileModel(LigerIRISDataModel):
         else:
             raise ValueError(f"Unknown instrument {instrument}")
         return f"{instrument}_{detector.upper()}_{reftype}_{date}_{version}.fits"
+    
+    def generate_filename(
+            self,
+            instrument : str | None = None,
+            detector : str | None = None,
+            reftype : str | None = None,
+            date : str | None = None,
+            version : str | None = None
+        ):
+        instrument = instrument if instrument is not None else self.instrument
+        detector = detector if detector is not None else self.meta.instrument.detector
+        reftype = reftype if reftype is not None else self.meta.reftype
+        date = self.meta.date.replace(':', '').replace('-', '')[0:15]
+        version = self.meta.ref_version if self.meta.ref_version is not None else '0.0.1'
+        return self._generate_filename(
+            instrument=instrument, detector=detector, reftype=reftype,
+            date=date, version=version
+        )

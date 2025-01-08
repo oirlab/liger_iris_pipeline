@@ -64,5 +64,5 @@ def load_wcs(input_model, reference_files={}):
 
         wcs = WCS(pipeline)
         output_model.meta.wcs = wcs
-        output_model.meta.cal_step.assign_wcs = "COMPLETE"
+
     return output_model

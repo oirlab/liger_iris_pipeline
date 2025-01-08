@@ -31,8 +31,6 @@ def do_correction(input_model, method="median"):
 
     output_model = apply_norm(input_model, method)
 
-    output_model.meta.cal_step.normalize = "COMPLETE"
-
     return output_model
 
 

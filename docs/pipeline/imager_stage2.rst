@@ -4,7 +4,7 @@ image2: Stage 2 Imaging Processing
 ==================================
 
 :Config: image2.cfg
-:Class: `~liger_iris_pipeline.pipeline.ProcessImagerL2Pipeline`
+:Class: `~liger_iris_pipeline.pipeline.ImagerStage2Pipeline`
 
 Stage 2 imaging processing applies additional instrumental corrections and
 calibrations that result in a fully calibrated individual exposure. 

@@ -21,18 +21,18 @@ properties:
             type: string
             fits_keyword: PROGPI
             blend_table: True
-          category:
-            title: Program category
+          sem_id:
+            title: Semester ID
             type: string
-            fits_keyword: PROGCAT
+            fits_keyword: SEMID
             blend_table: True
-          sub_category:
-            title: Program sub-category
+          program_number:
+            title: Program number in the semester
             type: string
-            fits_keyword: PROGSCAT
+            fits_keyword: PROGNUM
             blend_table: True
-          id:
-            title: Program ID
+          obs_number:
+            title: Observation number in the semester
             type: string
-            fits_keyword: PROGID
+            fits_keyword: OBSNUM
             blend_table: True

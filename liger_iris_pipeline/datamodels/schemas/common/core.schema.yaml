@@ -13,7 +13,7 @@ allOf: # NOTE: We drop observation schema from jwst
 - $ref: barycenter.schema
 - $ref: subarray.schema # REMIND ME: Why do we have subarray and subarray_map in the metadata?
 - $ref: subarray_map.schema
-- $ref: cal_steps.schema
+- $ref: drs_steps.schema
 type: object
 properties:
   meta:

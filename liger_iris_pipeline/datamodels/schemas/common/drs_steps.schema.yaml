@@ -1,21 +1,37 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/cal_steps.schema"
+id: "https://oirlab.github.io/schemas/drs_steps.schema"
 type: object
 properties:
   meta:
     type: object
     properties:
-      cal_step:
-        title: "Calibration Steps performed by the DRS"
+      drs_step:
+        title: "Steps performed by the DRS"
         type: object
         properties:
         # NOTE: This is actually all of the steps, but typically every step corresponds to a calibration step or file
         # NOTE: S_ is for Step
-        title: Calibration step information
+        # These map 1-1 with the calibration steps in the DRS. Pipelines are not supported.
+        title: DRS step information.
         type: object
         properties:
+          dq_init:
+            title: Data quality initialization
+            type: string
+            fits_keyword: S_DQINIT
+            blend_table: True
+          fit_ramp:
+            title: Ramp fitting
+            type: string
+            fits_keyword: S_RAMPFI
+            blend_table: True
+          nonlincorr:
+            title: Nonlinear readout correction
+            type: string
+            fits_keyword: S_NLCORR
+            blend_table: True
           assign_wcs:
             title: Assign World Coordinate System
             type: string
@@ -26,10 +42,10 @@ properties:
             type: string
             fits_keyword: S_MTWCS
             blend_table: True
-          sky_back_sub:
-            title: Background subtraction
+          sky_sub:
+            title: Sky subtraction
             type: string
-            fits_keyword: S_SBKDSB
+            fits_keyword: S_SKYSUB
             blend_table: True
           bias:
             title: Bias subtraction
@@ -51,13 +67,33 @@ properties:
             type: string
             fits_keyword: S_GANSCL
             blend_table: True
-          photom:
-            title: Photometric Calibration
+          fluxcal:
+            title: Flux Calibration
             type: string
-            fits_keyword: S_PHOTOM
+            fits_keyword: S_FLUXCL
+            blend_table: True
+          resample:
+            title: Flux Calibration
+            type: string
+            fits_keyword: S_RESAMP
             blend_table: True
           wavecal:
             title: Wavelength calibration
             type: string
             fits_keyword: S_WAVCAL
+            blend_table: True
+          parse_subarrays:
+            title: Parse subarrays
+            type: string
+            fits_keyword: S_PARSSA
+            blend_table: True
+          merge_subarrays:
+            title: Merge subarrays
+            type: string
+            fits_keyword: S_MERGSA
+            blend_table: True
+          normalize: # TODO: UPDATE THIS for 1D and 2D
+            title: Normalize data
+            type: string
+            fits_keyword: S_NORMAL
             blend_table: True

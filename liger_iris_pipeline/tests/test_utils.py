@@ -44,6 +44,7 @@ def add_ifu_wcs_axes(ra : float, dec : float, size : tuple[int, int], scale : fl
     return meta
 
 def get_default_metadata():
+
     meta = {}
 
     # CORE
@@ -94,6 +95,7 @@ def get_default_metadata():
     meta['exposure.number'] = 1
     meta['exposure.sequence_tot'] = 1
     meta['exposure.readmode'] = 'DEFAULT'
+    
     return meta
 
 def get_default_liger_metadata():
@@ -122,9 +124,13 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
 
     # Instrument
     if meta['instrument.name'] == 'Liger':
-        meta.update(get_default_liger_metadata())
+        _meta = get_default_liger_metadata()
+        _meta.update(meta)
+        meta = _meta
     elif meta['instrument.name'] == 'IRIS':
-        meta.update(get_default_iris_metadata())
+        _meta = get_default_iris_metadata()
+        _meta.update(meta)
+        meta = _meta
 
     # Time
     time = Time(meta['exposure.jd_start'], format='jd')
@@ -147,7 +153,11 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
     elif hasattr(model, 'data') and "IFU" in model.__class__.__name__:
         meta.update(add_ifu_wcs_axes(ra=meta['target.ra'], dec=meta['target.dec'], size=model.data.shape, scale=meta['instrument.scale']), dw=1)
 
-    # Dict to object
+    merge_model_meta(model, meta)
+
+    return model
+
+def merge_model_meta(model, meta):
     for key, value in meta.items():
         attrs = key.split('.')
         target = model.meta
@@ -158,8 +168,6 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
                 target is None
         if target is not None:
             setattr(target, attrs[-1], value)
-
-    return model
 
 
 def create_ramp(
@@ -183,4 +191,5 @@ def create_ramp(
     np.clip(data, 0, np.iinfo(np.int16).max)
     ramp_model = datamodels.RampModel(instrument=meta['instrument.name'], times=times, data=data, dq=dq)
     add_meta_data(ramp_model, meta)
+    ramp_model.meta.data_level = 0
     return ramp_model

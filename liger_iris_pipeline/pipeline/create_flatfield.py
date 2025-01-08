@@ -1,8 +1,11 @@
+import os
+import copy
+
 import liger_iris_pipeline.datamodels as datamodels
 from .base_pipeline import LigerIRISPipeline
 from ..dark_subtraction import DarkSubtractionStep
 from ..normalize import NormalizeStep
-from liger_iris_pipeline.associations import ImagerL1Association
+from liger_iris_pipeline.associations import L1Association
 
 __all__ = ["CreateFlatfield"]
 
@@ -16,8 +19,7 @@ class CreateFlatfield(LigerIRISPipeline):
         normalize
     """
 
-    # TODO: MAKE THIS GENERIC FOR IMAGER AND IFU DETECTORS
-    default_association = ImagerL1Association
+    default_association = L1Association
 
     # Define alias to steps
     step_defs = {
@@ -37,6 +39,15 @@ class CreateFlatfield(LigerIRISPipeline):
         result = self.process_exposure_product(self.asn.products[0])
         self.log.info("Finished Create Flatfield.")
         return result
+    
+    def get_output_dir(self, input_model : datamodels.LigerIRISDataModel):
+        if self.output_dir is not None:
+            return self.output_dir
+        else:
+            if input_model.filename is not None:
+                return os.path.abspath(input_model.filename)
+            else:
+                return ''
 
     # Process each exposure
     def process_exposure_product(self, exp_product : dict):
@@ -47,21 +58,22 @@ class CreateFlatfield(LigerIRISPipeline):
         raw_flat_model = members_by_type["flat"][0]
         self.log.info(f"Processing {raw_flat_model}")
         input_model = datamodels.open(raw_flat_model)
-        input_model = self.dark_sub(input_model)
-        input_model = self.normalize(input_model)
+        input_model = self.dark_sub.run(input_model)
+        input_model = self.normalize.run(input_model)
 
         # To flat field model
-        flat_model = datamodels.FlatModel.from_model(input_model)
-    
-        # Save the results
-        if self.save_results:
-            output_file = datamodels.ReferenceFileModel.generate_filename(
-                instrument=flat_model.instrument, detector=flat_model.meta.instrument.detector,
-                reftype='FLAT', date=flat_model.meta.date, version='0.0.1'
-            )
-            flat_model.save(output_file)
-            self.log.info(f"Saved {flat_model}")
+        # TODO: Generalize the conversion from ImagerModel -> FlatModel for other pipelines and move to DataModel class
+        flat_model = datamodels.FlatModel(
+            instrument=input_model.instrument,
+            data=input_model.data, err=input_model.err, dq=input_model.dq
+        )
+        _meta = copy.deepcopy(input_model.meta.instance)
+        _meta.update(flat_model.meta.instance)
+        flat_model.meta = _meta
+        flat_model.meta.reftype = "FLAT"
+        flat_model.meta.pedigree = None
+        flat_model.meta.version = '0.0.1'
 
-        self.log.info(f"Finished processing {exp_product['name']}")
+        self.log.info(f"Finished processing {members_by_type["flat"][0]}")
 
         return flat_model

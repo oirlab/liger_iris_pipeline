@@ -1,4 +1,4 @@
-from ..associations import ImagerL1Association
+from ..associations import L1Association
 from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
 from ..parse_subarray_map import ParseSubarrayMapStep
@@ -6,8 +6,8 @@ from ..dark_subtraction import DarkSubtractionStep
 from ..flatfield import FlatFieldStep
 from ..assign_wcs import AssignWCSStep
 from ..sky_subtraction import SkySubtractionImagerStep
-from jwst.photom import PhotomStep as JWSTPhotomStep
-from jwst.resample import ResampleStep as JWSTResampleStep
+#from jwst.photom import PhotomStep as JWSTPhotomStep
+#from jwst.resample import ResampleStep as JWSTResampleStep
 
 __all__ = ["ImagerStage2Pipeline"]
 
@@ -27,7 +27,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         ResampleStep (JWST)
     """
 
-    default_association = ImagerL1Association
+    default_association = L1Association
 
     # Define alias to steps
     step_defs = {
@@ -35,9 +35,9 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         "dark_sub": DarkSubtractionStep,
         "flat_field": FlatFieldStep,
         "sky_sub": SkySubtractionImagerStep,
-        "photom": JWSTPhotomStep,
+        #"fluxcal": JWSTPhotomStep,
         "assign_wcs": AssignWCSStep,
-        "resample": JWSTResampleStep,
+        #"resample": JWSTResampleStep,
     }
 
     def process(self, input):
@@ -52,9 +52,6 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         results = []
         for product in self.asn["products"]:
             result = self.process_exposure_product(product)
-
-            # Save result
-            result.meta.filename = self.output_file
             results.append(result)
 
         self.log.info("ImagerStage2Pipeline completed")
@@ -65,7 +62,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
     def process_exposure_product(self, exp_product : dict):
         """Process an exposure product.
 
-        Parameters:w
+        Parameters:
             exp_product (dict): The exposure product.
         """
 
@@ -80,16 +77,20 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         input_model = datamodels.open(science)
 
         # Run remaining steps
-        input_model = self.parse_subarray_map(input_model)
-        input_model = self.dark_sub(input_model)
-        input_model = self.flat_field(input_model)
+        input_model = self.parse_subarray_map.run(input_model)
+        input_model = self.dark_sub.run(input_model)
+        input_model = self.flat_field.run(input_model)
         if len(members_by_type["sky"]) > 0:
-            input_model = self.sky_sub(input_model, members_by_type["sky"][0])
+            sky_filename = members_by_type["sky"][0]
+            input_model = self.sky_sub.run(input_model, sky_filename)
         elif not self.sky_sub.skip:
-            self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False.")
+            self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False. Skipping Sky Subtraction")
 
-        input_model = self.assign_wcs(input_model)
-        input_model = self.photom(input_model)
+        input_model = self.assign_wcs.run(input_model)
+        #input_model = self.fluxcal(input_model)
+
+        # Update the model level
+        input_model.meta.data_level = 2
 
         self.log.info(f"Finished processing {input_model}")
 

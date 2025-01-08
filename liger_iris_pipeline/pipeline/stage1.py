@@ -3,7 +3,7 @@ import logging
 from collections import defaultdict
 from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
-from ..associations import ImagerL0Association
+from ..associations import L0Association
 
 # step imports
 from ..readout import NonlinCorrectionStep, FitRampStep
@@ -24,7 +24,7 @@ class Stage1Pipeline(LigerIRISPipeline):
         FitRampStep
     """
 
-    default_association = ImagerL0Association
+    default_association = L0Association
 
     # Define aliases to steps
     step_defs = {

@@ -2,9 +2,9 @@ from . import LigerIRISAssociation
 
 __all__ = ['ImagerL1Association']
 
-class ImagerL1Association(LigerIRISAssociation):
+class L1Association(LigerIRISAssociation):
     """
-    IRIS Imager Level 1 Association
+    Imager Level 1 Association
     TODO:
         Implement subarrays in the association.
     """

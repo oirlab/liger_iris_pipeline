@@ -1,14 +1,26 @@
 
 from functools import wraps
+from collections.abc import Sequence
 import warnings
-import os
+import copy
+import gc
 
+import stpipe.utilities
+from . import datamodels
+from astropy.io import fits
+from pathlib import Path
+import stpipe.log
+import os
+from typing import Self
+import yaml
+
+import stpipe
+from stpipe import cmdline
 from stpipe import Step
 from stpipe import config_parser
 from . import datamodels
 from . import __version__
 
-from jwst.lib.suffix import remove_suffix
 from stpipe import crds_client
 
 __all__ = [
@@ -17,71 +29,118 @@ __all__ = [
 
 class LigerIRISStep(Step):
 
-    # NOTE: This is kind of a hack, change if possible
-    spec = """
-        output_ext = string(default='.fits')  # Output file type
-    """
+    exclude_spec = [
+        "pre_hooks", "post_hooks",
+        "output_use_index", "output_use_model",
+        "suffix", "search_output_file", "input_dir", 'output_ext',
+        'steps' # Make spec only contain config for THIS class, not substeps
+    ]
 
-    @classmethod
-    def call(cls, *args, return_step : bool = False, **kwargs):
+    #spec = """
+    #    output_dir = str(default=None) # Directory path for output files
+    #"""
+
+    def __init__(
+            self,
+            config_file : str | None = None,
+            **kwargs
+        ):
         """
-        Hack to allow the pipeline to return the step or pipeline object that is created
+        Create a `Step` instance.
+        Configuration is determined according to:
+            1. Class's spec object
+            2. config_file
+            3. kwargs
         """
-        filename = None
-        if len(args) > 0:
-            filename = args[0]
-        config, config_file = cls.build_config(filename, **kwargs)
+        self.init_logger()
+        self._reference_files_used = []
 
-        if "class" in config:
-            del config["class"]
+        # TODO: Refactor this back into stpipe Step classmethods.
 
-        if "logcfg" in config:
-            try:
-                self.log.load_configuration(config["logcfg"])
-            except Exception as e:
-                raise RuntimeError(
-                    f"Error parsing logging config {config['logcfg']}"
-                ) from e
-            del config["logcfg"]
+        # Load config for this Step (not a pipeline)
+        self.config_file = config_file
 
-        name = config.get("name", None)
-        instance = cls.from_config_section(config, name=name, config_file=config_file)
-
-        result = instance.run(*args)
-
-        if return_step:
-            return result, instance
+        if self.config_file is not None:
+            config = config_parser.load_config_file(config_file)
         else:
-            return result
+            config = config_parser.ConfigObj()
+        
+        # Parse the config from the spec and any provided kwargs
+        spec = self.load_spec_file()
+        kwargs = config_parser.config_from_dict(
+            kwargs,
+            spec,
+            root_dir=None,
+            allow_missing=False
+        )
+
+        # Merge the spec with the config
+        config.merge(kwargs)
+
+        # Set the config parameters as member variables
+        for key, val in config.items():
+            if key not in ("class", "steps", "config_file"):
+                _val = self.parse_config_kwarg(key, val, spec)
+                setattr(self, key, _val)
+
+    def process(self, *args, **kwargs):
+        """
+        This is where real work happens. Every Step subclass has to
+        override this method. The default behaviour is to raise a
+        NotImplementedError exception.
+        """
+        raise NotImplementedError(f"Class {self.__class__} does not implement instance method `process`.")
+
+    # @classmethod
+    # def call(cls, input, return_step : bool = False, config_file : str | None = None, **kwargs):
+    #     """
+    #     Override call so the Pipeline or Step instance is optionally returned.
+        
+    #     Parameters:
+    #         input (str | LigerIRISDataModel | list[str] | list[LigerIRISDataModel]):
+    #             1. filename of datamodel
+    #             2. filename of ASN
+    #             3. datamodel
+    #             4. list of filenames
+    #             5. list of datamodels
+    #     """
+    #     instance = cls(config_file=config_file)
+    #     result = instance.run(input, **kwargs)
+
+    #     if return_step:
+    #         return result, instance
+    #     else:
+    #         return result
 
 
     @classmethod
     def _datamodels_open(cls, init, **kwargs):
         return datamodels.open(init, **kwargs)
 
-    def finalize_result(self, result, reference_files_used):
-        if isinstance(result, datamodels.LigerIRISDataModel):
-            result.meta.calibration_software_revision = __version__
+    def finalize_result(self, result : datamodels.LigerIRISDataModel, reference_files_used : dict[str, str]):
+        result.meta.drs_version = __version__
+        from .pipeline import LigerIRISPipeline
+        if not isinstance(self, LigerIRISPipeline):
+            if hasattr(result.meta.drs_step, f"{self.class_alias}"):
+                setattr(result.meta.drs_step, f"{self.class_alias}", self.status)
+            else:
+                self.log.warning(f"Could not update status for {result.meta.drs_step}.{self.class_alias} in datamodel.")
 
-            if len(reference_files_used) > 0:
-                for ref_name, filename in reference_files_used:
-                    if hasattr(result.meta.ref_file, ref_name):
-                        getattr(result.meta.ref_file, ref_name).name = filename
-                result.meta.ref_file.crds.sw_version = crds_client.get_svn_version()
-                result.meta.ref_file.crds.context_used = crds_client.get_context_used(result.crds_observatory)
-                if self.parent is None:
-                    self.log.info(f"Results used CRDS context: {result.meta.ref_file.crds.context_used}")
+        # Set references files used
+        if len(reference_files_used) > 0:
+            for ref_name, filename in reference_files_used:
+                if hasattr(result.meta.ref_file, ref_name):
+                    getattr(result.meta.ref_file, ref_name).name = filename
+            
+            # Set CRDS context and software version
+            result.meta.ref_file.crds.sw_version = crds_client.get_svn_version()
+            result.meta.ref_file.crds.context_used = crds_client.get_context_used(result.crds_observatory)
 
+            if self.parent is None:
+                self.log.info(f"Results used CRDS context: {result.meta.ref_file.crds.context_used}")
 
-    def remove_suffix(self, name):
-        return remove_suffix(name)
-
-    @wraps(Step.run)
-    def run(self, *args, **kwargs):
-        result = super().run(*args, **kwargs)
-        if not self.parent:
-            self.log.info(f"Results used liger_iris_pipeline version: {__version__}")
-        return result
+        # Reset status
+        self.status = None
 
     @wraps(Step.__call__)
     def __call__(self, *args, **kwargs):
@@ -93,69 +152,189 @@ class LigerIRISStep(Step):
             )
         return super().__call__(*args, **kwargs)
     
-    @classmethod
-    def build_config(cls, input, **kwargs):  # noqa: A002
+    def save_model(
+            self, model,
+            output_path : str | None = None,
+            output_dir : str | None = None
+        ):
         """
-        Build the ConfigObj to initialize a Step.
-        This does not call out to CRDS top determine the appropriate config.
-
-        A Step config is built in the following order:
-        - Local parameter reference file
-        - Step keyword arguments
-
-        Parameters
-        ----------
-        input : str or None
-            Input file
-
-        kwargs : dict
-            Keyword arguments that specify Step parameters.
-
-        Returns
-        -------
-        config, config_file : ConfigObj, str
-            The configuration and the config filename.
+        Saves the given model using the step/pipeline's naming scheme.
         """
-        config = config_parser.ConfigObj()
-
-        if "config_file" in kwargs:
-            config_file = kwargs["config_file"]
-            del kwargs["config_file"]
-            config_from_file = config_parser.load_config_file(str(config_file))
-            config_parser.merge_config(config, config_from_file)
-            config_dir = os.path.dirname(config_file)
+        if output_path:
+            output_path = model.save(output_path)
         else:
-            config_file = None
-            config_dir = ""
+            if output_dir is None:
+                output_dir = self.output_dir
+            output_path = self.make_output_path(model, output_dir=self.output_dir)
+            output_path = model.save(output_path)
+        self.log.info(f"Saved model in {output_path}")
 
-        config_kwargs = config_parser.ConfigObj()
+        return output_path
+    
+    def run(self, input, *args, **kwargs):
+        """
+        Run handles the generic setup and teardown that happens with the running of each step.
+        The real work that is unique to each step type is done in the `process` method.
 
-        # load and merge configuration files for each step they are provided:
-        steps = {}
-        if "steps" in kwargs:
-            for step, pars in kwargs["steps"].items():
-                if "config_file" in pars:
-                    step_config_file = os.path.join(config_dir, pars["config_file"])
-                    cfgd = config_parser.load_config_file(step_config_file)
-                    if "name" in cfgd:
-                        if cfgd["name"] != step:
-                            raise ValueError(
-                                "Step name from configuration file "
-                                f"'{step_config_file}' does not match step "
-                                "name in the 'steps' argument."
-                            )
-                        del cfgd["name"]
-                    cfgd.pop("class", None)
-                    cfgd.update(pars)
-                    steps[step] = cfgd
+        Args:
+            input (str | LigerIRISDataModel | list[str] | list[LigerIRISDataModel]):
+                    1. filename of datamodel
+                    2. filename of ASN
+                    3. datamodel
+                    4. ASN
+                    5. list of filenames
+                    6. list of datamodels
+        Returns:
+            result (LigerIRISDataModel | list[LigerIRISDataModel] | list[LigerIRISDataModel]):
+                The result(s) of the step. Steps can only return a single model, but Pipelines can return a list.
+        """
+        gc.collect()
+        with stpipe.log.record_logs(formatter=self._log_records_formatter) as log_records:
+            self._log_records = log_records
+
+            # Make generic log messages go to this step's logger
+            orig_log = stpipe.log.delegator.log
+            stpipe.log.delegator.log = self.log
+
+            step_result = None
+
+            # log Step or Pipeline parameters from top level only
+            if self.parent is None:
+                self.log.info(
+                    "Step %s parameters are:%s",
+                    self.name,
+                    # Add an indent to each line of the YAML output
+                    "\n  "
+                    + "\n  ".join(
+                        yaml.dump(self.get_pars(), sort_keys=False)
+                        .strip()
+                        # Convert serialized YAML types true/false/null to Python types
+                        .replace(" false", " False")
+                        .replace(" true", " True")
+                        .replace(" null", " None")
+                        .splitlines()
+                    ),
+                )
+            
+            # Main try block
+            try:
+
+                # Update the params based on kwargs
+                pars = self.get_pars()
+                kwargs_process = copy.deepcopy(kwargs)
+                for k, v in kwargs.items():
+                    if k in pars:
+                        setattr(self, k, v)
+                        del kwargs_process[k] # Remaining are for process
+
+                # Prefetch references
+                self._reference_files_used = []
+                if not self.skip and self.prefetch_references:
+                    self.prefetch(input)
+
+                # Call process and catch signature error
+                if not self.skip:
+                    try:
+                        step_result = self.process(input, *args, **kwargs_process)
+                    except TypeError as e:
+                        if "process() takes exactly" in str(e):
+                            raise TypeError(
+                                "Incorrect number of arguments to step"
+                            ) from e
+                        raise
                 else:
-                    steps[step] = pars
+                    self.log.info(f"Skipping step {self.name}")
 
-            kwargs = {k: v for k, v in kwargs.items() if k != "steps"}
-            if steps:
-                kwargs["steps"] = steps
+                # Update meta information regardless of skip
+                if isinstance(step_result, Sequence):
+                    for result in step_result:
+                        self.finalize_result(result, self._reference_files_used)
+                else:
+                    self.finalize_result(step_result, self._reference_files_used)
 
-        config_parser.merge_config(config_kwargs, kwargs)
-        config_parser.merge_config(config, config_kwargs)
+                self._reference_files_used = [] # Reset?
 
-        return config, config_file
+                # Save the results even if skipped since metadata is udpated.
+                if self.save_results:
+                    if isinstance(step_result, Sequence):
+                        for result in step_result:
+                            self.save_model(result, output_dir=self.output_dir)
+                    else:
+                        self.save_model(step_result, output_dir=self.output_dir)
+
+                if not self.skip:
+                    self.log.info(f"Step {self.name} done")
+            finally:
+                stpipe.log.delegator.log = orig_log
+
+        return step_result
+    
+    def init_logger(self, config : config_parser.ConfigObj | None = None):
+        """
+        Initialize logging for the step.
+        Config ignored for now.
+        """
+        # A list of logging.LogRecord emitted to the stpipe root logger
+        # during the most recent call to Step.run.
+        self._log_records = []
+
+        # Namespace for the logger
+        self.name = self.__class__.__name__
+        self.qualified_name = f"{stpipe.log.STPIPE_ROOT_LOGGER}.{self.name}"
+        self.parent = None
+        self.log = stpipe.log.getLogger(self.qualified_name)
+        self.log.setLevel(stpipe.log.logging.DEBUG)
+        self.log.info(f"{self.__class__.__name__} instance created.")
+    
+    @staticmethod
+    def _make_output_path(step : Self, model : datamodels.LigerIRISDataModel, output_dir : str | None):
+        """
+        Generate the output path for the given model.
+        """
+        if output_dir is None:
+            if step.output_dir is not None:
+                output_dir = step.output_dir
+            elif model._filename is not None:
+                output_dir = os.path.split(os.path.abspath(model._filename))[0]
+            else:
+                raise ValueError("No output directory provided and no default found.")
+        output_filename = model.generate_filename()
+        output_path = os.path.join(output_dir, output_filename)
+
+        return output_path
+
+    @classmethod
+    def load_spec_file(cls, preserve_comments=stpipe.utilities._not_set):
+        spec = super().load_spec_file(preserve_comments=preserve_comments)
+        for k in cls.exclude_spec:
+            if k in spec:
+                del spec[k]
+        return spec
+    
+    def get_pars(self, full_spec=True):
+        pars_dict = super().get_pars(full_spec=full_spec)
+        for k in self.exclude_spec:
+            if k in pars_dict:
+                del pars_dict[k]
+        return pars_dict
+    
+    @staticmethod
+    def parse_config_kwarg(key : str, val : str | None, spec):
+        """
+        TODO: Implement spec validation, defaults are grabbed above.
+        """
+        if not isinstance(val, str) or val is None:
+            return val
+        if val.lower() == "true":
+            return True
+        if val.lower() == "false":
+            return False
+        try:
+            return int(val)
+        except ValueError:
+            pass
+        try:
+            return float(val)
+        except ValueError:
+            pass
+        return val

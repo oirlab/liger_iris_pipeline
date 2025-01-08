@@ -13,6 +13,8 @@ class NonlinCorrectionStep(LigerIRISStep):
 
     reference_file_types = ["nonlincoeff"]
 
+    class_alias = "nonlincorr"
+
     def process(self, input):
         """
         Step for Nonlinearity correction
@@ -36,5 +38,7 @@ class NonlinCorrectionStep(LigerIRISStep):
 
             # Close the nonlinearity file
             nonlin_model.close()
+
+            self.status = "COMPLETE"
 
         return model_result

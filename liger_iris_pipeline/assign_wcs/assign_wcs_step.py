@@ -20,6 +20,8 @@ class AssignWCSStep(LigerIRISStep):
     # eventually ['distortion' , 'specwcs', 'wavelengthrange']
     reference_file_types = []
 
+    class_alias = "assign_wcs"
+
     def process(self, input, *args, **kwargs):
         reference_file_names = {}
         if isinstance(input, str):
@@ -33,7 +35,7 @@ class AssignWCSStep(LigerIRISStep):
             log.warning("assign_wcs expects ImageModel as input.")
             log.warning("Skipping assign_wcs step.")
             result = input_model.copy()
-            result.meta.cal_step.assign_wcs = "SKIPPED"
+            self.status = "SKIPPED"
         else:
             # Get reference files
             for reftype in self.reference_file_types:
@@ -43,6 +45,7 @@ class AssignWCSStep(LigerIRISStep):
 
             # Assign wcs
             result = load_wcs(input_model, reference_file_names)
+            self.status = "COMPLETE"
 
         # Close model if opened manually
         if isinstance(input, str):

@@ -44,7 +44,8 @@ def open(init=None, memmap=False, **kwargs):
 
     # If init is already a datamodel, copy and return
     if isinstance(init, LigerIRISDataModel):
-        return init.__class__(init, **kwargs)
+        return init
+        #return init.__class__(init, **kwargs)
     
     # Convert path to string
     if isinstance(init, Path):

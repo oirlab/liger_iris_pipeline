@@ -10,6 +10,8 @@ class MergeSubarraysStep(LigerIRISStep):
     """
     """
 
+    class_alias = "merge_subarrays"
+
     def process(self, input):
 
         # TODO: Update input to be a Subarray ASN ?

@@ -2,7 +2,7 @@
 liger_iris_pipeline Documentation
 *********************************
 
-The Liger-IRIS Data Reduction System is based on the suite of packages from Space Telescope Science Institute
+The Liger-IRIS Data Reduction System (DRS) is based on the suite of packages from Space Telescope Science Institute
 used to process data from JWST and NGRST.
 
 With ``stpipe`` and ``stdatamodels`` we can configure each step of a pipeline through one or more text based .INI style files,

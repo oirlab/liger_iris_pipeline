@@ -16,6 +16,8 @@ class FitRampStep(LigerIRISStep):
         num_coadd = integer(default=3)
     """
 
+    class_alias = "fit_ramp"
+
     def process(self, input):
         """
         Step for ramp fitting
@@ -37,5 +39,7 @@ class FitRampStep(LigerIRISStep):
             model_result = ImagerModel(data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
         elif input_model.meta.instrument.mode == 'IFU':
             model_result = IFUImageModel(data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
+
+        self.status = "COMPLETE"
 
         return model_result

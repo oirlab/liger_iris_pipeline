@@ -15,7 +15,7 @@ properties:
         title: The pedigree of the reference file
         type: string
         fits_keyword: PEDIGREE
-      version:
+      ref_version:
         title: The version number of the reference file
         type: string
         fits_keyword: REFVER

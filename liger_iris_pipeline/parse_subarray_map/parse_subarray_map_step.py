@@ -37,6 +37,8 @@ class ParseSubarrayMapStep(LigerIRISStep):
     and data quality flag accordingly
     """
 
+    class_alias = "parse_subarrays"
+
     def process(self, input):
 
         if isinstance(input, str):
@@ -59,8 +61,10 @@ class ParseSubarrayMapStep(LigerIRISStep):
                 result.dq[result["subarr_map"] != 0],
                 2 ** SUBARRAY_DQ_BIT
             )
+            self.status = "COMPLETE"
         else:
             self.log.info("No SUBARR_MAP extension found")
             result = input_model
+            self.status = "SKIPPED"
 
         return result

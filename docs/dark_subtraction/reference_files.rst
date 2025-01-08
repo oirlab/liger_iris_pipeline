@@ -6,4 +6,4 @@ The ``dark`` step uses a DARK reference file.
 
 The ``dark`` reference file by default is retrieved from the CRDS,
 to use instead a local file, specify the ``override_dark`` keyword
-in the configuration file specifying a path to a :py:class:`IRISImageModel`.
+in the configuration file specifying a path to a :py:class:`ImagerModel`.

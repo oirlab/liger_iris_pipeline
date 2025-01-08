@@ -3,7 +3,7 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/DarkModel.schema"
 allOf:
-- $ref: core.schema
+- $ref: ReferenceFileModel.schema
 - type: object
   properties:
     data:
