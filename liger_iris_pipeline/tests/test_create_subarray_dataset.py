@@ -23,8 +23,7 @@ def slice_subarray_mask(mask_array, subarray_params):
 
 def create_config():
     conf = """
-    name = "ImagerStage2Pipeline"
-    class = "liger_iris_pipeline.pipeline.ImagerStage2Pipeline"
+    class = "liger_iris_pipeline.ImagerStage2Pipeline"
     save_results = True
 
     [steps]
@@ -32,18 +31,14 @@ def create_config():
         [[flat_field]]
         [[sky_sub]]
         [[assign_wcs]]
-            skip = True
-        [[photom]]
-            skip = True
-        [[resample]]
-            skip = True
+            skip = False
     """
     return conf
 
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    sci_L1_filename = 'liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits'
+    sci_L1_filename = 'liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
     input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
@@ -112,12 +107,13 @@ def test_create_subarray_dataset(tmp_path):
 
     # Create the config file
     conf = create_config()
-    config_file = tmp_path / "test_config.cfg"
+    config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)
 
     # Create and run the pipeline on the full frame
-    results = liger_iris_pipeline.ImagerStage2Pipeline.call(full_frame_filename_temp, config_file=config_file)
+    pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+    results = pipeline.run(full_frame_filename_temp, output_dir=str(tmp_path))
     reduced_full_frame = results[0]
 
     # Set the subarray metadata id to 0 (full frame)
@@ -126,7 +122,8 @@ def test_create_subarray_dataset(tmp_path):
     # Call the pipeline on the subarrays
     reduced_subarrays = {}
     for k in subarray_filenames_temp:
-        reduced_subarrays[k] = liger_iris_pipeline.ImagerStage2Pipeline.call(subarray_filenames_temp[k], config_file=config_file)[0]
+        pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+        reduced_subarrays[k] = pipeline.run(subarray_filenames_temp[k], output_dir=str(tmp_path))[0]
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
     for k, full_frame_meta, each_input in zip(

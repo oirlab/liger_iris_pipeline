@@ -41,7 +41,7 @@ def test_create_flat(tmp_path):
         'instrument.scale' : 0.004,
     }
     add_meta_data(raw_flat_model, meta)
-    raw_flat_filename = str(tmp_path / "2024A-P123-044_IRIS_IMG1_FLAT-Y_LVL1_0001-00.fits")
+    raw_flat_filename = str(tmp_path / "2024B-P123-008_IRIS_IMG1_FLAT-Y_LVL1_0001-00.fits")
     raw_flat_model.save(raw_flat_filename)
 
     # ASN

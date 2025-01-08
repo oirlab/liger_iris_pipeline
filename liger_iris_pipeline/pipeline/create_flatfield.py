@@ -62,7 +62,7 @@ class CreateFlatfield(LigerIRISPipeline):
         input_model = self.normalize.run(input_model)
 
         # To flat field model
-        # TODO: Generalize the conversion from ImagerModel -> FlatModel for other pipelines and move to DataModel class
+        # TODO: Generalize the conversion from ImagerModel -> FlatModel
         flat_model = datamodels.FlatModel(
             instrument=input_model.instrument,
             data=input_model.data, err=input_model.err, dq=input_model.dq
@@ -73,6 +73,8 @@ class CreateFlatfield(LigerIRISPipeline):
         flat_model.meta.reftype = "FLAT"
         flat_model.meta.pedigree = None
         flat_model.meta.version = '0.0.1'
+        flat_model.meta.filename = None
+        #flat_model.meta.data_type = model_result.__class.__name__
 
         self.log.info(f"Finished processing {members_by_type["flat"][0]}")
 

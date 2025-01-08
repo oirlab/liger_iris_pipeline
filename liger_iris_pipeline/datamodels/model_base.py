@@ -19,6 +19,7 @@ class LigerIRISDataModel(DataModel):
         
         # Pass to super if already a datamodel, schema already known
         if isinstance(init, LigerIRISDataModel):
+            self.set_schema_from_instrument(instrument=init.instrument)
             super().__init__(init=init, **kwargs)
         else:
             # Get the schema from instrument name

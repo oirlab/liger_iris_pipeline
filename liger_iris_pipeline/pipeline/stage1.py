@@ -67,6 +67,6 @@ class Stage1Pipeline(LigerIRISPipeline):
         science = members_by_type["science"][0]
         self.log.info(f"Processing input {science} ...")
         with datamodels.RampModel(science) as input_model:
-            input_model = self.nonlinear_correction(input_model)
-            output_model = self.ramp_fit(input_model)
+            input_model = self.nonlinear_correction.run(input_model)
+            output_model = self.ramp_fit.run(input_model)
         return output_model

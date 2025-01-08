@@ -89,7 +89,7 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         input_model = self.assign_wcs.run(input_model)
         #input_model = self.fluxcal(input_model)
 
-        # Update the model level
+        # Update the data level
         input_model.meta.data_level = 2
 
         self.log.info(f"Finished processing {input_model}")

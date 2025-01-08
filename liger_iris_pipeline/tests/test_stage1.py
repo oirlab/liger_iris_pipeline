@@ -1,12 +1,13 @@
 # Imports
 import liger_iris_pipeline
+from liger_iris_pipeline.associations import L0Association
 import numpy as np
 from liger_iris_pipeline.tests.test_utils import create_ramp
 
 def create_config():
     conf = """
-    name = "ImagerStage0Pipeline"
-    class = "liger_iris_pipeline.pipeline.ImagerStage0Pipeline"
+    name = "ImagerStage1Pipeline"
+    class = "liger_iris_pipeline.ImagerStage1Pipeline"
     save_results = True
 
     [steps]
@@ -18,9 +19,6 @@ def create_config():
     return conf
 
 def test_imager_stage1(tmp_path):
-
-    # Create a temporary ASN file
-    #asn.add(["members"][0]["expname"] = str(tmp_path / asn["products"][0]["members"][0]["expname"])
 
     meta = {
         'model_type' : 'RampModel',
@@ -46,11 +44,11 @@ def test_imager_stage1(tmp_path):
     
     # Create a ramp model
     ramp_model = create_ramp(source, meta, readtime=1, n_reads_per_group=10, n_groups=5, nonlin_coeffs = None)
-    ramp_filename = tmp_path / "2024A-P123-044_IRIS_IMG1_SCI-Y_LVL0_0001-00.fits"
+    ramp_filename = str(tmp_path / "2024B-P123-008_IRIS_IMG1_SCI-Y_LVL0_0001-00.fits")
     ramp_model.save(ramp_filename)
     
     # Save the ramp model
-    product ={
+    asn = L0Association.from_product({
         "name": "Test",
         "members": [
             {
@@ -58,28 +56,28 @@ def test_imager_stage1(tmp_path):
                 "exptype": "science",
             },
         ]
-    }
+    })
 
     # Create a temporary config file
     conf = create_config()
-    config_file = tmp_path / "test_config.cfg"
+    config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)
 
     # Create and call the pipeline object
-    # Pipeline saves L2 file: 2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL2_0001.fits
-    results, _ = liger_iris_pipeline.Stage1Pipeline.call(product, config_file=config_file, return_step=True)
+    pipeline = liger_iris_pipeline.Stage1Pipeline(config_file=config_file, output_dir=str(tmp_path))
+    results = pipeline.run(asn)
     model_result = results[0]
 
     # Test MCDS
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
 
-    # Test UTR
     conf = conf.replace('mcds', 'utr')
     with open(config_file, "w") as f:
         f.write(conf)
     
-    results, _ = liger_iris_pipeline.Stage1Pipeline.call(product, config_file=config_file, return_step=True)
+    pipeline = liger_iris_pipeline.Stage1Pipeline(config_file=config_file, output_dir=str(tmp_path))
+    results = pipeline.run(asn)
     model_result = results[0]
 
     # Test UTR

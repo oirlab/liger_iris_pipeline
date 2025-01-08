@@ -4,6 +4,7 @@ from ..base_step import LigerIRISStep
 from ..datamodels import RampModel, ImagerModel, IFUImageModel
 from .fit_ramp_numba import fit_ramps_utr, fit_ramps_mcds
 
+import copy
 import numpy as np
 
 __all__ = ["FitRampStep"]
@@ -36,10 +37,17 @@ class FitRampStep(LigerIRISStep):
 
         # Create 2D image model
         if input_model.meta.instrument.mode == 'IMG':
-            model_result = ImagerModel(data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
+            model_result = ImagerModel(instrument=input_model.instrument, data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
         elif input_model.meta.instrument.mode == 'IFU':
-            model_result = IFUImageModel(data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
+            model_result = IFUImageModel(instrument=input_model.instrument, data=slopes, err=slopes_err, dq=np.all(input_model.dq, axis=(2, 3)))
 
+        # TODO: Generalize the conversion from RampModel -> ImagerModel/IFUImageModel
+        _meta = copy.deepcopy(input_model.meta.instance)
+        _meta.update(input_model.meta.instance)
+        model_result.meta = _meta
+        model_result.meta.filename = None
+        model_result.meta.data_level = 1
+        model_result.meta.data_type = model_result.__class__.__name__
         self.status = "COMPLETE"
 
         return model_result

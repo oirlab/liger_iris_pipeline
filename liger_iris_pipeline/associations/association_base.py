@@ -57,11 +57,17 @@ class LigerIRISAssociation(Association):
     
     @classmethod
     def from_member(cls, member : str | datamodels.LigerIRISDataModel):
+        if isinstance(member, str):
+            expname = member
+        elif isinstance(member, datamodels.LigerIRISDataModel) and member._filename is not None:
+            expname = member._filename
+        else:
+            expname = member # NOTE: This will break serialization
         input_model = datamodels.open(member)
         product = {
             "members": [
                 {
-                    "expname": input_model.filename,
+                    "expname": expname,
                     "exptype": input_model.meta.exposure.type,
                 },
             ]

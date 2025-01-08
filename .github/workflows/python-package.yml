@@ -5,9 +5,9 @@ name: Python package
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ implement_core_liger_datamodels ]
+  #pull_request:
+    #branches: [ master ]
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11]
+        python-version: [3.12]
 
     steps:
     - uses: actions/checkout@v4
@@ -27,32 +27,34 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install libcfitsio
-      run: sudo apt-get install libcfitsio-dev graphviz pandoc
-    - name: Install pip dependencies
-      run: |
-          python -m pip install -r requirements.txt -r test-requirements.txt
+    # - name: Install libcfitsio
+      # run: sudo apt-get install libcfitsio-dev graphviz pandoc
+    # - name: Install pip dependencies
+      # run: |
+          # python -m pip install -r requirements.txt -r test-requirements.txt
     - name: Setup CRDS
       run: |
         git clone --depth 1 https://github.com/oirlab/liger-iris-crds-cache $HOME/crds_cache
-    - name: Build and install
-      run: python setup.py build_ext -i && python setup.py install
-      env:
-          C_INCLUDE_PATH: /usr/include/cfitsio/
-    - name: Test
-      run: source setup_local_crds.sh && make test
-    - name: Build docs
-      if: ${{ matrix.python-version==3.11 }}
-      run: |
-          python -m pip install -r docs/requirements.txt && cd docs && make html
-    - name: Deploy
-      if: ${{ matrix.python-version==3.11 && contains(github.ref, 'master') }}
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        branch: master
-        folder: docs/_build/html
-        repository-name: oirlab/liger-iris-pipeline
-        token: ${{ secrets.PAT }}
+    #- name: Build and install
+      #run: python setup.py build_ext -i && python setup.py install
+      #env:
+          #C_INCLUDE_PATH: /usr/include/cfitsio/
+    # - name: Test
+      # run: source setup_local_crds.sh && make test
+    # - name: Build docs
+      # if: ${{ matrix.python-version==3.12 }}
+      # run: |
+          # python -m pip install -r docs/requirements.txt && cd docs && make html
+    # - name: Deploy
+    #   if: ${{ matrix.python-version==3.11 && contains(github.ref, 'master') }}
+    #   uses: JamesIves/github-pages-deploy-action@v4
+      # with:
+        # branch: master
+        # folder: docs/_build/html
+        # repository-name: oirlab/liger-iris-pipeline
+        # token: ${{ secrets.PAT }}
+    # ################################
+
       # the token expires every year, create a new Github Personal Access Token where:
       # resource owner is oirlab
       # repo is oirlab/liger-iris-pipeline (notice dashes, this is the docs repo)

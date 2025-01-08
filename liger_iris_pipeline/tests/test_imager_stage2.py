@@ -153,7 +153,3 @@ def test_imager_stage2_subarray(tmp_path):
         datamodels.open(sky_bkg_L1_filename) as bkg_model:
         ref_data = (sci_model.data - dark_model.data[subarray_slice]) / flat_model.data[subarray_slice] - bkg_model.data[subarray_slice]
         np.testing.assert_allclose(model_result.data, ref_data, rtol=1e-6)
-
-
-from pathlib import Path
-test_imager_stage2(Path("/Users/cale/Desktop/DRS_Testing/"))

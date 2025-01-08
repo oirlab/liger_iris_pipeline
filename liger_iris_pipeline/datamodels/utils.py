@@ -22,20 +22,20 @@ def open(init=None, memmap=False, **kwargs):
     Creates a DataModel from a number of different types.
 
     Parameters:
-    init:
-        - None: A default data model with no shape
-        - shape tuple: Initialize with empty data of the given shape
-        - file path: Initialize from the given file (FITS, JSON or ASDF)
-        - readable file object: Initialize from the given file object
-        - astropy.io.fits.HDUList: Initialize from the given `~astropy.io.fits.HDUList`.
-        - A numpy array: A new model with the data array initialized to what was passed in.
-        - dict: The object model tree for the data model
-    memmap: (bool) (Turn memmap of file on or off.  (default: False).
-    kwargs:
-        validate_arrays (bool): If `True`, arrays will be validated against ndim, max_ndim, and datatype validators in the schemas.
+        init:
+            - None: A default data model with no shape
+            - shape tuple: Initialize with empty data of the given shape
+            - file path: Initialize from the given file (FITS, JSON or ASDF)
+            - readable file object: Initialize from the given file object
+            - astropy.io.fits.HDUList: Initialize from the given `~astropy.io.fits.HDUList`.
+            - A numpy array: A new model with the data array initialized to what was passed in.
+            - dict: The object model tree for the data model
+        memmap: (bool) (Turn memmap of file on or off.  (default: False).
+        kwargs:
+            validate_arrays (bool): If `True`, arrays will be validated against ndim, max_ndim, and datatype validators in the schemas.
     
     Returns:
-    LigerIRISDataModel: The specific LigerIRISDataModel instance.
+        LigerIRISDataModel : The specific LigerIRISDataModel instance.
     """
 
     from .model_base import LigerIRISDataModel

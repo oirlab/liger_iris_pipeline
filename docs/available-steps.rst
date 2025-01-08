@@ -5,7 +5,7 @@ Available algorithms
    :maxdepth: 2
 
    dq_init/index.rst
-   background/index.rst
+   sky_subtraction/index.rst
    dark_subtraction/index.rst
    normalize/index.rst
    pipeline/index.rst
