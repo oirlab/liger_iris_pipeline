@@ -29,18 +29,19 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install the package and dependencies
       run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install .
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .
     - name: Setup CRDS
       run: |
         git clone --depth 1 https://github.com/oirlab/liger-iris-crds-cache $HOME/crds_cache
     - name: Download Git LFS files
-        run: git lfs pull
+      run: |
+        git lfs pull
     - name: Run tests
       run: |
-          pip install .[test]
-          source setup_local_crds.sh
-          pytest liger_iris_pipeline/tests/test_*.py --ignore liger_iris_pipeline/tests/test_utils.py
+        pip install .[test]
+        source setup_local_crds.sh
+        pytest liger_iris_pipeline/tests/test_*.py --ignore liger_iris_pipeline/tests/test_utils.py
     # - name: Build docs
       # if: ${{ matrix.python-version==3.12 }}
       # run: |
