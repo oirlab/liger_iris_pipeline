@@ -38,3 +38,5 @@ from .merge_subarrays import MergeSubarraysStep
 from .assign_wcs import AssignWCSStep
 from .readout import NonlinCorrectionStep, FitRampStep
 from .datamodels import *
+
+from .associations import L0Association, L1Association, SubarrayAssociation
