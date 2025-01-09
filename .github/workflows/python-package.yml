@@ -5,7 +5,7 @@ name: Python package
 
 on:
   push:
-    branches: [  ]
+    branches: [ implement_core_liger_datamodels ]
   #pull_request:
     #branches: [ master ]
 
