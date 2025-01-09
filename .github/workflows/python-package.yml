@@ -31,17 +31,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
         pip install .
-    - name: DRS LFS Files
-      working-directory: liger_iris_pipeline
-      run: |
-        git lfs pull
+    # - name: DRS LFS Files
+    #   working-directory: liger_iris_pipeline
+    #   run: |
+    #     git lfs pull
     - name: Setup CRDS
       run: |
         git clone --depth 1 https://github.com/oirlab/liger-iris-crds-cache $HOME/crds_cache
-    - name: CRDS LFS Files
-      working-directory: $HOME/crds_cache
-      run: |
-        git lfs pull
+    # - name: CRDS LFS Files
+    #   working-directory: $HOME/crds_cache
+    #   run: |
+    #     git lfs pull
     - name: Run tests
       run: |
         pip install .[test]
