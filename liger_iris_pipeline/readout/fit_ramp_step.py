@@ -17,7 +17,7 @@ class FitRampStep(LigerIRISStep):
         num_coadd = integer(default=3)
     """
 
-    class_alias = "fit_ramp"
+    class_alias = "ramp_fit"
 
     def process(self, input):
         """
