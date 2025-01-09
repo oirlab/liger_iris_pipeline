@@ -7,7 +7,7 @@ import numpy as np
 def create_subarray_model(name, xstart, ystart, xsize, ysize):
 
     # Download the science frame and open
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024A-P123-044_IRIS_IMG1_SCI-J1458+1013-SIM-Y_LVL1_0001-00.fits"
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
     input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
