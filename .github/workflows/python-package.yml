@@ -34,6 +34,8 @@ jobs:
     - name: Setup CRDS
       run: |
         git clone --depth 1 https://github.com/oirlab/liger-iris-crds-cache $HOME/crds_cache
+    - name: Download Git LFS files
+        run: git lfs pull
     - name: Run tests
       run: |
           pip install .[test]
