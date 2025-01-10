@@ -243,6 +243,7 @@ class LigerIRISStep(Step):
                             ) from e
                         raise
                 else:
+                    step_result = self.on_skip(input)
                     self.log.info(f"Skipping step {self.name}")
 
                 # Update meta information regardless of skip
@@ -338,3 +339,10 @@ class LigerIRISStep(Step):
         except ValueError:
             pass
         return val
+    
+    def on_skip(self, input):
+        """
+        Placeholder for what to do when the step is skipped.
+        """
+        self.status = "SKIPPED"
+        return datamodels.open(input).copy()
