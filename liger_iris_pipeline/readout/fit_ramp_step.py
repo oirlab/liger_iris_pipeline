@@ -13,8 +13,8 @@ __all__ = ["FitRampStep"]
 class FitRampStep(LigerIRISStep):
 
     spec = """
-        method = string(default='utr')  # Ramp fit method. Options are 'utr' and 'mcds'.
-        num_coadd = integer(default=3)
+        method = string(default='utr')  # Ramp fit method. Options are 'utr' and 'mcds'. For 'cds', use 'mcds' and set num_coadd to 1.
+        num_coadd = integer(default=3) # The number of coadds for the 'mcds' method.
     """
 
     class_alias = "ramp_fit"
@@ -43,7 +43,7 @@ class FitRampStep(LigerIRISStep):
 
         # TODO: Generalize the conversion from RampModel -> ImagerModel/IFUImageModel
         _meta = copy.deepcopy(input_model.meta.instance)
-        _meta.update(input_model.meta.instance)
+        _meta.update(input_model.meta.instance) # TODO: Check if this is the right way to merge the meta data
         model_result.meta = _meta
         model_result.meta.filename = None
         model_result.meta.data_level = 1

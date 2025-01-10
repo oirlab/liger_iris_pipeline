@@ -1,8 +1,10 @@
 from numba import jit, njit, prange
 import numpy as np
 
+# TODO: Implement jump detection, look into more sophisticated methods
 
-def fit_ramp_utr_loopdev(times, ramp):
+
+def _fit_ramp_utr_loop_experimental(times, ramp):
     n_reads = len(times)
     for i in range(n_reads):
         xymult = times[i] * ramp[i]
@@ -25,7 +27,6 @@ def fit_ramp_utr(times, ramp):
     denominator = n_reads * times2_tot - times_tot ** 2
     slope = (numerator / denominator)
     return slope
-
 
 @njit
 def fit_ramps_utr(times, ramps):

@@ -40,9 +40,7 @@ class Stage1Pipeline(LigerIRISPipeline):
         # Process each exposure.
         results = []
         for product in self.asn.products:
-            self.log.info("Processing product {}".format(product["name"]))
-            if self.save_results:
-                self.output_file = product["name"]
+            self.log.info(f"Processing product {input}")
             result = self.process_exposure_product(product)
 
             # Save result
@@ -50,8 +48,6 @@ class Stage1Pipeline(LigerIRISPipeline):
             results.append(result)
 
         self.log.info("Stage1Pipeline completed")
-
-        self.output_use_model = True
 
         return results
     
@@ -64,7 +60,7 @@ class Stage1Pipeline(LigerIRISPipeline):
         """
         members_by_type = self.asn_product_by_types(exp_product)
 
-        science = members_by_type["science"][0]
+        science = members_by_type["sci"][0]
         self.log.info(f"Processing input {science} ...")
         with datamodels.RampModel(science) as input_model:
             input_model = self.nonlinear_correction.run(input_model)

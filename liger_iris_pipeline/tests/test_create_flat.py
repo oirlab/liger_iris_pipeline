@@ -44,16 +44,6 @@ def test_create_flat(tmp_path):
     raw_flat_filename = str(tmp_path / "2024B-P123-008_IRIS_IMG1_FLAT-Y_LVL1_0001-00.fits")
     raw_flat_model.save(raw_flat_filename)
 
-    # ASN
-    asn = L1Association.from_product({
-        "members": [
-            {
-                "expname": raw_flat_filename,
-                "exptype": "flat",
-            },
-        ],
-    })
-
     # Create a temporary config file
     conf = create_config()
     config_file = str(tmp_path / "test_config.cfg")
@@ -62,7 +52,7 @@ def test_create_flat(tmp_path):
 
     # Initialize flatfield pipeline
     pipeline = liger_iris_pipeline.CreateFlatfield(config_file=config_file)
-    flat_model = pipeline.run(asn, output_dir=str(tmp_path))
+    flat_model = pipeline.run(raw_flat_filename, output_dir=str(tmp_path))
 
     # Open dark
     dark_model = datamodels.open(pipeline.dark_sub.dark_filename)

@@ -68,13 +68,13 @@ class CreateFlatfield(LigerIRISPipeline):
             data=input_model.data, err=input_model.err, dq=input_model.dq
         )
         _meta = copy.deepcopy(input_model.meta.instance)
-        _meta.update(flat_model.meta.instance)
+        _meta.update(flat_model.meta.instance) # TODO: Check if this is the right way to merge the meta data
         flat_model.meta = _meta
         flat_model.meta.reftype = "FLAT"
         flat_model.meta.pedigree = None
         flat_model.meta.version = '0.0.1'
         flat_model.meta.filename = None
-        #flat_model.meta.data_type = model_result.__class.__name__
+        flat_model.meta.data_type = flat_model.__class__.__name__
 
         self.log.info(f"Finished processing {members_by_type["flat"][0]}")
 

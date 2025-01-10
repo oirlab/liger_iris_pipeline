@@ -175,7 +175,9 @@ def create_ramp(
         meta : dict,
         readtime : float, # e- RMS
         n_reads_per_group : int, n_groups : int,
+        read_noise : float = 0, kTC_noise : float = 0,
         nonlin_coeffs : np.ndarray | None = None,
+        noise : bool = False,
     ):
     times = np.zeros(shape=(n_groups, n_reads_per_group), dtype=float)
     data = np.zeros(shape=(source.shape[0], source.shape[1], n_groups, n_reads_per_group), dtype=np.int16)
@@ -186,6 +188,11 @@ def create_ramp(
             image = data[:, :, i, j-1] + source * readtime
             if nonlin_coeffs is not None:
                 image *= np.round(np.polyval(nonlin_coeffs[::-1], t).astype(np.int16))
+            if noise:
+                if j == 0:
+                    image += np.random.normal(loc=0, scale=np.sqrt(source * t + read_noise**2 + kTC_noise**2), size=source.shape)
+                else:
+                    image += np.random.normal(loc=0, scale=np.sqrt(source * t + read_noise**2), size=source.shape)
             times[i, j] = t
             data[:, :, i, j] = image.copy()
     np.clip(data, 0, np.iinfo(np.int16).max)

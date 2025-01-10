@@ -72,7 +72,6 @@ class LigerIRISPipeline(LigerIRISStep, Pipeline):
             if key not in ("class", "steps", "config_file"):
                 _val = self.parse_config_kwarg(key, val, pipeline_spec)
                 setattr(self, key, _val)
-
         
     def init_steps(self, config : config_parser.ConfigObj):
         if self.config_file is not None:
@@ -91,9 +90,9 @@ class LigerIRISPipeline(LigerIRISStep, Pipeline):
             if step_config_file is not None:
                 step_config = config_parser.load_config_file(config_file=step_config_file)
                 step_kwargs.update(step_kwargs)
-                for key, val in step_config.items():
-                    if key not in ('class', 'config_file'):
-                        step_kwargs[key] = val
+            for key, val in step_config.items():
+                if key not in ('class', 'config_file'):
+                    step_kwargs[key] = val
             new_step = _class(
                 config_file=step_config_file,
                 **step_kwargs
@@ -103,7 +102,6 @@ class LigerIRISPipeline(LigerIRISStep, Pipeline):
     def input_to_asn(self, input):
         """
         Convert input to an association.
-        TODO: Add case for LigerIRISDataModel
 
         Parameters:
             input (str | Path | LigerIRISAssociation): The input file.
