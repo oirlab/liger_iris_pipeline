@@ -5,6 +5,7 @@ from astropy.modeling import models
 from astropy import coordinates as coord
 from astropy import units as u
 from gwcs import coordinate_frames as cf
+from gwcs import WCS
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)

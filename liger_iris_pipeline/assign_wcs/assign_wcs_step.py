@@ -24,31 +24,23 @@ class AssignWCSStep(LigerIRISStep):
 
     def process(self, input, *args, **kwargs):
         reference_file_names = {}
-        if isinstance(input, str):
-            input_model = datamodels.open(input)
-        else:
-            input_model = input
+        with datamodels.open(input) as input_model:
+            # If input type is not supported, log warning, set to 'skipped', exit
+            if not (isinstance(input_model, ImagerModel)):
+                log.warning("Input dataset type is not supported.")
+                log.warning("assign_wcs expects ImageModel as input.")
+                log.warning("Skipping assign_wcs step.")
+                result = input_model.copy()
+                self.status = "SKIPPED"
+            else:
+                # Get reference files
+                for reftype in self.reference_file_types:
+                    reffile = self.get_reference_file(input_model, reftype)
+                    reference_file_names[reftype] = reffile if reffile else ""
+                log.debug(f"reference files used in assign_wcs: {reference_file_names}")
 
-        # If input type is not supported, log warning, set to 'skipped', exit
-        if not (isinstance(input_model, ImagerModel)):
-            log.warning("Input dataset type is not supported.")
-            log.warning("assign_wcs expects ImageModel as input.")
-            log.warning("Skipping assign_wcs step.")
-            result = input_model.copy()
-            self.status = "SKIPPED"
-        else:
-            # Get reference files
-            for reftype in self.reference_file_types:
-                reffile = self.get_reference_file(input_model, reftype)
-                reference_file_names[reftype] = reffile if reffile else ""
-            log.debug(f"reference files used in assign_wcs: {reference_file_names}")
-
-            # Assign wcs
-            result = load_wcs(input_model, reference_file_names)
-            self.status = "COMPLETE"
-
-        # Close model if opened manually
-        if isinstance(input, str):
-            input_model.close()
+                # Assign wcs
+                result = load_wcs(input_model, reference_file_names)
+                self.status = "COMPLETE"
 
         return result
