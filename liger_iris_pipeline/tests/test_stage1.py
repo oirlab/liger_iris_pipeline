@@ -2,7 +2,7 @@
 import liger_iris_pipeline
 from liger_iris_pipeline.associations import L0Association
 import numpy as np
-from liger_iris_pipeline.tests.test_utils import create_ramp
+from liger_iris_pipeline.tests.utils import create_ramp
 
 def create_config():
     conf = """

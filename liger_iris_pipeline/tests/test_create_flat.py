@@ -3,7 +3,7 @@ import numpy as np
 import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
 from liger_iris_pipeline.associations import L1Association
-from liger_iris_pipeline.tests.test_utils import add_meta_data
+from liger_iris_pipeline.tests.utils import add_meta_data
 
 def create_config():
     conf = """

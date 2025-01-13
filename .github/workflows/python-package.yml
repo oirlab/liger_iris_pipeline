@@ -38,7 +38,7 @@ jobs:
       run: |
         pip install .[test]
         source setup_local_crds.sh
-        pytest liger_iris_pipeline/tests/test_*.py --ignore liger_iris_pipeline/tests/test_utils.py
+        pytest liger_iris_pipeline/tests/test_*.py
     # - name: Build docs
       # if: ${{ matrix.python-version==3.12 }}
       # run: |
