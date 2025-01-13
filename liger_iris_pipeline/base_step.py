@@ -28,6 +28,12 @@ __all__ = [
 ]
 
 class LigerIRISStep(Step):
+    """
+    Here we override several core methods from stpipe.step.Step to provide:
+    1. Manual control on deriving the configuration from spec, a config file, and additional kwargs.
+    2. Broader signatures for run, process, (and eventually call if appropriate).
+    Once the DRS is robust enough, we will realign (although not completely) with stpipe.step.Step methods.
+    """
 
     exclude_spec = [
         "pre_hooks", "post_hooks",
@@ -35,10 +41,6 @@ class LigerIRISStep(Step):
         "suffix", "search_output_file", "input_dir", 'output_ext',
         'steps' # Make spec only contain config for THIS class, not substeps
     ]
-
-    #spec = """
-    #    output_dir = str(default=None) # Directory path for output files
-    #"""
 
     def __init__(
             self,

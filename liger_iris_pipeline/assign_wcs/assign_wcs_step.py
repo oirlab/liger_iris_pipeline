@@ -28,7 +28,7 @@ class AssignWCSStep(LigerIRISStep):
             # If input type is not supported, log warning, set to 'skipped', exit
             if not (isinstance(input_model, ImagerModel)):
                 log.warning("Input dataset type is not supported.")
-                log.warning("assign_wcs expects ImageModel as input.")
+                log.warning("assign_wcs expects ImagerModel as input.")
                 log.warning("Skipping assign_wcs step.")
                 result = input_model.copy()
                 self.status = "SKIPPED"

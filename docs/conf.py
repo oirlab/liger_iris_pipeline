@@ -9,7 +9,7 @@ import liger_iris_pipeline
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Liger IRIS DRS'
+project = 'Liger IRIS Data Reduction Software'
 copyright = '2025, Bryson Cale, Andrea Zonca, Shelley Wright'
 author = 'Bryson Cale, Andrea Zonca, Shelley Wright'
 
@@ -61,7 +61,7 @@ exclude_patterns = ['_templates']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = f"Liger IRIS DRS v{liger_iris_pipeline.__version__}"
+html_title = f"Liger IRIS Data Reduction Software v{liger_iris_pipeline.__version__}"
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = project + "doc"
