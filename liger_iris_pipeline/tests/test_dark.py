@@ -1,37 +1,23 @@
-# Imports
-import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
+
 import numpy as np
+import liger_iris_pipeline
+from liger_iris_pipeline import datamodels
 
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
+def test_dark_step(tmp_path):
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    input_model = datamodels.open(sci_L1_filename)
 
-from jwst import datamodels
-from liger_iris_pipeline.dark_current.dark_sub import do_correction
+    # For dev purposes, no config for real test
+    # conf = """
+    # class = "liger_iris_pipeline.DarkSubtractionStep"
+    # output_dir = "/Users/cale/Desktop/DRS_Testing/"
+    # """
+    # config_file = str(tmp_path / "test_dark_config.cfg")
+    # with open(config_file, "w") as f:
+    #     f.write(conf)
 
-def test_dark_subtraction():
-    # Grab simulated raw frame
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = datamodels.open(raw_science_filename)
+    step = liger_iris_pipeline.DarkSubtractionStep()
+    step_output = step.run(sci_L1_filename)
+    dark_model = datamodels.open(step.dark_filename)
 
-    # Create a dark image with randomized vals centered around zero
-    dark_model = liger_iris_pipeline.datamodels.DarkModel(data=np.random.normal(size=(4096, 4096)))
-
-    # Manual subtraction
-    expected_output_data = input_model.data - dark_model.data
-
-    # Test do_correction method
-    output = do_correction(input_model, dark_model)
-    np.testing.assert_allclose(output.data, expected_output_data)
-
-def test_dark_step():
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = datamodels.open(raw_science_filename)
-
-    # Test DarkCurrentStep class
-    step = liger_iris_pipeline.dark_current.DarkCurrentStep()
-    step_output = step.run(raw_science_filename)
-    step_dark_model = datamodels.open(step.dark_name)
-
-    # Test
-    np.testing.assert_allclose(step_output.data, input_model.data - step_dark_model.data)
+    np.testing.assert_allclose(step_output.data, input_model.data - dark_model.data)

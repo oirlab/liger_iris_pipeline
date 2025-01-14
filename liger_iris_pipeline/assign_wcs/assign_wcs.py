@@ -5,6 +5,7 @@ from astropy.modeling import models
 from astropy import coordinates as coord
 from astropy import units as u
 from gwcs import coordinate_frames as cf
+from gwcs import WCS
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -34,8 +35,8 @@ def load_wcs(input_model, reference_files={}):
     else:
         output_model = input_model.copy()
         shift_by_crpix = models.Shift(
-            -(input_model.meta.wcsinfo.crpix1 - 1) * u.pix
-        ) & models.Shift(-(input_model.meta.wcsinfo.crpix2 - 1) * u.pix)
+            -(input_model.meta.wcsinfo.crpix1) * u.pix # Removed -1
+        ) & models.Shift(-(input_model.meta.wcsinfo.crpix2) * u.pix) # Removed -1
         pix2sky = getattr(
             models, "Pix2Sky_{}".format(input_model.meta.wcsinfo.ctype1[-3:])
         )()
@@ -64,5 +65,5 @@ def load_wcs(input_model, reference_files={}):
 
         wcs = WCS(pipeline)
         output_model.meta.wcs = wcs
-        output_model.meta.cal_step.assign_wcs = "COMPLETE"
+
     return output_model

@@ -1,28 +1,14 @@
-# Imports
-import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
+
 import numpy as np
-
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
+from liger_iris_pipeline import datamodels, FlatFieldStep
 
 
-def test_flat():
+def test_flat_step():
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    input_model = datamodels.open(sci_L1_filename)
 
-    # Downlaod and open the raw science frame
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(raw_science_filename)
+    step = FlatFieldStep()
+    step_output = step.run(sci_L1_filename)
+    flat_model = datamodels.open(step.flat_filename)
 
-    # Download the raw flat frame
-    raw_flat_filename = get_data_from_url("48191521")
-
-    # Flatfield pipeline (generates the median flat)
-    pipeline = liger_iris_pipeline.pipeline.ProcessFlatfieldL2()
-    flatfield = pipeline.run(raw_flat_filename)[0]
-
-    # Flatfield step (performs flatfield correction) using the CRDS retrieved flat
-    step = liger_iris_pipeline.flatfield.FlatFieldStep()
-    step_output = step.run(raw_science_filename)
-
-    # Test the step output is the same as the the manual correction
-    np.testing.assert_allclose(step_output.data, input_model.data / flatfield.data)
+    np.testing.assert_allclose(step_output.data, input_model.data / flat_model.data)

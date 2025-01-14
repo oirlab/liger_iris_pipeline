@@ -1,0 +1,7 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/LigerDarkModel.schema"
+allOf:
+- $ref: liger_core.schema
+- $ref: DarkModel.schema

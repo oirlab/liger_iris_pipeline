@@ -1,28 +1,38 @@
 # Imports
 import liger_iris_pipeline
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
 import numpy as np
 
-# See README.md for notes on testing data
-from liger_iris_pipeline.tests.test_utils import get_data_from_url
 
 
-def test_dark_subarray(tmp_path):
+def create_subarray_model(name, xstart, ystart, xsize, ysize):
 
     # Download the science frame and open
-    raw_science_filename = get_data_from_url("48191524")
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(raw_science_filename)
+    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
-    xstart = 100
-    ystart = 200
-    xsize = 50
-    ysize = 60
-    input_model.meta.subarray.name = "CUSTOM"
+    input_model.meta.subarray.name = name
     input_model.meta.subarray.xstart = xstart
     input_model.meta.subarray.ystart = ystart
     input_model.meta.subarray.xsize = xsize
     input_model.meta.subarray.ysize = ysize
+    input_model.meta.subarray.detxsiz = 4096
+    input_model.meta.subarray.detysiz = 4096
+    input_model.meta.subarray.fastaxis = 0
+    input_model.meta.subarray.slowaxis = 1
+
+    return input_model
+
+
+def test_dark_subarray(tmp_path):
+
+    # Get model
+    name = "CUSTOM"
+    xstart = 100
+    ystart = 200
+    xsize = 50
+    ysize = 60
+    input_model = create_subarray_model(name, xstart, ystart, xsize, ysize)
 
     # Slice the data
     subarray_slice = np.s_[ystart:ystart+ysize, xstart:xstart+xsize]
@@ -33,7 +43,7 @@ def test_dark_subarray(tmp_path):
     assert input_model.data.shape == (ysize, xsize)
 
     # Setup the Dark step
-    step = liger_iris_pipeline.dark_current.DarkCurrentStep()
+    step = liger_iris_pipeline.DarkSubtractionStep()
 
     # Run on the subarray
     step_output = step.run(input_model)
@@ -42,7 +52,7 @@ def test_dark_subarray(tmp_path):
     assert step_output.data.shape == (ysize, xsize)
 
     # Open the dark cal that was used
-    dark_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(step.dark_name)
+    dark_model = liger_iris_pipeline.ImagerModel(step.dark_filename)
 
     # Compare the output with a manual dark subtraction
     np.testing.assert_allclose(

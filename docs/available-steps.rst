@@ -4,10 +4,9 @@ Available algorithms
 .. toctree::
    :maxdepth: 2
 
-   drsrop_pipeline.rst
    dq_init/index.rst
-   background/index.rst
-   dark_current/index.rst
+   sky_subtraction/index.rst
+   dark_subtraction/index.rst
    normalize/index.rst
    pipeline/index.rst
    flatfield/index.rst

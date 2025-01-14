@@ -11,7 +11,7 @@ The DRS pipeline is based on [JWST' pipeline tool `stpipe`](https://github.com/s
 Documentation
 -------------
 
-[oirlab.github.io/iris-pipeline](https://oirlab.github.io/iris-pipeline)
+[oirlab.github.io/iris-pipeline](https://oirlab.github.io/liger-iris-pipeline/)
 
 
 License

@@ -1,7 +1,6 @@
 # Imports
 import liger_iris_pipeline
 
-liger_iris_pipeline.monkeypatch_jwst_datamodels()
 from liger_iris_pipeline.normalize.normalize import do_correction
 import numpy as np
 import scipy.stats
@@ -9,9 +8,7 @@ import scipy.stats
 
 def test_normalize():
     # Create an test image with a specified row
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(
-        data=np.random.rand(4096, 4096)
-    )
+    input_model = liger_iris_pipeline.ImagerModel(data=np.random.rand(4096, 4096))
     input_model.data[3, :] = 0.6  # for mode calc
 
     # Loop over methods
@@ -35,7 +32,7 @@ def test_normalize():
 
 def test_normalize_step():
     # Create an test image
-    input_model = liger_iris_pipeline.datamodels.LigerIrisImageModel(
+    input_model = liger_iris_pipeline.datamodels.ImagerModel(
         data=np.random.rand(4096, 4096)
     )
     input_model.data[3, :] = 0.6  # for mode calc
@@ -43,7 +40,7 @@ def test_normalize_step():
     # Loop over methods
     for method in [None, "mean", "median", "mode"]:
         # Test NormalizeStep class
-        step = liger_iris_pipeline.normalize.NormalizeStep(method=method)
+        step = liger_iris_pipeline.NormalizeStep(method=method)
         step_output = step.run(input_model)
 
         # Expected output

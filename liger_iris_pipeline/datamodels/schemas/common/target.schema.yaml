@@ -1,0 +1,113 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/target.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      target:
+        title: Target information
+        type: object
+        properties:
+          type:
+            title: Type of target (fixed, moving, generic)
+            type: string
+            fits_keyword: TARGTYPE
+            blend_table: True
+          object:
+            title: Object name, internal or on-sky
+            type: string
+            fits_keyword: OBJECT
+            blend_table: True
+          ra:
+            title: Target RA at mid time of exposure
+            type: number
+            fits_keyword: RA
+            blend_table: True
+          dec:
+            title: Target Dec at mid time of exposure
+            type: number
+            fits_keyword: DEC
+            blend_table: True
+          ra_uncertainty:
+            title: Target RA uncertainty
+            type: number
+            fits_keyword: URA
+            blend_table: True
+          dec_uncertainty:
+            title: Target Dec uncertainty
+            type: number
+            fits_keyword: UDEC
+            blend_table: True
+          proper_motion_ra:
+            title: Target proper motion in RA
+            type: number
+            fits_keyword: MURA
+            blend_table: True
+          proper_motion_dec:
+            title: Target proper motion in Dec
+            type: number
+            fits_keyword: MUDEC
+            blend_table: True
+          proper_motion_epoch:
+            title: Target proper motion epoch
+            type: number
+            fits_keyword: MUEPOCH
+            blend_table: True
+          source_type:
+            title: Source type
+            type: string
+            enum: [EXTENDED, POINT, UNKNOWN]
+            fits_keyword: SRCTYPE
+          airmass_start:
+            title: Airmass at start of exposure
+            type: number
+            fits_keyword: AIRMAST
+            blend_table: True
+          airmass_mid:
+            title: Airmass at exposure midpoint
+            type: number
+            fits_keyword: AIRMAMID
+            blend_table: True
+          airmass_end:
+            title: Airmass at end of exposure
+            type: number
+            fits_keyword: AIRMAEND
+            blend_table: True
+          azimuth_start:
+            title: Azimuth at start of exposure
+            type: number
+            fits_keyword: AZST
+            blend_table: True
+          azimuth_mid:
+            title: Azimuth at exposure midpoint
+            type: number
+            fits_keyword: AZMID
+            blend_table: True
+          azimuth_end:
+            title: Azimuth at end of exposure
+            type: number
+            fits_keyword: AZEND
+            blend_table: True
+          elevation_start:
+            title: Elevation at start of exposure
+            type: number
+            fits_keyword: ELST
+            blend_table: True
+          elevation_mid:
+            title: Elevation of target at exposure midpoint
+            type: number
+            fits_keyword: ELMID
+            blend_table: True
+          elevation_end:
+            title: Elevation at end of exposure
+            type: number
+            fits_keyword: ELEND
+            blend_table: True
+          equinox:
+            title: Equinox of target coordinates
+            type: number
+            fits_keyword: EQUINOX
+            blend_table: True

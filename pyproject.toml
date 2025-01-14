@@ -1,0 +1,79 @@
+# Guide (user-friendly):
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+# Specification (technical, formal):
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/
+
+
+# Choosing a build backend:
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend
+[build-system]
+requires = ["setuptools>=38.3.0", "wheel", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "liger_iris_pipeline"
+dynamic = ["version"]
+description = "Data Reduction Pipeline for Liger at the W. M. Keck Observatory and IRIS at the Thirty Meter Telescope."
+readme = "README.md"
+requires-python = ">=3.11"
+
+license = {file = "LICENSE.md"}
+
+authors = [
+  {name = "Bryson Cale", email = "brcale@ucsd.edu" },
+  {name = "Andrea Zonca"},
+  {name = "Arun Surya"}
+]
+
+maintainers = [
+  {name = "Bryson Cale", email = "brcale@ucsd.edu" },
+  {name = "Andrea Zonca"}
+]
+
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  # "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+  "numpy>=1.26.4,<2",
+  "numba>=0.60.0",
+  "scipy",
+  "matplotlib",
+  "astropy>=6.1.0",
+  "scipy",
+  "gitpython",
+  "jwst>=1.16.0",
+  "stpipe>=0.7.0",
+  "stdatamodels>=2.1.1",
+  "crds @ git+https://github.com/oirlab/liger_iris_crds@master"
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov", "pytest-astropy", "nbval", "jupyter_client", "nbformat", "ipykernel", "matplotlib"]
+docs = ["sphinx", "nbsphinx", "sphinx-astropy", "pandoc", "multiversion @ git+https://github.com/sphinx-contrib/multiversion.git"]
+
+[project.urls]
+"Documentation" = "https://oirlab.github.io/liger-iris-pipeline-documentation"
+"Source" = "https://github.com/oirlab/liger_iris_pipeline"
+
+[project.scripts]
+lirun = "liger_iris_pipeline.scripts:lirun"
+
+
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+[project.entry-points."asdf_extensions"]
+model_extensions = "liger_iris_pipeline.datamodels.extension:BaseExtension"
+
+[project.entry-points."asdf.resource_mappings"]
+liger_iris_datamodels = "liger_iris_pipeline.datamodels.integration:get_resource_mappings"
+
+[tool.setuptools]
+packages = ["liger_iris_pipeline"]
+package-data = {"schemas" = ["liger_iris_pipeline/datamodels/schemas/*.yaml"]}

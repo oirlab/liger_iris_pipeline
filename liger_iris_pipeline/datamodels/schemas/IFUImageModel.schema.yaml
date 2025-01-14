@@ -1,0 +1,24 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/IFUImageModel.schema"
+allOf:
+- $ref: core.schema
+- type: object
+  properties:
+    data:
+      title: 2-D data array
+      fits_hdu: DATA
+      ndim: 2
+      datatype: float32
+    err:
+      title: 2-D error array
+      fits_hdu: ERR
+      ndim: 2
+      datatype: float32
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 3
+      datatype: uint16

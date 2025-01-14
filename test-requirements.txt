@@ -1,7 +1,0 @@
-pytest
-pytest-astropy
-nbval
-jupyter_client
-nbformat
-ipykernel
-matplotlib

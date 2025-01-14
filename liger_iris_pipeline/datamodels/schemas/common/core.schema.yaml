@@ -1,0 +1,71 @@
+# For common header keywords we can force between Liger and IRIS either at Keck/TMT or in the DRS
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/core.schema"
+allOf: # NOTE: We drop observation schema from jwst
+- $ref: asn.schema
+- $ref: instrument.schema
+- $ref: reference_files.schema
+- $ref: exposure.schema
+- $ref: instrument.schema
+- $ref: target.schema
+- $ref: barycenter.schema
+- $ref: subarray.schema # REMIND ME: Why do we have subarray and subarray_map in the metadata?
+- $ref: subarray_map.schema
+- $ref: drs_steps.schema
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      date:
+        title: "ISO 8601 datetime" # NOTE: TBD what this represents
+        type: string
+        fits_keyword: DATE
+        blend_table: True
+      date_created:
+        title: "UTC date file created"
+        type: string
+        fits_keyword: DATECRT
+        blend_table: True
+      data_level:
+        title: Data level
+        type: integer
+        fits_keyword: DATALVL
+        blend_table: True
+      origin:
+        title: Origin
+        type: string
+        fits_keyword: ORIGIN
+        blend_table: True
+      organization:
+        title: Organization responsible for creating file
+        type: string
+        fits_keyword: ORG
+        blend_table: True
+      filename:
+        title: Name of the file
+        type: string
+        fits_keyword: FILENAME
+        blend_table: True
+      filetype:
+        title: Type of data in the file
+        type: string
+        fits_keyword: FILETYPE
+      telescope:
+        title: Telescope used to acquire the data
+        type: string
+        fits_keyword: TELESCOP
+        blend_table: True
+        blend_rule: multi
+      model_type:
+        title: Type of data model
+        type: string
+        fits_keyword: DATAMODL
+        blend_table: True
+      drs_version:
+        title: DRS version used to process data
+        type: string
+        fits_keyword: DRSVER
+        blend_table: True

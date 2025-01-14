@@ -6,8 +6,13 @@
 # This is the same check as the one at the top of setup.py
 import sys
 
-__version__ = "0.5.dev"
-__minimum_python_version__ = "3.6"
+try:
+    from setuptools_scm import get_version
+    __version__ = get_version(root="..", relative_to=__file__)
+except ImportError:
+    __version__ = "unknown"
+
+__minimum_python_version__ = "3.11"
 
 
 class UnsupportedPythonError(Exception):
@@ -15,20 +20,23 @@ class UnsupportedPythonError(Exception):
 
 
 if sys.version_info < tuple(
-    (int(val) for val in __minimum_python_version__.split("."))
-):
+        (int(val) for val in __minimum_python_version__.split("."))
+    ):
     raise UnsupportedPythonError(
         "iris_pipeline does not support Python < {}".format(__minimum_python_version__)
     )
 
-from .flatfield import *
-from .background import *
-from .dark_current import *
-from .pipeline import *
-from .dq_init import *
-from .normalize import *
-from .parse_subarray_map import *
-from .merge_subarrays import *
-from .assign_wcs import *
 
-from .datamodels import  monkeypatch_jwst_datamodels
+from .flatfield import FlatFieldStep
+from .sky_subtraction import SkySubtractionImagerStep
+from .dark_subtraction import DarkSubtractionStep
+from .pipeline import Stage1Pipeline, ImagerStage2Pipeline, CreateFlatfield
+from .dq_init import DQInitStep
+from .normalize import NormalizeStep
+from .parse_subarray_map import ParseSubarrayMapStep
+from .merge_subarrays import MergeSubarraysStep
+from .assign_wcs import AssignWCSStep
+from .readout import NonlinCorrectionStep, FitRampStep
+from .datamodels import *
+
+from .associations import L0Association, L1Association, SubarrayAssociation

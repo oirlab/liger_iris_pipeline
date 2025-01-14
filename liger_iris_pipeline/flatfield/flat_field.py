@@ -3,26 +3,15 @@
 #
 
 import logging
-import math
 
 import numpy as np
 
 from ..utils.subarray import get_subarray_model
-from jwst import datamodels
-from jwst.datamodels import dqflags
-from jwst.lib import reffile_utils
-from jwst.assign_wcs import nirspec  # for NIRSpec IFU data
+from .. import datamodels
+from ..datamodels import dqflags
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-MICRONS_100 = 1.0e-4  # 100 microns, in meters
-
-# Dispersion direction, predominantly horizontal or vertical.  These values
-# are to be compared with keyword DISPAXIS from the input header.
-HORIZONTAL = 1
-VERTICAL = 2
-
 
 def do_correction(
     input_model, flat_model
@@ -72,29 +61,9 @@ def do_flat_field(output_model, flat_model):
     flat_model : JWST data model
         data model containing flat-field
     """
-
     log.debug("Flat field correction ")
-
-    any_updated = False  # will set True if any flats applied
-
-    # Check to see if flat data array is smaller than science data
-    if (output_model.data.shape[-1] > flat_model.data.shape[-1]) or (
-        output_model.data.shape[-2] > flat_model.data.shape[-2]
-    ):
-        log.warning("Reference data array is smaller than science data")
-        log.warning("Step will be skipped")
-
-    # Apply flat to all other models
-    else:
-        apply_flat_field(output_model, flat_model)
-        any_updated = True
-
-    if any_updated:
-        output_model.meta.cal_step.flat_field = "COMPLETE"
-    else:
-        output_model.meta.cal_step.flat_field = "SKIPPED"
-
-
+    apply_flat_field(output_model, flat_model)
+    
 def apply_flat_field(science, flat):
     """Flat field the data and error arrays.
 
@@ -115,7 +84,8 @@ def apply_flat_field(science, flat):
     """
 
     # Extract subarray from reference data, if necessary
-    if reffile_utils.ref_matches_sci(science, flat):
+    #if reffile_utils.ref_matches_sci(science, flat):
+    if science.meta.subarray.name == flat.meta.subarray.name:
         flat_data = flat.data
         flat_dq = flat.dq
     else:
@@ -143,21 +113,8 @@ def apply_flat_field(science, flat):
     # Reset the flat value of all bad pixels to 1.0, so that no
     # correction is made
     flat_data[np.where(flat_bad)] = 1.0
+    science.data /= flat_data
+    science.err /= flat_data
 
-    # For CubeModel science data, apply flat to each integration
-    if isinstance(science, datamodels.CubeModel):
-        for integ in range(science.data.shape[0]):
-            # Flatten data and error arrays
-            science.data[integ] /= flat_data
-            science.err[integ] /= flat_data
-            # Combine the science and flat DQ arrays
-            science.dq[integ] = np.bitwise_or(science.dq[integ], flat_dq)
-
-    # For 2D ImageModel science data, apply flat to entire arrays
-    else:
-        # Flatten data and error arrays
-        science.data /= flat_data
-        science.err /= flat_data
-
-        # Combine the science and flat DQ arrays
-        science.dq = np.bitwise_or(science.dq, flat_dq)
+    # Combine the science and flat DQ arrays
+    science.dq = np.bitwise_or(science.dq, flat_dq)

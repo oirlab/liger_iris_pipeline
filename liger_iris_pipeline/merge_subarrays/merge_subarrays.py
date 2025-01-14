@@ -1,28 +1,29 @@
 import numpy as np
 
-from jwst.stpipe import Step
-from jwst import datamodels
+from ..base_step import LigerIRISStep
+from .. import datamodels
 
 __all__ = ["MergeSubarraysStep"]
 
 
-class MergeSubarraysStep(Step):
+class MergeSubarraysStep(LigerIRISStep):
     """
-    ParseSubarrayMapStep: Parse a subarray map
-    extension, if available, and create header metadata
-    and data quality flag accordingly.
     """
+
+    class_alias = "merge_subarrays"
 
     def process(self, input):
 
-        input = datamodels.open(input)
+        # TODO: Update input to be a Subarray ASN ?
+
+        input_models = datamodels.open(input)
 
         # If single input, just return it
-        if not isinstance(input, datamodels.ModelContainer):
-            self.log.info("No subarray files provided, return the original model")
-            return input
-        else:
-            input_models = input
+        # if not isinstance(input, datamodels.ModelContainer):
+        #     self.log.info("No subarray files provided, return the original model")
+        #     return input
+        # else:
+        #     input_models = input
 
         for model in input_models:
             if model.meta.subarray.id == 0:

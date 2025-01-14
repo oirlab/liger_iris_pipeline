@@ -1,43 +1,28 @@
-from astropy.io import registry
-
-from .cube import CubeModel
-from .model_base import LigerIrisDataModel
-from .liger_iris_image import LigerIrisImageModel
+from .model_base import LigerIRISDataModel
 from .ramp import RampModel
-from .mask import MaskModel
-from .flat import FlatModel
+from .imager import ImagerModel
+from .nonlin_readout_params import NonlinearReadoutParametersModel
+from .referencefile import ReferenceFileModel
 from .dark import DarkModel
-from .reference import (
-    ReferenceImageModel,
-    ReferenceCubeModel,
-    ReferenceQuadModel,
-    ReferenceFileModel,
-)
+from .flat import FlatModel
+from .ifu import IFUImageModel, IFUCubeModel
+from .dq import DQModel
+
+from .utils import open
 
 
 __all__ = [
-    "CubeModel",
-    "LigerIrisDataModel",
-    "LigerIrisImageModel",
+    "LigerIRISDataModel",
     "RampModel",
-    "MaskModel",
-    "ReferenceImageModel",
-    "FlatModel",
-    "DarkModel",
-    "ReferenceCubeModel",
-    "ReferenceQuadModel",
+    "ImagerModel",
+    "DEFINED_MODELS",
     "ReferenceFileModel",
+    "DarkModel", "FlatModel",
+    "IFUImageModel", "IFUCubeModel",
+    "DQModel",
+    "NonlinearReadoutParametersModel",
+    "open"
 ]
 
-_all_models = __all__
 _local_dict = locals()
-_defined_models = {k: _local_dict[k] for k in _all_models}
-
-def monkeypatch_jwst_datamodels():
-    import stdatamodels.jwst.datamodels
-
-    stdatamodels.jwst.datamodels._defined_models.update(_defined_models)
-
-    # Current ModelContainer is hardcoded to "jwst"
-    from jwst.datamodels import ModelContainer
-    ModelContainer.crds_observatory = property(lambda self : self[0].crds_observatory if len(self) > 0 else "ligeriri")
+DEFINED_MODELS = {name : _local_dict[name] for name in __all__ if "Model" in name}

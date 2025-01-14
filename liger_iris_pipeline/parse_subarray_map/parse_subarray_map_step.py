@@ -1,8 +1,7 @@
 import numpy as np
 
-from jwst.stpipe import Step
+from ..base_step import LigerIRISStep
 from .. import datamodels
-import stdatamodels
 
 __all__ = ["ParseSubarrayMapStep"]
 
@@ -17,21 +16,28 @@ def parse_subarray_map(subarray_map):
             break
         subarray_metadata.append(
             {
+                "id": subarray_id,
                 "xstart": int(subarray_indices[1][0] + 1),
                 "ystart": int(subarray_indices[0][0] + 1),
                 "xsize": int(subarray_indices[1][-1] - subarray_indices[1][0] + 1),
                 "ysize": int(subarray_indices[0][-1] - subarray_indices[0][0] + 1),
+                "detxsiz": subarray_map.shape[1],
+                "detysiz": subarray_map.shape[0],
+                "fastaxis": 0,
+                "slowaxis": 1,
             }
         )
     return subarray_metadata
 
 
-class ParseSubarrayMapStep(Step):
+class ParseSubarrayMapStep(LigerIRISStep):
     """
     ParseSubarrayMapStep: Parse a subarray map
     extension, if available, and create header metadata
     and data quality flag accordingly
     """
+
+    class_alias = "parse_subarrays"
 
     def process(self, input):
 
@@ -55,8 +61,10 @@ class ParseSubarrayMapStep(Step):
                 result.dq[result["subarr_map"] != 0],
                 2 ** SUBARRAY_DQ_BIT
             )
+            self.status = "COMPLETE"
         else:
             self.log.info("No SUBARR_MAP extension found")
             result = input_model
+            self.status = "SKIPPED"
 
         return result
