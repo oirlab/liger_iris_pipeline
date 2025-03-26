@@ -144,6 +144,21 @@ class LigerIRISDataModel(DataModel):
 
     def get_primary_array_name(self):
         return 'data'
+
+    def save(self, path=None, dir_path : str | None = None, **kwargs):
+        """
+        Save the model to a file.
+
+        Args:
+            path (str) : The path to the file to save the model to.
+            dir_path (str, optional) : The path to the directory to save the file to
+        """
+        if path is None:
+            if self._filename is None:
+                path = self.generate_filename()
+            else:
+                path = self._filename
+        super().save(path, dir_path, **kwargs)
     
     # def copy(self, memo=None):
     #     """
