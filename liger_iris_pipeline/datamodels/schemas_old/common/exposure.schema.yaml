@@ -1,0 +1,127 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/exposure.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      exposure:
+        title: "Exposure information"
+        type: object
+        properties:
+          type:
+            title: Type of data in the exposure  # NOTE: This may drive a lot of the pipeline logic
+            type: string
+            fits_keyword: IMTYPE
+            blend_table: True
+          jd_start:
+            title: "Exposure start time in MJD"
+            type: number
+            fits_keyword: EXPJDST
+            blend_table: True
+            blend_rule: min
+          jd_mid:
+            title: "Exposure mid time in MJD"
+            type: number
+            fits_keyword: EXPJDMID
+            blend_table: True
+            blend_rule: mean
+          jd_end:
+            title: "Exposure end time in MJD"
+            type: number
+            fits_keyword: EXPJDEND
+            blend_table: True
+            blend_rule: max
+          date_start:
+            title: "Exposure start date in YYYYMMDD"
+            type: string
+            fits_keyword: EXPDTST
+            blend_table: True
+            blend_rule: min
+          date_mid:
+            title: "Exposure mid date in YYYYMMDD"
+            type: string
+            fits_keyword: EXPDTMID
+            blend_table: True
+            blend_rule: mean
+          date_end:
+            title: "Exposure end date in YYYYMMDD"
+            type: string
+            fits_keyword: EXPDTEND
+            blend_table: True
+            blend_rule: max
+          time_start:
+            title: "Exposure start time in hh:mm:ss.ss"
+            type: string
+            fits_keyword: EXPTMST
+            blend_table: True
+            blend_rule: min
+          time_mid:
+            title: "Exposure mid time in hh:mm:ss.ss"
+            type: string
+            fits_keyword: EXPTMMID
+            blend_table: True
+            blend_rule: mean
+          time_end:
+            title: "Exposure end time in hh:mm:ss.ss"
+            type: string
+            fits_keyword: EXPTMEND
+            blend_table: True
+            blend_rule: max
+          readmode:
+            title: Readout mode
+            type: string
+            fits_keyword: READMODE
+            blend_table: True
+          ngroups:
+            title: Number of groups in integration
+            type: integer
+            fits_keyword: NGROUPS
+            blend_table: True
+          nreads:
+            title: Number of reads per group
+            type: integer
+            fits_keyword: NREADS
+            blend_table: True
+          nframes:
+            title: Total number of integrations
+            type: integer
+            fits_keyword: NFRAMES
+            blend_table: True
+          group_gap_time:
+            title: "Time between groups [s]"
+            type: number
+            fits_keyword: TGROUPGP
+            blend_table: True
+          integration_time:
+            title: "Effective light integration time [s]"
+            type: number
+            fits_keyword: ITIME
+            blend_table: True
+          exposure_time:
+            title: "Effective exposure time [s]"
+            type: number
+            fits_keyword: EXPTIME
+            blend_table: True
+          nresets_at_start:
+            title: Number of resets at start of exposure
+            type: integer
+            fits_keyword: NRSTSTRT
+            blend_table: True
+          data_problem:
+            title: Science telemetry indicated a problem
+            type: boolean
+            fits_keyword: DATAPROB
+            blend_table: True
+          number:
+            title: Exposure number in the sequence
+            type: integer
+            fits_keyword: EXPNUM
+            blend_table: True
+          sequence_tot:
+            title: Total number of exposures in the sequence
+            type: integer
+            fits_keyword: EXPSQTOT
+            blend_table: True

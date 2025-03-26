@@ -24,8 +24,8 @@ def test_parse_subarray_map():
         {"xstart" : 80, "ystart" : 70, "xsize" : 10, "ysize" : 10, "id" : 1, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
         {"xstart" : 10, "ystart" : 20, "xsize" : 20, "ysize" : 20, "id" : 2, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
     ]
-    subarr_map = np.zeros((100, 100), dtype=np.int16)
-    for i, p in enumerate(subarray_maps_metadata):
+    subarr_map = np.zeros((100, 100), dtype=np.int8)
+    for p in subarray_maps_metadata:
         set_subarray_mask(subarr_map, p)
     
     # Test parse_subarray_map function

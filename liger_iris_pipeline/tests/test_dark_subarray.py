@@ -1,14 +1,16 @@
 # Imports
 import liger_iris_pipeline
+from liger_iris_pipeline import datamodels
 import numpy as np
-
+from liger_iris_pipeline.tests.utils import download_osf_file
 
 
 def create_subarray_model(name, xstart, ystart, xsize, ysize):
 
     # Download the science frame and open
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
-    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
+    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
+    input_model = datamodels.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
     input_model.meta.subarray.name = name
@@ -52,7 +54,7 @@ def test_dark_subarray(tmp_path):
     assert step_output.data.shape == (ysize, xsize)
 
     # Open the dark cal that was used
-    dark_model = liger_iris_pipeline.ImagerModel(step.dark_filename)
+    dark_model = datamodels.ImagerModel(step.dark_filename)
 
     # Compare the output with a manual dark subtraction
     np.testing.assert_allclose(

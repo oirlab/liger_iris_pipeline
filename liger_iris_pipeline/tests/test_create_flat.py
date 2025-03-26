@@ -21,7 +21,7 @@ def create_config():
 def test_create_flat(tmp_path):
 
     # Create a simulated raw flat
-    raw_flat_model = datamodels.ImagerModel(instrument='IRIS', data=np.random.normal(loc=1, scale=0.01, size=(4096, 4096)))
+    raw_flat_model = datamodels.ImagerModel(data=np.random.normal(loc=1, scale=0.01, size=(4096, 4096)))
     meta = {
         'model_type' : 'ImagerModel',
         'target.name': 'FLAT',

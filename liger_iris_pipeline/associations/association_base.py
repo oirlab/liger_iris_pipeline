@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 from datetime import datetime
 
-__all__ = ['LigerIRISAssociation']
+__all__ = ['LigerIRISAssociation', 'L0Association', 'L1Association', 'L2Association']
 
 class LigerIRISAssociation(Association):
     """
@@ -77,3 +77,17 @@ class LigerIRISAssociation(Association):
     @property
     def name(self):
         return self.data["name"]
+    
+
+#####################################
+#### Crude Implementations Below ####
+#####################################
+
+class L0Association(LigerIRISAssociation):
+    pass
+
+class L1Association(LigerIRISAssociation):
+    pass
+
+class L2Association(LigerIRISAssociation):
+    pass

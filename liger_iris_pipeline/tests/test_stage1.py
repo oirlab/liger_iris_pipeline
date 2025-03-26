@@ -13,7 +13,7 @@ def create_config():
         [[nonlinear_correction]]
             skip = False
         [[ramp_fit]]
-            method = "utr"
+            method = "ols"
     """
     return conf
 
@@ -56,7 +56,7 @@ def test_imager_stage1(tmp_path):
     pipeline = liger_iris_pipeline.Stage1Pipeline(config_file=config_file, output_dir=str(tmp_path))
 
     # Test UTR
-    pipeline.ramp_fit.method = "utr"
+    pipeline.ramp_fit.method = "ols"
     results = pipeline.run(ramp_filename)
     model_result = results[0]
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)

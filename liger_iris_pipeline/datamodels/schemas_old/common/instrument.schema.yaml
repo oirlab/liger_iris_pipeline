@@ -1,0 +1,109 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/instrument.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      instrument:
+        title: Instrument configuration information
+        type: object
+        properties:
+          name:
+            title: Name of the instrument used to acquire the data
+            type: string
+            enum: [Liger, IRIS]
+            fits_keyword: INSTRUME
+            blend_table: True
+          era:
+            title: Instrument era specified via semver
+            type: string
+            fits_keyword: ERA
+          detector:
+            title: Name of detector used to acquire the data
+            type: string
+            enum: [IMG, IMG1, IMG2, IMG3, IMG4, IFU, N/A, MULTIPLE]
+            fits_keyword: DETECTOR
+            blend_table: True
+            blend_rule: multi
+          mode:
+            title: Mode of the instrument (IMG or IFU)
+            type: string
+            enum: [IMG, IFU]
+            fits_keyword: MODE
+            blend_table: True
+            blend_rule: multi
+          ifumode:
+            title: IFU mode of the instrument (LENSLET or SLICER)
+            type: string
+            enum: [LENSLET, SLICER, ANY, NONE, None]
+            fits_keyword: IFUMODE
+            blend_table: True
+            blend_rule: multi
+          filter:
+            title: Name of the filter element used
+            type: string
+            enum: [
+              ANY, CLEAR, OPAQUE, N/A, MULTIPLE, NONE, None,
+              Zbb, Ybb, Jbb, Hbb, Kbb,
+              Z, Y, J, H, Ks, K,
+              ZN1, ZN2, ZN3, ZN4,
+              YN1, YN2, YN3,
+              JN1, JN2, JN3, JN4,
+              HN1, HN2, HN3, HN4, HN5,
+              KN1, KN2, KN3, KN4, KN5,
+              CaIIw, PaBetaw, FeIIw, Br_Gammaw, COw,
+              HeI,
+              Jcont,
+              PaBeta,
+              Hcont,
+              FeII,
+              H2one,
+              Kcont,
+              Br_Gamma,
+              H2two,
+              CO,
+            ]
+            fits_keyword: FILTER
+            blend_table: True
+            blend_rule: multi
+          pupil:
+            title: Name of the pupil element used
+            type: string
+            enum: [ANY, CLEAR, N/A]
+            fits_keyword: PUPIL
+            blend_table: True
+          grating:
+            title: Name of the grating element used
+            type: string
+            #enum: [] # NOTE: Add grating names here when desired
+            fits_keyword: GRATING
+            blend_table: True
+            blend_rule: multi
+          temp_imager_detector:
+            title: Temperature of the imager detector
+            type: number
+            fits_keyword: TEMPIMGD
+            blend_table: True
+          temp_ifu_detector:
+            title: Temperature of the IFU detector
+            type: number
+            fits_keyword: TEMPIFUD
+            blend_table: True
+          temp_grating:
+            title: Temperature of the grating
+            type: number
+            fits_keyword: TEMPGRAT
+            blend_table: True
+          scale:
+            title: Average expected plate scaling
+            type: number
+            fits_keyword: SCALE
+            blend_table: True
+          specres:
+            title: Average expected spectral resolving power
+            type: number
+            fits_keyword: SPECRES
+            blend_table: True

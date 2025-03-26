@@ -1,0 +1,29 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/asn.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      asn:
+        title: Association information
+        type: object
+        properties:
+          asn_name:
+            title: Unique Name of the ASN
+            type: string
+            fits_keyword: ASNNAME
+            blend_table: True
+          asn_type:
+            title: Type of association
+            type: string
+            fits_keyword: ASNTYPE
+            blend_table: True
+          exptype:
+            title: Exposure type provided for this exposure in the association
+            type: string
+            fits_keyword: IMTYPE
+            blend_table: True
+            default: SCI

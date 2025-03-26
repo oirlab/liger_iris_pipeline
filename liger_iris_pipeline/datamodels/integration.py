@@ -2,7 +2,6 @@
 This module supports the entry points for ASDF support for the `liger_iris_pipeline.datamodels`.
 """
 
-import os
 import importlib.resources
 
 
@@ -15,7 +14,7 @@ def get_resource_mappings():
     Get the `liger_iris_pipeline.datamodels` resource mappings, that is the schemas for the datamodels.
 
     This method is registered with the `asdf.resource_mappings` entry point for
-    the `liger_iris_datamodel`.
+    the `liger_iris_pipeline.datamodels`.
 
     Returns
     -------
@@ -29,17 +28,5 @@ def get_resource_mappings():
         DirectoryResourceMapping(
             resources_root / "schemas",
             "https://oirlab.github.io/schemas/",
-        ),
-        DirectoryResourceMapping(
-            resources_root / ("schemas" + os.sep + "common"),
-            "https://oirlab.github.io/schemas/",
-        ),
-        DirectoryResourceMapping(
-           resources_root / ("schemas" + os.sep + "liger"),
-           "https://oirlab.github.io/schemas/",
-        ),
-        DirectoryResourceMapping(
-           resources_root / ("schemas" + os.sep + "iris"),
-           "https://oirlab.github.io/schemas/",
         )
     ]

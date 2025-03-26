@@ -26,8 +26,7 @@ if sys.version_info < tuple(
         "iris_pipeline does not support Python < {}".format(__minimum_python_version__)
     )
 
-
-from .flatfield import FlatFieldStep
+from .flat_field import FlatFieldStep
 from .sky_subtraction import SkySubtractionImagerStep
 from .dark_subtraction import DarkSubtractionStep
 from .pipeline import Stage1Pipeline, ImagerStage2Pipeline, CreateFlatfield
@@ -36,7 +35,5 @@ from .normalize import NormalizeStep
 from .parse_subarray_map import ParseSubarrayMapStep
 from .merge_subarrays import MergeSubarraysStep
 from .assign_wcs import AssignWCSStep
-from .readout import NonlinCorrectionStep, FitRampStep
-from .datamodels import *
-
-from .associations import L0Association, L1Association, SubarrayAssociation
+from .readout import NonlinearCorrectionStep, FitRampStep
+from .associations import L0Association, L1Association, L2Association

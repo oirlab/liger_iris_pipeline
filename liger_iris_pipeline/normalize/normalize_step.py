@@ -19,7 +19,7 @@ class NormalizeStep(LigerIRISStep):
     """
 
     def process(self, input):
-        with datamodels.open(input) as input_model:
+        with self.open_model(input, _copy=True) as input_model:
             result = normalize.do_correction(input_model, method=self.method)
 
         self.status = "COMPLETE"

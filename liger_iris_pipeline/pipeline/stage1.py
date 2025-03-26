@@ -6,13 +6,9 @@ from liger_iris_pipeline import datamodels
 from ..associations import L0Association
 
 # step imports
-from ..readout import NonlinCorrectionStep, FitRampStep
+from ..readout import NonlinearCorrectionStep, FitRampStep
 
 __all__ = ['Stage1Pipeline']
-
-# Define logging
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
 
 
 class Stage1Pipeline(LigerIRISPipeline):
@@ -28,14 +24,14 @@ class Stage1Pipeline(LigerIRISPipeline):
 
     # Define aliases to steps
     step_defs = {
-        "nonlinear_correction": NonlinCorrectionStep,
+        "nonlinear_correction": NonlinearCorrectionStep,
         "ramp_fit": FitRampStep,
     }
 
     # start the actual processing
     def process(self, input):
         self.asn = self.input_to_asn(input)
-        log.info('Starting Stage 1 Pipeline ...')
+        self.log.info('Starting Stage 1 Pipeline ...')
         # Each exposure is a product in the association.
         # Process each exposure.
         results = []

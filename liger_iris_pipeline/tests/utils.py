@@ -1,6 +1,10 @@
 import numpy as np
 from astropy.time import Time
 from liger_iris_pipeline import datamodels
+from astropy.utils.data import _get_download_cache_loc
+import os
+import osfclient
+from osfclient.utils import norm_remote_path
 
 def add_imager_wcs_axes(ra : float, dec : float, size : tuple[int, int], scale : float):
     meta = {
@@ -196,7 +200,46 @@ def create_ramp(
             times[i, j] = t
             data[:, :, i, j] = image.copy()
     np.clip(data, 0, np.iinfo(np.int16).max)
-    ramp_model = datamodels.RampModel(instrument=meta['instrument.name'], times=times, data=data, dq=dq)
+    ramp_model = datamodels.RampModel(times=times, data=data, dq=dq)
     add_meta_data(ramp_model, meta)
     ramp_model.meta.data_level = 0
     return ramp_model
+
+
+def download_osf_file(
+        remote_file_path: str,
+        output_dir: str | None = None,
+        preserve_path: bool = True,
+        use_cached : bool = True,
+        project_id : str = 's7uxg'
+    ) -> str:
+
+    # Output directory
+    if output_dir is None:
+        output_dir = _get_download_cache_loc()
+
+    # Set the output path
+    if preserve_path:
+        output_path = os.path.join(output_dir, remote_file_path)
+    else:
+        output_path = os.path.join(output_dir, os.path.basename(remote_file_path))
+
+    if os.path.exists(output_path) and use_cached:
+        return output_path
+    
+    # Ensure the output directory exists
+    if output_dir:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # Download
+    osf = osfclient.OSF()
+    project = osf.project(project_id)
+    store = project.storage('osfstorage')
+    for file_ in store.files:
+        if norm_remote_path(file_.path) == remote_file_path:
+            print(f"Downloading {remote_file_path} from OSF...")
+            with open(output_path, 'wb') as fp:
+                file_.write_to(fp)
+            break
+
+    return output_path

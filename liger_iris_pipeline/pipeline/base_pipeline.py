@@ -73,6 +73,7 @@ class LigerIRISPipeline(LigerIRISStep, Pipeline):
                 _val = self.parse_config_kwarg(key, val, pipeline_spec)
                 setattr(self, key, _val)
         
+
     def init_steps(self, config : config_parser.ConfigObj):
         if self.config_file is not None:
             config_dir = os.path.dirname(self.config_file)
@@ -98,50 +99,29 @@ class LigerIRISPipeline(LigerIRISStep, Pipeline):
                 **step_kwargs
             )
             setattr(self, step_alias, new_step)
-        
-    def input_to_asn(self, input):
-        """
-        Convert input to an association.
-
-        Parameters:
-            input (str | Path | LigerIRISAssociation): The input file.
-
-        Returns:
-            LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
-        """
-
-        # Input already is an association
-        if isinstance(input, LigerIRISAssociation):
-            return input
-        
-        # Input is a file
-        if isinstance(input, str | Path):
-            input = str(input)
-            if os.path.splitext(input)[1] == '.json': # Association file
-                asn = load_asn(input)
-            else:
-                asn = self.default_association.from_member(input) # DataModel file
-        elif isinstance(input, datamodels.LigerIRISDataModel):
-            asn = self.default_association.from_member(input)
-        elif isinstance(input, dict):
-            asn = self.default_association.from_product(input) # Single product (dict):
-        else:
-            raise ValueError(f"Input type {type(input)} not supported.")
-        
-        return asn
     
-    @staticmethod
-    def asn_product_by_types(exp_product : dict):
-        """
-        Get the members of an exposure product by type.
 
-        Parameters:
-            exp_product (dict): The exposure product.
+    # @classmethod
+    # def load_spec_file(cls, preserve_comments=_not_set):
+    #     spec = config_parser.get_merged_spec_file(
+    #         cls, preserve_comments=preserve_comments
+    #     )
 
-        Returns:
-            dict: The members of the exposure product by type.
-        """
-        members_by_type = defaultdict(list)
-        for member in exp_product["members"]:
-            members_by_type[member["exptype"].lower()].append(member["expname"])
-        return members_by_type
+    #     spec["steps"] = Section(spec, spec.depth + 1, spec.main, name="steps")
+    #     steps = spec["steps"]
+    #     for key, val in cls.step_defs.items():
+    #         if not issubclass(val, Step):
+    #             raise TypeError(f"Entry {key!r} in step_defs is not a Step subclass")
+    #         stepspec = val.load_spec_file(preserve_comments=preserve_comments)
+    #         steps[key] = Section(steps, steps.depth + 1, steps.main, name=key)
+
+    #         config_parser.merge_config(steps[key], stepspec)
+
+    #         # Also add a key that can be used to specify an external
+    #         # config_file
+    #         step = spec["steps"][key]
+    #         step["config_file"] = "string(default=None)"
+    #         step["name"] = "string(default='')"
+    #         step["class"] = "string(default='')"
+
+    #     return spec

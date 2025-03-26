@@ -31,40 +31,32 @@ def parse_subarray_map(subarray_map):
 
 
 class ParseSubarrayMapStep(LigerIRISStep):
-    """
-    ParseSubarrayMapStep: Parse a subarray map
-    extension, if available, and create header metadata
-    and data quality flag accordingly
-    """
 
     class_alias = "parse_subarrays"
 
     def process(self, input):
 
-        if isinstance(input, str):
-            input_model = datamodels.open(input)
-        else:
-            input_model = input
+        with self.open_model(input) as input_model:
 
-        if "subarr_map" in input_model:
-            
-            self.log.info("Parsing the SUBARR_MAP extension")
-            
-            result = input_model.copy()
+            if "subarr_map" in input_model:
+                
+                self.log.info("Parsing the SUBARR_MAP extension")
+                
+                result = input_model.copy()
 
-            # Create metadata from image ID map
-            for each in parse_subarray_map(result["subarr_map"]):
-                result.meta.subarray_map.append(each)
+                # Create metadata from image ID map
+                for each in parse_subarray_map(result["subarr_map"]):
+                    result.meta.subarray_map.append(each)
 
-            # Indicate subarrays in dq flags
-            result.dq[result["subarr_map"] != 0] = np.bitwise_or(
-                result.dq[result["subarr_map"] != 0],
-                2 ** SUBARRAY_DQ_BIT
-            )
-            self.status = "COMPLETE"
-        else:
-            self.log.info("No SUBARR_MAP extension found")
-            result = input_model
-            self.status = "SKIPPED"
+                # Indicate subarrays in dq flags
+                result.dq[result["subarr_map"] != 0] = np.bitwise_or(
+                    result.dq[result["subarr_map"] != 0],
+                    2 ** SUBARRAY_DQ_BIT
+                )
+                self.status = "COMPLETE"
+            else:
+                self.log.info("No SUBARR_MAP extension found")
+                result = input_model
+                self.status = "SKIPPED"
 
         return result
