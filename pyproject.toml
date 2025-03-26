@@ -56,7 +56,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-cov", "pytest-astropy", "nbval", "jupyter_client", "nbformat", "ipykernel", "matplotlib"]
+test = ["pytest", "pytest-cov", "pytest-astropy", "nbval", "jupyter_client", "nbformat", "ipykernel", "matplotlib", "tqdm", "osfclient"]
 docs = ["sphinx", "nbsphinx", "sphinx-astropy", "pandoc", "multiversion @ git+https://github.com/sphinx-contrib/multiversion.git"]
 
 [project.urls]
