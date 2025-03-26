@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DarkSubtractionStep &#8212; Liger IRIS DRS vunknown</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Normalize" href="../normalize/index.html" />
+    <link rel="prev" title="Step Arguments" href="../dark_subtraction/arguments.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+
+  <section id="darksubtractionstep">
+<h1>DarkSubtractionStep<a class="headerlink" href="#darksubtractionstep" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">liger_iris_pipeline.dark_subtraction.</span></span><span class="sig-name descname"><span class="pre">DarkSubtractionStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/liger_iris_pipeline/dark_subtraction/dark_step.html#DarkSubtractionStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LigerIRISStep</span></code></p>
+<p>DarkSubtractionStep: Performs dark current correction by subtracting
+dark current reference data from the input science data model.</p>
+<p class="rubric">Attributes Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.class_alias" title="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.class_alias"><code class="xref py py-obj docutils literal notranslate"><span class="pre">class_alias</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.reference_file_types" title="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.reference_file_types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference_file_types</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.spec" title="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spec</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.process" title="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.process"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process</span></code></a>(input)</p></td>
+<td><p>This is where real work happens.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.class_alias">
+<span class="sig-name descname"><span class="pre">class_alias</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dark_sub'</span></em><a class="headerlink" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.class_alias" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.reference_file_types">
+<span class="sig-name descname"><span class="pre">reference_file_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['dark']</span></em><a class="headerlink" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.reference_file_types" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.spec">
+<span class="sig-name descname"><span class="pre">spec</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">dark_output_dir</span> <span class="pre">=</span> <span class="pre">string(default</span> <span class="pre">=</span> <span class="pre">None)</span> <span class="pre">#</span> <span class="pre">Path</span> <span class="pre">to</span> <span class="pre">save</span> <span class="pre">the</span> <span class="pre">ref</span> <span class="pre">dark</span> <span class="pre">from</span> <span class="pre">CRDS.\n</span>&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.spec" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/liger_iris_pipeline/dark_subtraction/dark_step.html#DarkSubtractionStep.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.process" title="Link to this definition">¶</a></dt>
+<dd><p>This is where real work happens. Every Step subclass has to
+override this method. The default behaviour is to raise a
+NotImplementedError exception.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Liger IRIS DRS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example-run.html">Example pipeline execution</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">IRIS Data Reduction System design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#purpose">Purpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#software-infrastructure">Software infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#processing-levels-and-data-product-stages">Processing levels and data product stages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#file-format">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#example-run">Example run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#access-calibration-files-via-the-calibration-reference-data-system-crds">Access calibration files via the Calibration Reference Data System (CRDS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#metadata">Metadata</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../calibration-database.html">Calibration</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../available-steps.html">Available algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#imager-algorithms">Imager Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#ifs-algorithms">IFS Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#advanced-algorithms">Advanced Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#calibration-algorithms">Calibration algorithms</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../subarrays.html">Support for Subarrays</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.open.html">open</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.AssignWCSStep.html">AssignWCSStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.CreateFlatfield.html">CreateFlatfield</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.DQInitStep.html">DQInitStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.DQModel.html">DQModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.DarkModel.html">DarkModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.DarkSubtractionStep.html">DarkSubtractionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.FitRampStep.html">FitRampStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.FlatFieldStep.html">FlatFieldStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.FlatModel.html">FlatModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.IFUCubeModel.html">IFUCubeModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.IFUImageModel.html">IFUImageModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.ImagerModel.html">ImagerModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.ImagerStage2Pipeline.html">ImagerStage2Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.LigerIRISDataModel.html">LigerIRISDataModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.MergeSubarraysStep.html">MergeSubarraysStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.NonlinCorrectionStep.html">NonlinCorrectionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.NonlinearReadoutParametersModel.html">NonlinearReadoutParametersModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.NormalizeStep.html">NormalizeStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.ParseSubarrayMapStep.html">ParseSubarrayMapStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.RampModel.html">RampModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.ReferenceFileModel.html">ReferenceFileModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.SkySubtractionImagerStep.html">SkySubtractionImagerStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.Stage1Pipeline.html">Stage1Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="liger_iris_pipeline.UnsupportedPythonError.html">UnsupportedPythonError</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../available-steps.html">Available algorithms</a><ul>
+  <li><a href="../dark_subtraction/index.html">Dark Current Subtraction</a><ul>
+      <li>Previous: <a href="../dark_subtraction/arguments.html" title="previous chapter">Step Arguments</a></li>
+      <li>Next: <a href="../normalize/index.html" title="next chapter">Normalize</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Bryson Cale, Andrea Zonca, Shelley Wright.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/api/liger_iris_pipeline.dark_subtraction.DarkSubtractionStep.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

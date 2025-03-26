@@ -1,0 +1,8 @@
+<map id="inheritancec57700d2a8" name="inheritancec57700d2a8">
+<area shape="rect" id="node1" href="../api/liger_iris_pipeline.pipeline.CreateFlatfield.html#liger_iris_pipeline.pipeline.CreateFlatfield" target="_top" title="Processes L1 flat field images to create a flat field reference file." alt="" coords="468,5,574,32"/>
+<area shape="rect" id="node2" href="../api/liger_iris_pipeline.pipeline.LigerIRISPipeline.html#liger_iris_pipeline.pipeline.LigerIRISPipeline" target="_top" title="LigerIRISPipeline" alt="" coords="277,56,399,83"/>
+<area shape="rect" id="node3" href="../api/liger_iris_pipeline.pipeline.ImagerStage2Pipeline.html#liger_iris_pipeline.pipeline.ImagerStage2Pipeline" target="_top" title="Standard pipeline for processing Liger and IRIS Imager data from L1 to L2." alt="" coords="447,56,595,83"/>
+<area shape="rect" id="node7" href="../api/liger_iris_pipeline.pipeline.Stage1Pipeline.html#liger_iris_pipeline.pipeline.Stage1Pipeline" target="_top" title="Stage 1 pipeline to process a series of raw reads to slope maps." alt="" coords="467,107,575,133"/>
+<area shape="rect" id="node5" title="A Pipeline is a way of combining a number of steps together." alt="" coords="141,81,213,108"/>
+<area shape="rect" id="node6" title="Step" alt="" coords="5,56,77,83"/>
+</map>

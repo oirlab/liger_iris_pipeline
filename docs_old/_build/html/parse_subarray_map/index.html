@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Parse Subarray Map &#8212; Liger IRIS DRS vunknown</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ParseSubarrayMapStep" href="../api/liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep.html" />
+    <link rel="prev" title="FlatFieldStep" href="../api/liger_iris_pipeline.flatfield.FlatFieldStep.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+
+  <section id="parse-subarray-map">
+<span id="parse-subarray-map-step"></span><h1>Parse Subarray Map<a class="headerlink" href="#parse-subarray-map" title="Link to this heading">¶</a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
+<section id="subarr-map-extension">
+<h3>SUBARR_MAP extension<a class="headerlink" href="#subarr-map-extension" title="Link to this heading">¶</a></h3>
+<p>This pipeline step is only useful for full raw science frames which
+have been acquired concurrently with subarrays.</p>
+<p>Each subarray is processed separately and the full science frame is
+also acquired and has missing values at the location of each of
+the subarrays (up to 10) which are currently being acquired.</p>
+<p>The raw science frame from  the detector has a dedicated FITS extension
+that encodes the location of the subarrays, i.e. has zeros everywhere,
+then a rectangle of 1 at the location of subarray 1, a rectangle of 2
+at the location of subarray 2 and so on. Subarrays cannot overlap.</p>
+</section>
+<section id="parse-subarray-map-extension">
+<h3>Parse subarray map extension<a class="headerlink" href="#parse-subarray-map-extension" title="Link to this heading">¶</a></h3>
+<p>This step gets the information from this extension and duplicates it
+into the header as <cite>IRISImageModel.meta.subarray_map</cite>,
+which is a ASDF-based property in the FITS file which encodes the metadata
+of the subarrays as a list of dictionaries:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">IRISImageModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">subarray_map</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;xstart&quot;</span><span class="p">:</span><span class="mi">80</span><span class="p">,</span> <span class="s2">&quot;ystart&quot;</span><span class="p">:</span><span class="mi">70</span><span class="p">,</span> <span class="s2">&quot;xsize&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;ysize&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;xstart&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;ystart&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;xsize&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;ysize&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">}]</span>
+</pre></div>
+</div>
+<p>It also raises 1 bit of the data quality flag <cite>dq</cite> so that the algorithms which
+filter out bad data, e.g. when taking <cite>mean</cite> or <cite>median</cite>, automatically filters
+them out. The bit used for that is <cite>SUBARRAY_DQ_BIT</cite> in <cite>parse_subarray_map_step.py</cite>.</p>
+</section>
+<section id="module-liger_iris_pipeline.parse_subarray_map">
+<span id="liger-iris-pipeline-parse-subarray-map-package"></span><h3>liger_iris_pipeline.parse_subarray_map Package<a class="headerlink" href="#module-liger_iris_pipeline.parse_subarray_map" title="Link to this heading">¶</a></h3>
+<section id="classes">
+<h4>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h4>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep.html#liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep" title="liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParseSubarrayMapStep</span></code></a>([config_file])</p></td>
+<td><p>ParseSubarrayMapStep: Parse a subarray map extension, if available, and create header metadata and data quality flag accordingly</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="class-inheritance-diagram">
+<h4>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Link to this heading">¶</a></h4>
+<div class="graphviz"><img src="../_images/inheritance-264c8b2494e767dd5c777d0bc8130ee20646df38.png" alt="Inheritance diagram of liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step.ParseSubarrayMapStep" usemap="#inheritancedab4b9461a" class="inheritance graphviz" /></div>
+<map id="inheritancedab4b9461a" name="inheritancedab4b9461a">
+<area shape="rect" id="node3" href="../api/liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep.html#liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep" target="_top" title="ParseSubarrayMapStep: Parse a subarray map" alt="" coords="277,5,436,32"/>
+</map></section>
+</section>
+</section>
+</section>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Liger IRIS DRS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example-run.html">Example pipeline execution</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">IRIS Data Reduction System design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#purpose">Purpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#software-infrastructure">Software infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#processing-levels-and-data-product-stages">Processing levels and data product stages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#file-format">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#example-run">Example run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#access-calibration-files-via-the-calibration-reference-data-system-crds">Access calibration files via the Calibration Reference Data System (CRDS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html#metadata">Metadata</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../calibration-database.html">Calibration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../available-steps.html">Available algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#imager-algorithms">Imager Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#ifs-algorithms">IFS Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#advanced-algorithms">Advanced Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms.html#calibration-algorithms">Calibration algorithms</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../subarrays.html">Support for Subarrays</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.open.html">open</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.AssignWCSStep.html">AssignWCSStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.CreateFlatfield.html">CreateFlatfield</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.DQInitStep.html">DQInitStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.DQModel.html">DQModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.DarkModel.html">DarkModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.DarkSubtractionStep.html">DarkSubtractionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.FitRampStep.html">FitRampStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.FlatFieldStep.html">FlatFieldStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.FlatModel.html">FlatModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.IFUCubeModel.html">IFUCubeModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.IFUImageModel.html">IFUImageModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.ImagerModel.html">ImagerModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.ImagerStage2Pipeline.html">ImagerStage2Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.LigerIRISDataModel.html">LigerIRISDataModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.MergeSubarraysStep.html">MergeSubarraysStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.NonlinCorrectionStep.html">NonlinCorrectionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.NonlinearReadoutParametersModel.html">NonlinearReadoutParametersModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.NormalizeStep.html">NormalizeStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.ParseSubarrayMapStep.html">ParseSubarrayMapStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.RampModel.html">RampModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.ReferenceFileModel.html">ReferenceFileModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.SkySubtractionImagerStep.html">SkySubtractionImagerStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.Stage1Pipeline.html">Stage1Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/liger_iris_pipeline.UnsupportedPythonError.html">UnsupportedPythonError</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../available-steps.html">Available algorithms</a><ul>
+      <li>Previous: <a href="../api/liger_iris_pipeline.flatfield.FlatFieldStep.html" title="previous chapter">FlatFieldStep</a></li>
+      <li>Next: <a href="../api/liger_iris_pipeline.parse_subarray_map.ParseSubarrayMapStep.html" title="next chapter">ParseSubarrayMapStep</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Bryson Cale, Andrea Zonca, Shelley Wright.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/parse_subarray_map/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>liger_iris_pipeline.datamodels.utils &#8212; Liger IRIS DRS vunknown</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+
+  <h1>Source code for liger_iris_pipeline.datamodels.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+
+<span class="kn">from</span> <span class="nn">stdatamodels.jwst.datamodels.util</span> <span class="kn">import</span> <span class="n">is_association</span>
+
+<span class="kn">import</span> <span class="nn">asdf</span>
+<span class="kn">from</span> <span class="nn">stdatamodels</span> <span class="kn">import</span> <span class="n">filetype</span>
+<span class="kn">from</span> <span class="nn">stdatamodels.model_base</span> <span class="kn">import</span> <span class="n">_FileReference</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NullHandler</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="open">
+<a class="viewcode-back" href="../../../api/liger_iris_pipeline.open.html#liger_iris_pipeline.open">[docs]</a>
+<span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">memmap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a DataModel from a number of different types.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        init:</span>
+<span class="sd">            - None: A default data model with no shape</span>
+<span class="sd">            - shape tuple: Initialize with empty data of the given shape</span>
+<span class="sd">            - file path: Initialize from the given file (FITS, JSON or ASDF)</span>
+<span class="sd">            - readable file object: Initialize from the given file object</span>
+<span class="sd">            - astropy.io.fits.HDUList: Initialize from the given `~astropy.io.fits.HDUList`.</span>
+<span class="sd">            - A numpy array: A new model with the data array initialized to what was passed in.</span>
+<span class="sd">            - dict: The object model tree for the data model</span>
+<span class="sd">        memmap: (bool) (Turn memmap of file on or off.  (default: False).</span>
+<span class="sd">        kwargs:</span>
+<span class="sd">            validate_arrays (bool): If `True`, arrays will be validated against ndim, max_ndim, and datatype validators in the schemas.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        LigerIRISDataModel : The specific LigerIRISDataModel instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">.model_base</span> <span class="kn">import</span> <span class="n">LigerIRISDataModel</span>
+    <span class="c1">#from .container import LigerIRISModelContainer</span>
+    <span class="kn">from</span> <span class="nn">..associations</span> <span class="kn">import</span> <span class="n">load_asn</span>
+
+    <span class="c1"># If init is already a datamodel, copy and return</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">LigerIRISDataModel</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">init</span>
+        <span class="c1">#return init.__class__(init, **kwargs)</span>
+    
+    <span class="c1"># Convert path to string</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="n">init</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+    <span class="c1"># Initialize variables used to select model class</span>
+    <span class="n">hdulist</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">file_to_close</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Get the encoding used with the filesystem error handler to</span>
+    <span class="c1"># convert between Unicode filenames and bytes filenames</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">init</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getfilesystemencoding</span><span class="p">())</span>
+    
+    <span class="c1"># Pathlike object</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+
+        <span class="c1"># Get just the filename no path</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+        <span class="c1"># File type</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="n">filetype</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+        <span class="c1"># Read the file as an association / model container</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;asn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">load_asn</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+
+        <span class="c1"># Load FITS or ASDF file</span>
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;fits&quot;</span><span class="p">:</span>
+            <span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">memmap</span><span class="o">=</span><span class="n">memmap</span><span class="p">)</span>
+            <span class="n">file_to_close</span> <span class="o">=</span> <span class="n">hdulist</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;asdf&quot;</span><span class="p">:</span>
+            <span class="n">asdffile</span> <span class="o">=</span> <span class="n">asdf</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">memmap</span><span class="o">=</span><span class="n">memmap</span><span class="p">)</span>
+            
+            <span class="c1"># Detect model type, then get defined model, and call it.</span>
+            <span class="n">model_class</span> <span class="o">=</span> <span class="n">class_from_model_type</span><span class="p">(</span><span class="n">asdffile</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">model_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># No model class found, so return generic model.</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;model_type not found with key &#39;DATAMODL&#39;. Opening </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2"> as a LigerIRISDataModel&quot;</span><span class="p">)</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">LigerIRISDataModel</span><span class="p">(</span><span class="n">asdffile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span><span class="n">asdffile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">model</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">fits</span><span class="o">.</span><span class="n">HDUList</span><span class="p">):</span>
+        <span class="n">hdulist</span> <span class="o">=</span> <span class="n">init</span>
+    <span class="k">elif</span> <span class="n">is_association</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ModelContainer</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># If we have it, determine the shape from the science hdu</span>
+    <span class="k">if</span> <span class="n">hdulist</span><span class="p">:</span>
+        <span class="c1"># So we don&#39;t need to open the image twice</span>
+        <span class="n">init</span> <span class="o">=</span> <span class="n">hdulist</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">fileinfo</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">)</span>
+
+    <span class="c1"># First try to get the class name from the primary header</span>
+    <span class="n">model_class</span> <span class="o">=</span> <span class="n">class_from_model_type</span><span class="p">(</span><span class="n">hdulist</span><span class="p">)</span>
+
+    <span class="c1"># Throw an error if these attempts were unsuccessful</span>
+    <span class="k">if</span> <span class="n">model_class</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file_to_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">file_to_close</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">model_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t determine datamodel class from argument to open&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Log a message about how the model was opened</span>
+    <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1"> as </span><span class="si">{</span><span class="n">model_class</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening as </span><span class="si">{</span><span class="n">model_class</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Actually open the model</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file_to_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_to_close</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">raise</span>
+
+    <span class="c1"># Close the hdulist if we opened it</span>
+    <span class="k">if</span> <span class="n">file_to_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># TODO: We need a better solution than messing with DataModel</span>
+        <span class="c1"># internals.</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">_file_references</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_FileReference</span><span class="p">(</span><span class="n">file_to_close</span><span class="p">))</span>
+
+    <span class="c1"># Return the final model</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">class_from_model_type</span><span class="p">(</span><span class="n">init</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the model type from the primary header, lookup to get class</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    init (HDUList | AsdfFile): The initializer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    type | None: The LigerIRISDataModel class if found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">DEFINED_MODELS</span>
+    <span class="k">if</span> <span class="n">init</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">fits</span><span class="o">.</span><span class="n">hdu</span><span class="o">.</span><span class="n">hdulist</span><span class="o">.</span><span class="n">HDUList</span><span class="p">):</span>
+            <span class="n">primary</span> <span class="o">=</span> <span class="n">init</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">model_type</span> <span class="o">=</span> <span class="n">primary</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DATAMODL&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init</span><span class="p">,</span> <span class="n">asdf</span><span class="o">.</span><span class="n">AsdfFile</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model_type</span> <span class="o">=</span> <span class="n">init</span><span class="o">.</span><span class="n">tree</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;model_type&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">model_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Get the model type</span>
+        <span class="k">if</span> <span class="n">model_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model_class</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model_class</span> <span class="o">=</span> <span class="n">DEFINED_MODELS</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">model_class</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model_class</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Return the class</span>
+    <span class="k">return</span> <span class="n">model_class</span>
+
+</pre></div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Liger IRIS DRS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting-started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../example-run.html">Example pipeline execution</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">IRIS Data Reduction System design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#purpose">Purpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#software-infrastructure">Software infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#processing-levels-and-data-product-stages">Processing levels and data product stages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#file-format">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#example-run">Example run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#access-calibration-files-via-the-calibration-reference-data-system-crds">Access calibration files via the Calibration Reference Data System (CRDS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html#metadata">Metadata</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../calibration-database.html">Calibration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../available-steps.html">Available algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html#imager-algorithms">Imager Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html#ifs-algorithms">IFS Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html#advanced-algorithms">Advanced Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../algorithms.html#calibration-algorithms">Calibration algorithms</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../subarrays.html">Support for Subarrays</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.open.html">open</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.AssignWCSStep.html">AssignWCSStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.CreateFlatfield.html">CreateFlatfield</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.DQInitStep.html">DQInitStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.DQModel.html">DQModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.DarkModel.html">DarkModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.DarkSubtractionStep.html">DarkSubtractionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.FitRampStep.html">FitRampStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.FlatFieldStep.html">FlatFieldStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.FlatModel.html">FlatModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.IFUCubeModel.html">IFUCubeModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.IFUImageModel.html">IFUImageModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.ImagerModel.html">ImagerModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.ImagerStage2Pipeline.html">ImagerStage2Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.LigerIRISDataModel.html">LigerIRISDataModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.MergeSubarraysStep.html">MergeSubarraysStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.NonlinCorrectionStep.html">NonlinCorrectionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.NonlinearReadoutParametersModel.html">NonlinearReadoutParametersModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.NormalizeStep.html">NormalizeStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.ParseSubarrayMapStep.html">ParseSubarrayMapStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.RampModel.html">RampModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.ReferenceFileModel.html">ReferenceFileModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.SkySubtractionImagerStep.html">SkySubtractionImagerStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.Stage1Pipeline.html">Stage1Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/liger_iris_pipeline.UnsupportedPythonError.html">UnsupportedPythonError</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../liger_iris_pipeline.html">liger_iris_pipeline</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Bryson Cale, Andrea Zonca, Shelley Wright.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

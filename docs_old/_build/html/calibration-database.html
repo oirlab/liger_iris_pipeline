@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Calibration &#8212; Liger IRIS DRS vunknown</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Available algorithms" href="available-steps.html" />
+    <link rel="prev" title="IRIS Data Reduction System design" href="design.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+
+
+  <section id="calibration">
+<h1>Calibration<a class="headerlink" href="#calibration" title="Link to this heading">¶</a></h1>
+<section id="calibration-files">
+<h2>Calibration files<a class="headerlink" href="#calibration-files" title="Link to this heading">¶</a></h2>
+<p>Auxiliary data used in DRP algorithms are called calibration data. This includes both on-sky data (that is not of the astronomical target itself), daytime calibration frames, and other sub-component metadata. Metadata is non-image information that will typically come from the header of raw FITS files, or from IRIS, and/or the adaptive optics system via the observatory telemetry service. The NFIRAOS Science Calibration Unit (NSCU) will include a calibration system that will facilitate the taking of
+daytime calibration frames, such as arc lamp spectra, white light flat field images, and pinhole grids for measuring distortion.
+The following table summarizes the required calibration files necessary for the Data Reduction Software.</p>
+<p>Notes about the table: Note: * = SPEC only, PTG = pointing, D-Map = Distortion Map, Env = Environmental, DTC = Daytime calibration, NTC = Nightime calibration.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Calibration frames</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Reference Type</p></th>
+<th class="head"><p>Source</p></th>
+<th class="head"><p>Algorithms</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Atm. Dispersion Residual</p></td>
+<td><p>Metadata</p></td>
+<td><p>IRIS ADC</p></td>
+<td><p>Atmospheric Correction</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arc lamp spectra*</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC (NSCU)</p></td>
+<td><p>Wavelength solution</p></td>
+</tr>
+<tr class="row-even"><td><p>Bad pixel map</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC</p></td>
+<td><p>Correction of detector artifacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dark Frame</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC and NTC</p></td>
+<td><p>Dark subtraction</p></td>
+</tr>
+<tr class="row-even"><td><p>Env metadata</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fiber image</p></td>
+<td><p>CAL (2D, 3D)</p></td>
+<td><p>IRIS DTC (NSCU)</p></td>
+<td><p>PSF Calibration</p></td>
+</tr>
+<tr class="row-even"><td><p>Flux calibration star</p></td>
+<td><p>CAL (2D, 3D)</p></td>
+<td><p>IRIS On-sky</p></td>
+<td><p>Extract Star, Remove Absorption Lines</p></td>
+</tr>
+<tr class="row-odd"><td><p>Instrument config</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-even"><td><p>Lenslet scan*</p></td>
+<td><p>Rect Matrix CAL (2D)</p></td>
+<td><p>IRIS DTC (NSCU)</p></td>
+<td><p>Spectral Extraction</p></td>
+</tr>
+<tr class="row-odd"><td><p>NFIRAOS config</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-even"><td><p>Pinhole Grid (D-Map)</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC (NSCU)</p></td>
+<td><p>Field distortion correction</p></td>
+</tr>
+<tr class="row-odd"><td><p>PSF metadata</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>PSF calibration</p></td>
+</tr>
+<tr class="row-even"><td><p>PSF star</p></td>
+<td><p>CAL (2D, 3D)</p></td>
+<td><p>IRIS on-sky</p></td>
+<td><p>PSF calibration</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sky frame</p></td>
+<td><p>CAL (2D, 3D)</p></td>
+<td><p>IRIS on-sky</p></td>
+<td><p>Sky-subtraction</p></td>
+</tr>
+<tr class="row-even"><td><p>Telescope config PTG</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Real time Calibration frames</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Reference Type</p></th>
+<th class="head"><p>Source</p></th>
+<th class="head"><p>Algorithms</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Atm. Dispersion Residual</p></td>
+<td><p>Metadata</p></td>
+<td><p>IRIS ADC</p></td>
+<td><p>Atmospheric Correction</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arc lamp spectra*</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC (NSCU)</p></td>
+<td><p>Wavelength solution</p></td>
+</tr>
+<tr class="row-even"><td><p>Bad pixel map</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC</p></td>
+<td><p>Correction of detector artifacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dark Frame</p></td>
+<td><p>CAL (2D)</p></td>
+<td><p>IRIS DTC and NTC</p></td>
+<td><p>Dark subtraction</p></td>
+</tr>
+<tr class="row-even"><td><p>Env metadata</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-odd"><td><p>Instrument config</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-even"><td><p>NFIRAOS config</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sky frame</p></td>
+<td><p>CAL (2D, 3D)</p></td>
+<td><p>IRIS on-sky</p></td>
+<td><p>Sky-subtraction</p></td>
+</tr>
+<tr class="row-even"><td><p>Telescope config PTG</p></td>
+<td><p>Metadata</p></td>
+<td><p>ESW, FITS header</p></td>
+<td><p>All</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="access-calibration-files-via-the-calibration-reference-data-system-crds">
+<h2>Access calibration files via the Calibration Reference Data System (CRDS)<a class="headerlink" href="#access-calibration-files-via-the-calibration-reference-data-system-crds" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference external" href="https://hst-crds.stsci.edu/static/users_guide/overview.html">Calibration Reference Data System
+(CRDS)</a>
+is a set of tools developed by Space Telescope to organize and retrieve
+calibration reference files, e.g. flat frames, dark frames, for JWST and
+HST. When <code class="docutils literal notranslate"><span class="pre">stpipe</span></code> is executing a pipeline, it can automatically
+connect to the JWST CRDS server and get the right flat based on the
+metadata in the header of the data FITS files. The logic necessary to
+choose the right file is encoded in text files. Those configuration
+files and the actual calibration FITS files are also cached locally so
+that the CRDS client library works even without any connection to a
+central server.</p>
+<p>We have created a CRDS cache folder in the Github repository
+<a class="reference external" href="https://github.com/oirlab/tmt-crds-cache">https://github.com/oirlab/tmt-crds-cache</a>,
+this includes in the <code class="docutils literal notranslate"><span class="pre">mappings/tmt</span></code>
+<a class="reference external" href="https://github.com/oirlab/tmt-crds-cache/tree/master/mappings/tmt">folder</a>
+the metadata for IRIS and the rules to choose the right flat-field and dark-current
+frame, for now there are only dummy rules but this can be easily
+customized querying the metadata in the input file.</p>
+<p>Currently we do not have any CRDS server running, but the users can
+download the CRDS cache locally and use it anyway, see the <a class="reference external" href="getting-started">Getting
+started</a> documentation.</p>
+<p>Also, the CRDS client library needs to have minimal knowledge about
+metadata for TMT, therefore we maintain a fork of that library which
+simply adds a submodule dedicated to IRIS, <a class="reference external" href="https://github.com/oirlab/tmt-crds">https://github.com/oirlab/tmt-crds</a>, it is quite
+easy to upgrade this to newer releases of CRDS by Space Telescope.</p>
+<p>If TMT decided to use CRDS as their Data Management System, it would
+leverage the extensive set of tools and documentation available and
+would not require modifications to <code class="docutils literal notranslate"><span class="pre">stpipe</span></code>; otherwise, we will
+implement support for the DMS API into (our own fork of) <code class="docutils literal notranslate"><span class="pre">stpipe</span></code>.</p>
+<section id="structure-of-the-files-in-crds">
+<h3>Structure of the files in CRDS<a class="headerlink" href="#structure-of-the-files-in-crds" title="Link to this heading">¶</a></h3>
+<p>The complete documentation of CRDS is available <a class="reference external" href="https://jwst-crds.stsci.edu/static/users_guide/index.html">from Space Telescope</a>,
+in this section we will provide a quick overview of the structure of the files in the CRDS cache we use for TMT/IRIS.</p>
+<p>The files are all text files and have a hierarchical structure and the root is a <code class="docutils literal notranslate"><span class="pre">.pmap</span></code> file,
+in our case it is <a class="reference external" href="https://github.com/oirlab/tmt-crds-cache/blob/master/mappings/tmt/tmt_0001.pmap">tmt_0001.pmap</a>,
+this file defines the observatory and it is used to switch between different versions of the instrument model.
+In fact when we define the environment variables for CRDS we specify <code class="docutils literal notranslate"><span class="pre">CRDS_CONTEXT</span></code> to be the filename of
+the <code class="docutils literal notranslate"><span class="pre">.pmap</span></code> file we want to use. This makes it very
+easy to switch back and forth between different versions of the calibration files.</p>
+<p>At the bottom of the <code class="docutils literal notranslate"><span class="pre">.pmap</span></code> file we point to all the different instruments of the current observatory and
+the specific version of their definition files. For now we only have <a class="reference external" href="https://github.com/oirlab/tmt-crds-cache/blob/master/mappings/tmt/tmt_iris_0003.imap">tmt_iris_0003.imap</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.imap</span></code> file defines what kind of calibration files are available in CRDS. For example we can
+have DARK, FLAT and MASK, each pointing to a reference file <code class="docutils literal notranslate"><span class="pre">.rmap</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">.rmap</span></code> files are the most important because they actually encode the rules that the CRDS client uses
+to choose which actual FITS calibration file should be used based on the metadata available in the
+FITS header of the data file.
+First in the <code class="docutils literal notranslate"><span class="pre">parkey</span></code> key of the header it defines what fields of the input file header should be taken
+into consideration, for example the detector,  the subarray configuration and the datetime of the observation.
+Then it encodes different rules to match for each value of the keys in <code class="docutils literal notranslate"><span class="pre">parkey</span></code> the filename of the
+FITS calibration file that should be used. Those files are available as well in the CRDS cache inside
+the <a class="reference external" href="https://github.com/oirlab/tmt-crds-cache/tree/master/references/tmt/iris">references folder</a>.</p>
+<p>Calibration FITS files are quite large, they are therefore stored on Github using <code class="docutils literal notranslate"><span class="pre">Git</span> <span class="pre">LFS</span></code> and are
+automatically downloaded when a user clones the repository.
+In production, scientists would just interface with the CRDS server and the local CRDS cache will be
+automatically created and keep updated by synchronizing with the server. A Github repository with
+the CRDS Cache is just useful during the development phase.</p>
+</section>
+<section id="retrieve-files-from-the-crds">
+<h3>Retrieve files from the CRDS<a class="headerlink" href="#retrieve-files-from-the-crds" title="Link to this heading">¶</a></h3>
+<p>Within <code class="docutils literal notranslate"><span class="pre">liger_iris_pipeline</span></code>, all the subclasses of <code class="xref py py-class docutils literal notranslate"><span class="pre">jwst.Step</span></code> can recall a configuration file using the
+<cite>self.get_reference_file</cite> method and passing the input model (whose metadata will be used to find the right calibration file)
+and the type of calibration file requested.</p>
+<p>Or we could create a temporary <code class="xref py py-class docutils literal notranslate"><span class="pre">jwst.Step</span></code> instance just to get the filename, for example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">raw_science_frame</span> <span class="o">=</span> <span class="n">liger_iris_pipeline</span><span class="o">.</span><span class="n">datamodels</span><span class="o">.</span><span class="n">IRISImageModel</span><span class="p">(</span><span class="s2">&quot;raw_science_frame_sci.fits&quot;</span><span class="p">)</span>
+<span class="o">&gt;</span> <span class="n">full_dark_filename</span> <span class="o">=</span> <span class="n">jwst</span><span class="o">.</span><span class="n">stpipe</span><span class="o">.</span><span class="n">Step</span><span class="p">()</span><span class="o">.</span><span class="n">get_reference_file</span><span class="p">(</span><span class="n">raw_science_frame</span><span class="p">,</span> <span class="s2">&quot;dark&quot;</span><span class="p">)</span>
+<span class="o">&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">full_dark_filename</span><span class="p">)</span>
+<span class="s1">&#39;~/crds_cache/references/tmt/iris/tmt_iris_dark_0001.fits&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="ingest-new-calibration-files-into-crds">
+<h3>Ingest new calibration files into CRDS<a class="headerlink" href="#ingest-new-calibration-files-into-crds" title="Link to this heading">¶</a></h3>
+<p>Users that would like to use a custom calibration file just occasionally can override them using options
+to the calibration pipeline, see for example the <code class="docutils literal notranslate"><span class="pre">override_flat</span></code> configuration option to the flat-fielding
+pipeline step.</p>
+<p>Instead, developers that would like to add calibration files to the CRDS itself, and optionally provide a
+pull request to the CRDS cache repository on Github, should use the <code class="docutils literal notranslate"><span class="pre">crds</span></code> command line tool.</p>
+<p>1) Make sure that the calibration file has all the necessary headers defined,
+if you are creating a file using <code class="docutils literal notranslate"><span class="pre">liger_iris_pipeline</span></code> this is automatically satisfied, for example using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">IRISImageModel</span></code>.</p>
+<ol class="arabic" start="2">
+<li><p>Add any additional header key, typically <code class="docutils literal notranslate"><span class="pre">USEAFTER</span></code>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">USEAFTER</span><span class="o">=</span> <span class="s1">&#39;2019-06-01 00:00:00&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create the new <code class="docutils literal notranslate"><span class="pre">.rmap</span></code> file:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">crds</span> <span class="n">refactor2</span> <span class="n">insert_reference</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">old</span><span class="o">-</span><span class="n">rmap</span> \
+    <span class="o">~/</span><span class="n">crds_cache</span><span class="o">/</span><span class="n">mappings</span><span class="o">/</span><span class="n">tmt</span><span class="o">/</span><span class="n">tmt_iris_flat_0003</span><span class="o">.</span><span class="n">rmap</span> <span class="o">--</span><span class="n">new</span><span class="o">-</span><span class="n">rmap</span> \
+    <span class="o">~/</span><span class="n">crds_cache</span><span class="o">/</span><span class="n">mappings</span><span class="o">/</span><span class="n">tmt</span><span class="o">/</span><span class="n">tmt_iris_flat_0004</span><span class="o">.</span><span class="n">rmap</span> \
+    <span class="o">--</span><span class="n">instruments</span> <span class="n">IRIS</span> \
+    <span class="o">--</span><span class="n">references</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">new</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">fits</span>
+</pre></div>
+</div>
+</li>
+<li><p>Modify the <code class="docutils literal notranslate"><span class="pre">.imap</span></code> to point to this new file for the reference file we are working with</p></li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">update_checksums.sh</span></code> in the <code class="docutils literal notranslate"><span class="pre">mappings/tmt</span></code> folder to automatically update the checksums</p></li>
+<li><p>Add the FITS calibration file in the CRDS cache <code class="docutils literal notranslate"><span class="pre">references/tmt/iris/</span></code> folder</p></li>
+<li><p>Optionally add all new files and modified files to the repository and send a Pull Request to the <code class="docutils literal notranslate"><span class="pre">tmt-crds-cache</span></code> repository</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Liger IRIS DRS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="example-run.html">Example pipeline execution</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="design.html">IRIS Data Reduction System design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#purpose">Purpose</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#software-infrastructure">Software infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#processing-levels-and-data-product-stages">Processing levels and data product stages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#file-format">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#example-run">Example run</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#access-calibration-files-via-the-calibration-reference-data-system-crds">Access calibration files via the Calibration Reference Data System (CRDS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html#metadata">Metadata</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Calibration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#calibration-files">Calibration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#access-calibration-files-via-the-calibration-reference-data-system-crds">Access calibration files via the Calibration Reference Data System (CRDS)</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="available-steps.html">Available algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html">Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html#imager-algorithms">Imager Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html#ifs-algorithms">IFS Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html#advanced-algorithms">Advanced Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithms.html#calibration-algorithms">Calibration algorithms</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="subarrays.html">Support for Subarrays</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.open.html">open</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.AssignWCSStep.html">AssignWCSStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.CreateFlatfield.html">CreateFlatfield</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.DQInitStep.html">DQInitStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.DQModel.html">DQModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.DarkModel.html">DarkModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.DarkSubtractionStep.html">DarkSubtractionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.FitRampStep.html">FitRampStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.FlatFieldStep.html">FlatFieldStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.FlatModel.html">FlatModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.IFUCubeModel.html">IFUCubeModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.IFUImageModel.html">IFUImageModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.ImagerModel.html">ImagerModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.ImagerStage2Pipeline.html">ImagerStage2Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.LigerIRISDataModel.html">LigerIRISDataModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.MergeSubarraysStep.html">MergeSubarraysStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.NonlinCorrectionStep.html">NonlinCorrectionStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.NonlinearReadoutParametersModel.html">NonlinearReadoutParametersModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.NormalizeStep.html">NormalizeStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.ParseSubarrayMapStep.html">ParseSubarrayMapStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.RampModel.html">RampModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.ReferenceFileModel.html">ReferenceFileModel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.SkySubtractionImagerStep.html">SkySubtractionImagerStep</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.Stage1Pipeline.html">Stage1Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/liger_iris_pipeline.UnsupportedPythonError.html">UnsupportedPythonError</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="design.html" title="previous chapter">IRIS Data Reduction System design</a></li>
+      <li>Next: <a href="available-steps.html" title="next chapter">Available algorithms</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Bryson Cale, Andrea Zonca, Shelley Wright.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/calibration-database.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
