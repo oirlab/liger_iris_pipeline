@@ -1,7 +1,0 @@
-%YAML 1.1
----
-$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/iris_core.schema"
-allOf:
-- $ref: tmt_program.schema
-- $ref: tmt_ao.schema

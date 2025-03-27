@@ -57,10 +57,10 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov", "pytest-astropy", "nbval", "jupyter_client", "nbformat", "ipykernel", "matplotlib", "tqdm", "osfclient"]
-docs = ["sphinx", "nbsphinx", "sphinx-astropy", "pandoc", "multiversion @ git+https://github.com/sphinx-contrib/multiversion.git"]
+docs = ["sphinx==8.1.3", "nbsphinx", "sphinx-astropy", "pandoc", "sphinx-multiversion", "sphinxawesome-theme"]
 
 [project.urls]
-"Documentation" = "https://oirlab.github.io/liger-iris-pipeline-documentation"
+"Documentation" = "https://oirlab.github.io/liger_iris_pipeline"
 "Source" = "https://github.com/oirlab/liger_iris_pipeline"
 
 [project.scripts]

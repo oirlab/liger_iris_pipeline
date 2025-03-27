@@ -1,7 +1,0 @@
-%YAML 1.1
----
-$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/IRISNonlinearReadoutParametersModel.schema"
-allOf:
-- $ref: iris_core.schema
-- $ref: NonlinearReadoutParametersModel.schema
