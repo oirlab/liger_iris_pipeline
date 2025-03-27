@@ -74,4 +74,4 @@ version = liger_iris_pipeline.__version__
 #release = hispecdrp.__version__
 
 # URL
-html_baseurl = 'https://oirlab.github.io/HISPEC_DRP/'
+html_baseurl = 'https://oirlab.github.io/liger_iris_pipeline/'

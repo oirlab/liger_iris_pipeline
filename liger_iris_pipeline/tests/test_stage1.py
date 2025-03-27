@@ -38,7 +38,7 @@ def test_imager_stage1(tmp_path):
     }
 
     # Uniform photon rate
-    source = np.full((10, 10), 1000)
+    source = np.full((10, 10), 1000.0, dtype=np.float32)
     
     # Create a ramp model
     ramp_model = create_ramp(source, meta, readtime=1, n_reads_per_group=10, n_groups=5, nonlin_coeffs = None, noise=False)
