@@ -1,8 +1,6 @@
 Data Reduction System (DRS) for Liger (WMKO) and IRIS (TMT)
 -----------------------------------------------------------
 
-![Github action test](https://github.com/oirlab/iris_pipeline/workflows/Python%20package/badge.svg)
-
 [![GitHub Actions](https://github.com/oirlab/liger_iris_pipeline/actions/workflows/build-test.yml/badge.svg)](https://github.com/oirlab/liger_iris_pipeline/actions/workflows/build-test.yml)
 [![Docs](https://img.shields.io/badge/docs-latest-blue)](https://oirlab.github.io/liger_iris_pipeline/)
 
