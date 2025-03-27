@@ -40,7 +40,7 @@ extensions = [
 ]
 
 # Don't execute notebooks yet
-nbsphinx_execute = "never"
+#nbsphinx_execute = "never"
 
 autosummary_generate = True  # Generate autosummary stubs automatically
 autodoc_default_options = {
