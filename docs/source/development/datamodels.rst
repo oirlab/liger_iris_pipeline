@@ -38,7 +38,7 @@ where:
 
 *Example:*
 
-2024B-P123-008_IRIS_IMG1_SCI_LVL0_0001-00.fits
+``2024B-P123-008_IRIS_IMG1_SCI_LVL0_0001-00.fits``
 
 
 Calibration files
@@ -58,7 +58,7 @@ where:
 
 *Example:*
 
-IRIS_IMG1_FLAT_20240101T000000_0.0.1.fits
+``IRIS_IMG1_FLAT_20240101T000000_0.0.1.fits``
 
 
 Data levels
