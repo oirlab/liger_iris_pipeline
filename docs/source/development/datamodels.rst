@@ -8,7 +8,7 @@ File format specification
 
 All data will be stored in FITS file format, following similar conventions used by JWST, see https://jwst-docs.stsci.edu/understanding-data-files. The DRS team may choose to adopt non-FITS file formats for certain calibrations if appropriate.
 
-The structure of all FITS files used by the DRS are encoded as schemas in YAML format in schema files. Schema files can also reference other schema files, for example, `core.schema.yaml <https://github.com/oirlab/liger_iris_pipeline/blob/4e85942b481ab948e0ea790b509432479d5bd6b9/liger_iris_pipeline/datamodels/schemas/core.schema.yaml#L4>`_ internally refernces several files. See the JWST documentation `here <https://stdatamodels.readthedocs.io/en/latest/jwst/datamodels/schemas.html#jwst-schemas>`_ for more information on schemas.
+The structure of all FITS files used by the DRS are encoded as schemas in YAML format in schema files. Schema files can also reference other schema files, for example, `core.schema.yaml <https://github.com/oirlab/liger_iris_pipeline/blob/4e85942b481ab948e0ea790b509432479d5bd6b9/liger_iris_pipeline/datamodels/schemas/core.schema.yaml#L4>`_ internally references several files. See the JWST documentation `here <https://stdatamodels.readthedocs.io/en/latest/jwst/datamodels/schemas.html#jwst-schemas>`_ for more information on schemas.
 
 One crucial entry in the schema is meta.model_type, which is specified by the FITS header key ``DATAMODL``.
 
