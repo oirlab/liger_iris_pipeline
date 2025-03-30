@@ -6,7 +6,7 @@ Installation
 Python Environment
 ------------------
 
-It is highly recommended users create a new Python environment with either `venv <https://docs.python.org/3/library/venv.html>`_ or `Anaconda <https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_. The pipeline supports Python versions 3.11 or newer; older versions of Python may work but have not been tested. Once configured, activate the new Python environment.
+It is highly recommended users create a new Python environment with either `venv <https://docs.python.org/3/library/venv.html>`_ or `Anaconda <https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_. The pipeline supports Python versions 3.12 or newer. Once configured, activate the new Python environment.
 
 
 CRDS

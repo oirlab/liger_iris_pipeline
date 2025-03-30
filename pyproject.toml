@@ -17,7 +17,7 @@ name = "liger_iris_pipeline"
 dynamic = ["version"]
 description = "Data Reduction Pipeline for Liger at the W. M. Keck Observatory and IRIS at the Thirty Meter Telescope."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 license = {file = "LICENSE.md"}
 
@@ -36,7 +36,6 @@ classifiers = [
   "Development Status :: 1 - Planning",
   "Topic :: Scientific/Engineering :: Astronomy",
   # "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3 :: Only",
 ]
