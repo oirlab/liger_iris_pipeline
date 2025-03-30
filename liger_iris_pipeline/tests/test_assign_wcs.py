@@ -3,12 +3,14 @@ from liger_iris_pipeline import datamodels, AssignWCSStep
 import astropy.units as u
 from astropy import wcs
 from astropy.tests.helper import assert_quantity_allclose
+from liger_iris_pipeline.tests.utils import download_osf_file
 
 
 def test_assign_wcs_step(tmp_path):
 
     # Grab simulated raw frame
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
     input_model = datamodels.open(sci_L1_filename)
 
     # Ensure we haven't already performed the correction.

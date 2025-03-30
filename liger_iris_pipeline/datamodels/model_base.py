@@ -10,67 +10,13 @@ __all__ = ["LigerIRISDataModel"]
 
 class LigerIRISDataModel(DataModel):
     """
-    The base data model for Liger and IRIS.
+    The base data model for Liger and IRIS data products.
     This class should not be instantiated on its own.
     """
     schema_url = "https://oirlab.github.io/schemas/LigerIRISDataModel.schema"
 
-    def __init__(self, init=None, instrument : str | None = None, **kwargs):
-        
-        # Pass to super if already a datamodel, schema already known
-        if isinstance(init, LigerIRISDataModel):
-            self.set_schema_from_instrument(instrument=init.instrument)
-            super().__init__(init=init, **kwargs)
-        else:
-            # Get the schema from instrument name
-            if instrument is not None:
-                self.set_schema_from_instrument(instrument)
-            elif isinstance(init, str | Path):
-                self.set_schema_from_fits_filename(init)
-            elif isinstance(init, fits.HDUList):
-                self.set_schema_from_hdulist(init)
-            # TODO: FIX CASE WHEN NO INSTRUMENT IS PROVIDED. CRDS REQUIRES THIS.
-            #else:
-                #raise ValueError(f"Cannot determine schema from {init}")
-            
-            # Call super with schema_url now set
-            super().__init__(init=init, **kwargs)
-
-        if isinstance(init, str | Path):
-            self._filename = str(init)
-        elif isinstance(init, fits.HDUList):
-            self._filename = init.filename()
-        else:
-            self._filename = None
-
-    def set_schema_from_instrument(self, instrument : str):
-        s = self.schema_url.rsplit('/', 1)
-        self.schema_url = s[0] + '/' + instrument + s[-1]
-
-    # Silly to open file twice but oh well for now
-    def set_schema_from_fits_filename(self, init : str | Path):
-        init = str(init)
-        if not os.path.exists(init):
-            raise ValueError(f"Path {init} does not exist")
-        
-        try:
-            instrument = fits.getval(init, keyword='INSTRUME', ext=0)
-            self.set_schema_from_instrument(instrument)
-        except KeyError:
-            raise KeyError(f"Keyword 'INSTRUME' not found in file {init}")
-        
-    def set_schema_from_hdulist(self, init : fits.HDUList):
-        try:
-            instrument = init[0].header['INSTRUME']
-            self.set_schema_from_instrument(instrument)
-        except KeyError:
-            raise KeyError(f"Keyword 'INSTRUME' not found in file {init}")
-        
-    def __setattr__(self, attr, value):
-        if attr == 'schema_url':
-            self.__dict__[attr] = value
-        else:
-            super().__setattr__(attr, value)
+    def __init__(self, init=None, **kwargs):
+        super().__init__(init=init, **kwargs)
     
 
     def get_crds_parameters(self):
@@ -91,7 +37,13 @@ class LigerIRISDataModel(DataModel):
         Hook invoked by the base class before returning a newly
         created model instance.
         """
-        super().on_init(init)
+        super().on_init(init) # Sets self.meta.filename and self.meta.model_type
+        if isinstance(init, str | Path):
+            self._filename = str(init)
+        elif isinstance(init, fits.HDUList):
+            self._filename = init.filename()
+        else:
+            self._filename = None
 
         if not self.meta.hasattr("date"):
             self.meta.date = Time.now().isot
@@ -192,17 +144,25 @@ class LigerIRISDataModel(DataModel):
 
     def get_primary_array_name(self):
         return 'data'
-    
-    # @classmethod
-    # def from_model(cls, input_model):
-    #     model = cls(instrument=input_model.instrument)
-    #     model.__dict__.update(input_model.__dict__)
-    #     return model
-    
-    def copy(self, memo=None):
+
+    def save(self, path=None, dir_path : str | None = None, **kwargs):
         """
-        Returns a deep copy of this model.
+        Save the model to a file.
+
+        Args:
+            path (str) : The path to the file to save the model to.
+            dir_path (str, optional) : The path to the directory to save the file to
         """
-        result = self.__class__(instrument=self.instrument)
-        self.clone(result, self, deepcopy=True, memo=memo)
-        return result
+        if path is None:
+            if self._filename is None:
+                path = self.generate_filename()
+            else:
+                path = self._filename
+        super().save(path, dir_path, **kwargs)
+    
+    # def copy(self, memo=None):
+    #     """
+    #     Returns a deep copy of this model.
+    #     """
+    #     result = super().copy(memo=memo)
+    #     return self.clone(result, self, deepcopy=True, memo=memo)

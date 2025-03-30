@@ -1,5 +1,6 @@
 # Imports
 import liger_iris_pipeline
+from liger_iris_pipeline import datamodels
 
 from liger_iris_pipeline.normalize.normalize import do_correction
 import numpy as np
@@ -8,7 +9,7 @@ import scipy.stats
 
 def test_normalize():
     # Create an test image with a specified row
-    input_model = liger_iris_pipeline.ImagerModel(data=np.random.rand(4096, 4096))
+    input_model = datamodels.ImagerModel(data=np.random.rand(4096, 4096))
     input_model.data[3, :] = 0.6  # for mode calc
 
     # Loop over methods
@@ -32,7 +33,7 @@ def test_normalize():
 
 def test_normalize_step():
     # Create an test image
-    input_model = liger_iris_pipeline.datamodels.ImagerModel(
+    input_model = datamodels.ImagerModel(
         data=np.random.rand(4096, 4096)
     )
     input_model.data[3, :] = 0.6  # for mode calc

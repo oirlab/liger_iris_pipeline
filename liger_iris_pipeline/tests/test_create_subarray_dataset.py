@@ -1,7 +1,9 @@
 # Imports
 import liger_iris_pipeline
+from liger_iris_pipeline import datamodels
 import numpy as np
 import os
+from liger_iris_pipeline.tests.utils import download_osf_file
 
 
 # Converts 1->0 indexing, sets the subarray index
@@ -38,8 +40,9 @@ def create_config():
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    sci_L1_filename = 'liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
+    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
+    input_model = datamodels.ImagerModel(sci_L1_filename)
 
     # Setup the subarray params
     s1 = 300

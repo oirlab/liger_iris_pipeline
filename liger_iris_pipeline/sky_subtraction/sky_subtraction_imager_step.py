@@ -15,10 +15,16 @@ class SkySubtractionImagerStep(LigerIRISStep):
 
     class_alias = "sky_sub"
 
-    def process(self, input, sky_input):
-        result = input.copy()
-        with datamodels.open(input) as input_model, \
-            datamodels.open(sky_input) as sky_model:
+    spec = """
+        sky = is_string_or_datamodel(default = None) # Sky filename or datamodel to use.
+    """
+
+    def process(self, input):
+        with self.open_model(input, _copy=True) as input_model, \
+            self.open_model(self.sky, _copy=False) as sky_model:
+
+            # Result (NOTE: Choose optimal way to handle copying here and with self.open_model)
+            result = input_model.copy()
 
             # Get subarray model
             sky_model = get_subarray_model(input_model, sky_model)
@@ -38,6 +44,3 @@ class SkySubtractionImagerStep(LigerIRISStep):
             self.status = "COMPLETE"
 
         return result
-    
-
-#### Add more steps here or new files for IFU and methods of calculating sky ####

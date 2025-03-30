@@ -1,6 +1,5 @@
 # Imports
 import liger_iris_pipeline
-from liger_iris_pipeline.associations import L0Association
 import numpy as np
 from liger_iris_pipeline.tests.utils import create_ramp
 
@@ -13,7 +12,7 @@ def create_config():
         [[nonlinear_correction]]
             skip = False
         [[ramp_fit]]
-            method = "utr"
+            method = "ols"
     """
     return conf
 
@@ -39,7 +38,7 @@ def test_imager_stage1(tmp_path):
     }
 
     # Uniform photon rate
-    source = np.full((10, 10), 1000)
+    source = np.full((10, 10), 1000.0, dtype=np.float32)
     
     # Create a ramp model
     ramp_model = create_ramp(source, meta, readtime=1, n_reads_per_group=10, n_groups=5, nonlin_coeffs = None, noise=False)
@@ -56,7 +55,7 @@ def test_imager_stage1(tmp_path):
     pipeline = liger_iris_pipeline.Stage1Pipeline(config_file=config_file, output_dir=str(tmp_path))
 
     # Test UTR
-    pipeline.ramp_fit.method = "utr"
+    pipeline.ramp_fit.method = "ols"
     results = pipeline.run(ramp_filename)
     model_result = results[0]
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)

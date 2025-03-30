@@ -64,7 +64,6 @@ class CreateFlatfield(LigerIRISPipeline):
         # To flat field model
         # TODO: Generalize the conversion from ImagerModel -> FlatModel
         flat_model = datamodels.FlatModel(
-            instrument=input_model.instrument,
             data=input_model.data, err=input_model.err, dq=input_model.dq
         )
         _meta = copy.deepcopy(input_model.meta.instance)

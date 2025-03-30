@@ -4,6 +4,7 @@ import liger_iris_pipeline.datamodels as datamodels
 from liger_iris_pipeline.associations import L1Association
 import numpy as np
 import os
+from liger_iris_pipeline.tests.utils import download_osf_file
 
 def create_dark_config():
     conf = """
@@ -21,6 +22,7 @@ def create_config():
     [steps]
         [[dark_sub]]
             config_file = "dark_config.cfg"
+            save_results = True
         [[flat_field]]
         [[sky_sub]]
         [[assign_wcs]]
@@ -42,9 +44,11 @@ def test_imager_stage2(tmp_path):
     with open(config_file_dark, "w") as f:
         f.write(conf)
 
-    # Association
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
-    sky_bkg_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    # Files
+    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    remote_sky_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=False)
+    sky_bkg_L1_filename = download_osf_file(remote_sky_L1_filename, use_cached=False)
     
     # ASN
     asn = L1Association.from_product({
@@ -95,12 +99,14 @@ def test_imager_stage2_subarray(tmp_path):
         f.write(conf)
 
     # Files
-    sci_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits"
-    sky_bkg_L1_filename = "liger_iris_pipeline/tests/data/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits"
+    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    remote_sky_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits'
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
+    sky_bkg_L1_filename = download_osf_file(remote_sky_L1_filename, use_cached=True)
     sci_L1_filename_subarray = str(tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', '-01.fits')))
 
     # Load the science model
-    input_model = liger_iris_pipeline.ImagerModel(sci_L1_filename)
+    input_model = datamodels.ImagerModel(sci_L1_filename)
 
     # Subarray params
     yc, xc = int(input_model.data.shape[0] / 2), int(input_model.data.shape[1] / 2)

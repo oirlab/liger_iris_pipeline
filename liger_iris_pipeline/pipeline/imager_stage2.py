@@ -3,7 +3,7 @@ from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
 from ..parse_subarray_map import ParseSubarrayMapStep
 from ..dark_subtraction import DarkSubtractionStep
-from ..flatfield import FlatFieldStep
+from ..flat_field import FlatFieldStep
 from ..assign_wcs import AssignWCSStep
 from ..sky_subtraction import SkySubtractionImagerStep
 #from jwst.photom import PhotomStep as JWSTPhotomStep
@@ -73,25 +73,26 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         # TODO: Enforce one science exposure per product in Association class
         science = members_by_type["sci"][0]
 
-        self.log.info(f"Processing {science}")
-        input_model = datamodels.open(science)
+        with self.open_model(science) as input_model:
+            
+            self.log.info(f"Processing {science}")
 
-        # Run remaining steps
-        input_model = self.parse_subarray_map.run(input_model)
-        input_model = self.dark_sub.run(input_model)
-        input_model = self.flat_field.run(input_model)
-        if len(members_by_type["sky"]) > 0:
-            sky_filename = members_by_type["sky"][0]
-            input_model = self.sky_sub.run(input_model, sky_filename)
-        elif not self.sky_sub.skip:
-            self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False. Skipping Sky Subtraction")
+            # Run remaining steps
+            input_model = self.parse_subarray_map.run(input_model)
+            input_model = self.dark_sub.run(input_model)
+            input_model = self.flat_field.run(input_model)
+            if len(members_by_type["sky"]) > 0:
+                sky_filename = members_by_type["sky"][0]
+                input_model = self.sky_sub.run(input_model, sky=sky_filename)
+            elif not self.sky_sub.skip:
+                self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False. Skipping Sky Subtraction")
 
-        input_model = self.assign_wcs.run(input_model)
-        #input_model = self.fluxcal(input_model)
+            input_model = self.assign_wcs.run(input_model)
+            #input_model = self.fluxcal(input_model)
 
-        # Update the data level
-        input_model.meta.data_level = 2
+            # Update the data level
+            input_model.meta.data_level = 2 # NOTE: Automate this somehow?
 
-        self.log.info(f"Finished processing {input_model}")
+            self.log.info(f"Finished processing {input_model}")
 
-        return input_model
+            return input_model

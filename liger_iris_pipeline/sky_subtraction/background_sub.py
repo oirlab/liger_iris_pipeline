@@ -3,7 +3,6 @@ import numpy as np
 
 from jwst import datamodels
 import liger_iris_pipeline
-from . import subtract_images
 from jwst.assign_wcs.util import create_grism_bbox
 from astropy.stats import sigma_clip
 
@@ -46,13 +45,15 @@ def background_sub(input_model, bkg_list, sigma, maxiters):
 
     # Subtract the average background from the member
     log.debug(" subtracting avg bkg from {}".format(input_model.meta.filename))
-    result = subtract_images.subtract(input_model, bkg_model)
+    ##result = subtract_images.subtract(input_model, bkg_model)
+    input_model.data -= bkg_model.data
+    input_model.err = np.sqrt(input_model.err**2 + bkg_model.err**2)
 
     # Close the average background image and update the step status
     bkg_model.close()
 
-    # We're done. Return the result.
-    return result
+    # Return
+    return input_model
 
 
 def average_background(bkg_list, sigma, maxiters):
