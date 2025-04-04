@@ -16,7 +16,7 @@ A data cube is created from the input frames. The cube is then reduced according
 The error is calculated in one of two ways:
 
 1. ``error_calc='measure'`` : The error is calculated from the standard deviation of the values of the input frames.
-2. ``error_calc='propagate'`` : The error is calculated from the propagation of the errors of the input frames. :
+2. ``error_calc='propagate'`` : The error is calculated from the propagation of the errors of the input frames:
 
     .. math::
 
@@ -28,7 +28,7 @@ where :math:`\sigma` is the error of the combined frame and :math:`\sigma_i` is 
 Arguments
 ---------
 
-**input** : ``list[str | `` :py:class:`~liger_iris_pipeline.datamodels.LigerIRISDataModel` ``]``
+**input** : ``list[str |`` :py:class:`~liger_iris_pipeline.datamodels.LigerIRISDataModel` ``]``
     The input data to combine.
 **method** : ``str``
     Method for combining the frames:
@@ -36,4 +36,4 @@ Arguments
         - 'wmean': Weighted mean.
         - 'median': Unweighted median.
         - 'wmedian' : Weighted median.
-        - 'sigma_clip' : Sigma clipping, see arguments sigma, cenfunc, stdfunc, maxiters.
+        - 'sigma_clip' : Sigma clipping, see arguments sigma, cenfunc, stdfunc, maxiters. Currently, only cenfunc='median' and stdfunc='mad_std' are supported.
