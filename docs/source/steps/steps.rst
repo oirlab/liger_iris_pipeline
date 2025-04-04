@@ -16,6 +16,7 @@ Stage 1
    nonlinear_correction
    detector_artifacts
    ramp_fitting
+   combine_frames
 
 
 Stage 2
