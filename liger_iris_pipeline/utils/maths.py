@@ -2,95 +2,84 @@ import numpy as np
 from numba import njit
 
 
-@njit
-def weighted_stddev(x, w, mu=None):
+
+@njit(nogil=True)
+def weighted_mean(x, w):
+    """
+    Computes the weighted mean of a dataset.
+
+    Args:
+        x (np.ndarray): The input array.
+        w (np.ndarray): The input weights, same shape as x.
+        axis (int): Axis or tuple of axes along which to compute the mean. Default is None.
+
+    Returns:
+        float: The weighted mean.
+    """
+    return np.nansum(x * w) / np.nansum(w)
+
+
+@njit(nogil=True)
+def mad(x : np.ndarray):
+    return np.nanmedian(np.abs(x - np.nanmedian(x)))
+
+
+@njit(nogil=True)
+def weighted_stddev(x : np.ndarray, w : np.ndarray, mu : float | None = None):
     """
     Calculate the weighted standard deviation of an array.
     
     Parameters:
     - x: Array of values
     - w: Array of weights
-    - mu: Optional pre-calculated weighted mean
     
     Returns:
     - Weighted standard deviation or NaN if no valid data
     """
-    # Find indices where x and w are valid
-    good = np.zeros(len(x), dtype=np.bool_)
-    for i in range(len(x)):
-        good[i] = np.isfinite(x[i]) and (w[i] > 0) and np.isfinite(w[i])
-    
-    # Extract valid values
-    xx = x[good]
-    ww = w[good]
-    
-    if len(xx) == 0:
-        return np.nan
-    
-    # Normalize weights
-    ww_sum = np.sum(ww)
-    ww = ww / ww_sum
-    
-    # Calculate weighted mean if not provided
+    w = w / np.nansum(w)
     if mu is None:
-        mu = nansum(xx * ww) / nansum(ww)
-    
-    # Calculate deviation from mean
-    dev = xx - mu
-    
-    # Calculate bias estimator
-    bias_estimator = 1.0 - np.sum(ww**2)
-    
-    # Calculate standard deviation
-    sigma = np.sqrt(np.sum(dev**2 * ww) / bias_estimator)
-    
-    return sigma
+        mu = np.sum(x * w)
+    dev = x - mu
+    bias_estimator = 1.0 - np.nansum(w**2)
+    var = np.nansum(dev ** 2 * w) / bias_estimator
+    return np.sqrt(var)
+
 
 @njit
-def weighted_quantile(x, w, q=0.5):
-    """
-    Calculate the weighted quantile of an array.
+def weighted_quantile(values : np.ndarray, weights : np.ndarray, q : float = 0.5):
+
+    if len(values.shape) > 1:
+        values = values.ravel()
+        weights = weights.ravel()
     
-    Parameters:
-    - x: Array of values
-    - w: Array of weights
-    - q: Quantile to calculate (default: 0.5 for median)
+    # Handle edge cases for q=0 and q=1
+    if q == 0:
+        return np.min(values)
+    if q == 1:
+        return np.max(values)
     
-    Returns:
-    - Weighted quantile or NaN if no valid data
-    """
-    # Find indices where x and w are valid
-    good = np.zeros(len(x), dtype=np.bool_)
-    for i in range(len(x)):
-        good[i] = np.isfinite(x[i]) and (w[i] > 0) and np.isfinite(w[i])
+    sorted_indices = np.argsort(values)
+    sorted_values = values[sorted_indices]
+    sorted_weights = weights[sorted_indices]
     
-    # Extract valid values
-    xx = x[good]
-    ww = w[good]
+    total_weight = np.sum(sorted_weights)
+    target_weight = q * total_weight
     
-    if len(xx) == 0:
-        return np.nan
+    weight_sum = 0.0
+    i = 0
     
-    # Sort by values
-    idx = np.argsort(xx)
-    sorted_x = xx[idx]
-    sorted_w = ww[idx]
+    while i < len(sorted_weights) and weight_sum < target_weight:
+        weight_sum += sorted_weights[i]
+        i += 1
     
-    # Calculate cumulative weights
-    cum_weights = np.cumsum(sorted_w)
-    cum_weights = cum_weights / cum_weights[-1]  # Normalize to 1
-    
-    # Find index where cumulative weight exceeds q
-    i = np.searchsorted(cum_weights, q, side='right')
-    
-    # Handle edge cases
-    if i == 0:
-        return sorted_x[0]
-    elif i == len(sorted_x):
-        return sorted_x[-1]
+    if weight_sum == target_weight and i < len(sorted_weights):
+        return (sorted_values[i-1] + sorted_values[i]) / 2.0
+    elif i > 0:
+        return sorted_values[i-1]
     else:
-        # Linear interpolation
-        return sorted_x[i-1]
+        return sorted_values[0]
+    
+
 
 @njit
 def robust_stddev(x, w=None, n_sigma=4):
