@@ -36,4 +36,5 @@ from .parse_subarray_map import ParseSubarrayMapStep
 from .merge_subarrays import MergeSubarraysStep
 from .assign_wcs import AssignWCSStep
 from .readout import NonlinearCorrectionStep, FitRampStep
+from .combine_frames import CombineFramesStep
 from .associations import L0Association, L1Association, L2Association
