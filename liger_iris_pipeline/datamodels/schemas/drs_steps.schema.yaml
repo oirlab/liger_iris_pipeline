@@ -11,7 +11,6 @@ properties:
         title: "Steps performed by the DRS"
         type: object
         properties:
-        # NOTE: This is actually all of the steps, but typically every step corresponds to a calibration step or file
         # NOTE: S_ is for Step
         # These map 1-1 with the calibration steps in the DRS. Pipelines are not supported.
         title: DRS step information.

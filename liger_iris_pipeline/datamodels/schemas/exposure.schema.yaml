@@ -38,38 +38,38 @@ properties:
             title: "Exposure start date in YYYYMMDD"
             type: string
             fits_keyword: EXPDTST
-            blend_table: True
-            blend_rule: min
+            blend_table: False
+            #blend_rule: min
           date_mid:
             title: "Exposure mid date in YYYYMMDD"
             type: string
             fits_keyword: EXPDTMID
-            blend_table: True
-            blend_rule: mean
+            blend_table: False
+            #blend_rule: mean
           date_end:
             title: "Exposure end date in YYYYMMDD"
             type: string
             fits_keyword: EXPDTEND
-            blend_table: True
-            blend_rule: max
+            blend_table: False
+            #blend_rule: max
           time_start:
             title: "Exposure start time in hh:mm:ss.ss"
             type: string
             fits_keyword: EXPTMST
-            blend_table: True
-            blend_rule: min
+            blend_table: False
+            #blend_rule: mintime
           time_mid:
             title: "Exposure mid time in hh:mm:ss.ss"
             type: string
             fits_keyword: EXPTMMID
-            blend_table: True
-            blend_rule: mean
+            blend_table: False
+            #blend_rule: mean
           time_end:
             title: "Exposure end time in hh:mm:ss.ss"
             type: string
             fits_keyword: EXPTMEND
-            blend_table: True
-            blend_rule: max
+            blend_table: False
+            #blend_rule: max
           readmode:
             title: Readout mode
             type: string
@@ -125,3 +125,4 @@ properties:
             type: integer
             fits_keyword: EXPSQTOT
             blend_table: True
+            blend_rule: max
