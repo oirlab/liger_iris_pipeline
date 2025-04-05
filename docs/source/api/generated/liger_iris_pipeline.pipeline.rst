@@ -11,6 +11,7 @@
    :recursive:
 
    base_pipeline
+   create_dark
    create_flatfield
    imager_stage2
    stage1

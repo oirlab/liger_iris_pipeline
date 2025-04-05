@@ -22,4 +22,5 @@ Calibration Pipelines
    :maxdepth: 1
    :glob:
     
+   create_dark
    create_flatfield
