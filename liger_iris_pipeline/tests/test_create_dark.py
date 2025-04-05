@@ -56,5 +56,3 @@ def test_create_dark():
     assert result.meta.exposure.jd_mid == np.mean([m.meta.exposure.jd_mid for m in input])
     assert result.meta.exposure.type == 'DARK'
     assert result.meta.reftype == 'dark'
-
-test_create_dark()
