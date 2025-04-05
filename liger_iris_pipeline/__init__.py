@@ -29,7 +29,7 @@ if sys.version_info < tuple(
 from .flat_field import FlatFieldStep
 from .sky_subtraction import SkySubtractionImagerStep
 from .dark_subtraction import DarkSubtractionStep
-from .pipeline import Stage1Pipeline, ImagerStage2Pipeline, CreateFlatfield
+from .pipeline import *
 from .dq_init import DQInitStep
 from .normalize import NormalizeStep
 from .parse_subarray_map import ParseSubarrayMapStep
