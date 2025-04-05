@@ -460,36 +460,36 @@ class LigerIRISStep(Step):
         self.status = "SKIPPED"
 
 
-    def input_to_asn(self, input):
-        """
-        Convert input to an association.
+    # def input_to_asn(self, input):
+    #     """
+    #     Convert input to an association.
 
-        Parameters:
-            input (str | Path | LigerIRISAssociation): The input file.
+    #     Parameters:
+    #         input (str | Path | LigerIRISAssociation): The input file.
 
-        Returns:
-            LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
-        """
+    #     Returns:
+    #         LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
+    #     """
 
-        # Input already is an association
-        if isinstance(input, LigerIRISAssociation):
-            return input
+    #     # Input already is an association
+    #     if isinstance(input, LigerIRISAssociation):
+    #         return input
         
-        # Input is a file
-        if isinstance(input, str | Path):
-            input = str(input)
-            if os.path.splitext(input)[1] == '.json': # Association file
-                asn = load_asn(input) # TODO: FIX This
-            else:
-                asn = self.default_association.from_member(input) # DataModel file
-        elif isinstance(input, datamodels.LigerIRISDataModel):
-            asn = self.default_association.from_member(input)
-        elif isinstance(input, dict):
-            asn = self.default_association.from_product(input) # Single product (dict):
-        else:
-            raise ValueError(f"Input type {type(input)} not supported.")
+    #     # Input is a file
+    #     if isinstance(input, str | Path):
+    #         input = str(input)
+    #         if os.path.splitext(input)[1] == '.json': # Association file
+    #             asn = load_asn(input) # TODO: FIX This
+    #         else:
+    #             asn = self.default_association.from_member(input) # DataModel file
+    #     elif isinstance(input, datamodels.LigerIRISDataModel):
+    #         asn = self.default_association.from_member(input)
+    #     elif isinstance(input, dict):
+    #         asn = self.default_association.from_product(input) # Single product (dict):
+    #     else:
+    #         raise ValueError(f"Input type {type(input)} not supported.")
         
-        return asn
+    #     return asn
     
 
     @staticmethod
