@@ -35,8 +35,8 @@ class SkySubtractionImagerStep(LigerIRISStep):
             # Subtract the SCI arrays
             result.data = input_model.data - sky_model.data
 
-            # Error handling
-            # ...
+            # Error prop
+            result.err = np.sqrt(input_model.err**2 + sky_model.err**2)
 
             # Combine the DQ flag arrays using bitwise OR
             result.dq = np.bitwise_or(input_model.dq, sky_model.dq)
