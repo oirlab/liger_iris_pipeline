@@ -36,8 +36,8 @@ def test_imager_stage2(tmp_path):
     # Files
     remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
     remote_sky_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SKY-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=False)
-    sky_bkg_L1_filename = download_osf_file(remote_sky_L1_filename, use_cached=False)
+    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
+    sky_bkg_L1_filename = download_osf_file(remote_sky_L1_filename, use_cached=True)
 
     # Setup input
     input = {
