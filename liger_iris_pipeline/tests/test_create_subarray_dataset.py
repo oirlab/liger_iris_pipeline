@@ -116,8 +116,7 @@ def test_create_subarray_dataset(tmp_path):
 
     # Create and run the pipeline on the full frame
     pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
-    results = pipeline.run(full_frame_filename_temp, output_dir=str(tmp_path))
-    reduced_full_frame = results[0]
+    reduced_full_frame = pipeline.run({"SCI": full_frame_filename_temp}, output_dir=str(tmp_path))
 
     # Set the subarray metadata id to 0 (full frame)
     reduced_full_frame.meta.subarray.id = 0
@@ -126,7 +125,7 @@ def test_create_subarray_dataset(tmp_path):
     reduced_subarrays = {}
     for k in subarray_filenames_temp:
         pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
-        reduced_subarrays[k] = pipeline.run(subarray_filenames_temp[k], output_dir=str(tmp_path))[0]
+        reduced_subarrays[k] = pipeline.run({"SCI": subarray_filenames_temp[k]}, output_dir=str(tmp_path))
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
     for k, full_frame_meta, each_input in zip(

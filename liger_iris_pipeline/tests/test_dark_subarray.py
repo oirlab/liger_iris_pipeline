@@ -39,6 +39,7 @@ def test_dark_subarray(tmp_path):
     # Slice the data
     subarray_slice = np.s_[ystart:ystart+ysize, xstart:xstart+xsize]
     input_model.data = input_model.data[subarray_slice]
+    input_model.err = input_model.err[subarray_slice]
     input_model.dq = input_model.dq[subarray_slice]
 
     # Ensure correct subarray shape

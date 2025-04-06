@@ -30,22 +30,25 @@ class Stage1Pipeline(LigerIRISPipeline):
 
     # start the actual processing
     def process(self, input):
-        self.asn = self.input_to_asn(input)
-        self.log.info('Starting Stage 1 Pipeline ...')
+        #self.asn = self.input_to_asn(input)
+        #self.log.info('Starting Stage 1 Pipeline ...')
         # Each exposure is a product in the association.
         # Process each exposure.
-        results = []
-        for product in self.asn.products:
-            self.log.info(f"Processing product {input}")
-            result = self.process_exposure_product(product)
+        # results = []
+        # for product in self.asn.products:
+        #     self.log.info(f"Processing product {input}")
+        #     result = self.process_exposure_product(product)
 
-            # Save result
-            result.meta.filename = self.output_file
-            results.append(result)
+        #     # Save result
+        #     result.meta.filename = self.output_file
+        #     results.append(result)
 
-        self.log.info("Stage1Pipeline completed")
+        # self.log.info("Stage1Pipeline completed")
 
-        return results
+        with datamodels.RampModel(input) as input_model:
+            result = self.nonlinear_correction.run(input_model)
+            result = self.ramp_fit.run(result)
+        return result
     
     # Process each exposure
     def process_exposure_product(self, exp_product):

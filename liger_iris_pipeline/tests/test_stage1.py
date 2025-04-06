@@ -24,7 +24,7 @@ def test_imager_stage1(tmp_path):
         'target.ra' : 0.0,
         'target.dec' : 0.0,
         'target.airmass_start' : 1.0,
-        'exposure.itime' : 90,
+        'exposure.exposure_time' : 90,
         'exposure.nframes' : 1,
         'exposure.jd_start' : 2460577.5,
         'exposure.type' : 'SCI',
@@ -56,20 +56,17 @@ def test_imager_stage1(tmp_path):
 
     # Test UTR
     pipeline.ramp_fit.method = "ols"
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
     
     # Test MCDS
     pipeline.ramp_fit.method = "mcds"
     pipeline.ramp_fit.num_coadd = 3
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
 
     # Test CDS
     pipeline.ramp_fit.method = "mcds"
     pipeline.ramp_fit.num_coadd = 1
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
