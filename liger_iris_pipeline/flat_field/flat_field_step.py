@@ -3,7 +3,8 @@
 import liger_iris_pipeline
 from ..base_step import LigerIRISStep
 from .. import datamodels
-from . import flat_field
+from ..utils.subarray import get_subarray_model
+from .flat_field import apply_flatfield
 
 __all__ = ["FlatFieldStep"]
 
@@ -34,8 +35,10 @@ class FlatFieldStep(LigerIRISStep):
                 self.flat_filename = flat_model._filename
             self.log.info("Using flat reference file %s", self.flat_filename)
 
+            flat_model = get_subarray_model(input_model, flat_model)
+
             # Do the flat-field correction
-            result = flat_field.do_correction(input_model, flat_model)
+            result = apply_flatfield(input_model, flat_model)
 
             # Save the flat ref model
             if self.flat_output_dir is not None:
