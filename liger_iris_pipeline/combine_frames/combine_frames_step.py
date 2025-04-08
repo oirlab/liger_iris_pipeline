@@ -2,7 +2,7 @@ from ..base_step import LigerIRISStep
 from .. import datamodels
 import numpy as np
 import jwst.model_blender as model_blender
-from ..utils import maths
+from ..utils import math
 from numba import njit
 
 
@@ -100,7 +100,7 @@ def combine_frames(
         # if cenfunc == 'mean':
         #     cenfunc = np.nanmean
         # elif cenfunc == 'wmean':
-        #     cenfunc = maths.weighted_mean(data_cube, weights_cube)
+        #     cenfunc = math.weighted_mean(data_cube, weights_cube)
         data_out = _sigma_clip(data_cube, weights_cube=weights_cube, sigma=sigma, maxiters=maxiters, cenfunc=cenfunc, stdfunc=stdfunc)
     else:
         raise ValueError(f"Unknown method: {method}")
@@ -156,7 +156,7 @@ def _weighted_quantile_cube(cube : np.ndarray, weights : np.ndarray, image_out :
         for j in range(nx):
             good = np.where(weights[i, j, :] > 0)[0]
             if len(good) > 0:
-                image_out[i, j] = maths.weighted_quantile(cube[i, j, good], weights[i, j, good], q)
+                image_out[i, j] = math.weighted_quantile(cube[i, j, good], weights[i, j, good], q)
     return image_out
 
 
@@ -194,7 +194,7 @@ def _meaure_error(
             elif n_good == 1:
                 error_image_out[i, j] = error_cube[i, j, good[0]]
             else:
-                error_image_out[i, j] = maths.weighted_stddev(data_cube[i, j, good], weights_cube[i, j, good])
+                error_image_out[i, j] = math.weighted_stddev(data_cube[i, j, good], weights_cube[i, j, good])
                 error_image_out[i, j] /= np.sqrt(n_good - 1)
     return error_image_out
 
@@ -224,7 +224,7 @@ def _sigma_clip_median_madstd(data_cube, weights_cube, image_out, sigma, maxiter
             for _ in range(maxiters):
                 good = np.where(weights_cube[i, j, :] > 0)[0]
                 residuals = data_cube[i, j, good] - np.nanmedian(data_cube[i, j, good])
-                stddev = maths.mad(residuals) * 1.4826
+                stddev = math.mad(residuals) * 1.4826
                 bad = np.where(np.abs(residuals) > sigma * stddev)[0]
                 if len(bad) == 0:
                     break

@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-def apply_flatfield(input_model, flat_model):
+def apply_flat_field(input_model, flat_model):
 
     # Find pixels in the flat that have a value of NaN and set
     # their DQ to NO_FLAT_FIELD
