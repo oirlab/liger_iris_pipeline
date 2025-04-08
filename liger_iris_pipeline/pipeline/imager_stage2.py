@@ -53,6 +53,8 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
                 input_model = self.sky_sub.run(input_model, sky=input['SKY'])
             elif not self.sky_sub.skip:
                 self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False. Skipping Sky Subtraction")
+                self.sky_sub.on_skip(input_model)
+                self.sky_sub.finalize_result(input_model)
 
         input_model = self.assign_wcs.run(input_model)
         #input_model = self.fluxcal(input_model)
