@@ -131,7 +131,7 @@ class LigerIRISStep(Step):
             raise ValueError(f"Cannot open model from {name}")
     
 
-    def finalize_result(self, result : LigerIRISDataModel, reference_files_used : dict[str, str]):
+    def finalize_result(self, result : LigerIRISDataModel, reference_files_used : dict[str, str] | None = None):
         """
         Finalize the result by updating metadata.
 
@@ -151,7 +151,7 @@ class LigerIRISStep(Step):
                 self.log.warning(f"Could not update status for {result.meta.drs_step}.{self.class_alias} in datamodel.")
 
         # Set references files used
-        if len(reference_files_used) > 0:
+        if reference_files_used is not None and len(reference_files_used) > 0:
             for ref_name, filename in reference_files_used:
                 if hasattr(result.meta.ref_file, ref_name):
                     getattr(result.meta.ref_file, ref_name).name = filename
@@ -460,36 +460,36 @@ class LigerIRISStep(Step):
         self.status = "SKIPPED"
 
 
-    def input_to_asn(self, input):
-        """
-        Convert input to an association.
+    # def input_to_asn(self, input):
+    #     """
+    #     Convert input to an association.
 
-        Parameters:
-            input (str | Path | LigerIRISAssociation): The input file.
+    #     Parameters:
+    #         input (str | Path | LigerIRISAssociation): The input file.
 
-        Returns:
-            LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
-        """
+    #     Returns:
+    #         LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
+    #     """
 
-        # Input already is an association
-        if isinstance(input, LigerIRISAssociation):
-            return input
+    #     # Input already is an association
+    #     if isinstance(input, LigerIRISAssociation):
+    #         return input
         
-        # Input is a file
-        if isinstance(input, str | Path):
-            input = str(input)
-            if os.path.splitext(input)[1] == '.json': # Association file
-                asn = load_asn(input) # TODO: FIX This
-            else:
-                asn = self.default_association.from_member(input) # DataModel file
-        elif isinstance(input, datamodels.LigerIRISDataModel):
-            asn = self.default_association.from_member(input)
-        elif isinstance(input, dict):
-            asn = self.default_association.from_product(input) # Single product (dict):
-        else:
-            raise ValueError(f"Input type {type(input)} not supported.")
+    #     # Input is a file
+    #     if isinstance(input, str | Path):
+    #         input = str(input)
+    #         if os.path.splitext(input)[1] == '.json': # Association file
+    #             asn = load_asn(input) # TODO: FIX This
+    #         else:
+    #             asn = self.default_association.from_member(input) # DataModel file
+    #     elif isinstance(input, datamodels.LigerIRISDataModel):
+    #         asn = self.default_association.from_member(input)
+    #     elif isinstance(input, dict):
+    #         asn = self.default_association.from_product(input) # Single product (dict):
+    #     else:
+    #         raise ValueError(f"Input type {type(input)} not supported.")
         
-        return asn
+    #     return asn
     
 
     @staticmethod

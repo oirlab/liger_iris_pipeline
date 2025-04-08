@@ -129,12 +129,11 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
     # Instrument
     if meta['instrument.name'] == 'Liger':
         _meta = get_default_liger_metadata()
-        _meta.update(meta)
-        meta = _meta
     elif meta['instrument.name'] == 'IRIS':
         _meta = get_default_iris_metadata()
-        _meta.update(meta)
-        meta = _meta
+
+    _meta.update(meta)
+    meta = _meta
 
     # Time
     time = Time(meta['exposure.jd_start'], format='jd')
@@ -144,6 +143,9 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
     model.meta.date_created = time.isot
 
     # EXPOSURE
+    merge_model_meta(model, meta)
+    model.meta.exposure.jd_mid = model.meta.exposure.jd_start + model.meta.exposure.exposure_time / (2 * 86400)
+    model.meta.exposure.jd_end = model.meta.exposure.jd_start + model.meta.exposure.exposure_time / 86400
     model.meta.exposure.date_start = time.datetime.strftime('%Y%m%d')
     model.meta.exposure.date_mid = time.datetime.strftime('%Y%m%d')
     model.meta.exposure.date_end = time.datetime.strftime('%Y%m%d')
@@ -156,8 +158,6 @@ def add_meta_data(model : datamodels.LigerIRISDataModel, meta : dict):
         meta.update(add_imager_wcs_axes(ra=meta['target.ra'], dec=meta['target.dec'], size=model.data.shape, scale=meta['instrument.scale']))
     elif hasattr(model, 'data') and "IFU" in model.__class__.__name__:
         meta.update(add_ifu_wcs_axes(ra=meta['target.ra'], dec=meta['target.dec'], size=model.data.shape, scale=meta['instrument.scale']), dw=1)
-
-    merge_model_meta(model, meta)
 
     return model
 

@@ -16,7 +16,7 @@ __all__ = [
 
 class LigerIRISPipeline(LigerIRISStep, Pipeline):
 
-    default_association : LigerIRISAssociation = None
+    #default_association : LigerIRISAssociation = None
 
     def __init__(self, config_file : str | None = None, **kwargs):
         """

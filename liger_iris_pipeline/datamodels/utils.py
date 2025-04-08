@@ -16,7 +16,7 @@ import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-def open(init=None, memmap : bool = False, **kwargs):
+def open(init=None, memmap : bool = False, copy : bool = False, **kwargs):
     """
     Creates a DataModel from a number of different types.
 
@@ -47,8 +47,10 @@ def open(init=None, memmap : bool = False, **kwargs):
 
     # If init is already a datamodel, copy and return
     if isinstance(init, LigerIRISDataModel):
-        return init
-        #return init.__class__(init, **kwargs)
+        if copy:
+            return init.__class__(init, **kwargs)
+        else:
+            return init
     
     # Convert path to string
     if isinstance(init, Path):

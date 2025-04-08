@@ -23,19 +23,6 @@ def slice_subarray_mask(mask_array, subarray_params):
     ystart = ystart - 1
     return mask_array[ystart:ystart+ysize, xstart:xstart+xsize].copy()
 
-def create_config():
-    conf = """
-    class = "liger_iris_pipeline.ImagerStage2Pipeline"
-    save_results = True
-
-    [steps]
-        [[dark_sub]]
-        [[flat_field]]
-        [[sky_sub]]
-        [[assign_wcs]]
-            skip = False
-    """
-    return conf
 
 def test_create_subarray_dataset(tmp_path):
 
@@ -109,15 +96,24 @@ def test_create_subarray_dataset(tmp_path):
         sub_model.save(subarray_filenames_temp[k])
 
     # Create the config file
-    conf = create_config()
+    conf = """
+        class = "liger_iris_pipeline.ImagerStage2Pipeline"
+        save_results = True
+
+        [steps]
+            [[dark_sub]]
+            [[flat_field]]
+            [[sky_sub]]
+            [[assign_wcs]]
+                skip = False
+    """
     config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)
 
     # Create and run the pipeline on the full frame
     pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
-    results = pipeline.run(full_frame_filename_temp, output_dir=str(tmp_path))
-    reduced_full_frame = results[0]
+    reduced_full_frame = pipeline.run({"SCI": full_frame_filename_temp}, output_dir=str(tmp_path))
 
     # Set the subarray metadata id to 0 (full frame)
     reduced_full_frame.meta.subarray.id = 0
@@ -126,7 +122,7 @@ def test_create_subarray_dataset(tmp_path):
     reduced_subarrays = {}
     for k in subarray_filenames_temp:
         pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
-        reduced_subarrays[k] = pipeline.run(subarray_filenames_temp[k], output_dir=str(tmp_path))[0]
+        reduced_subarrays[k] = pipeline.run({"SCI": subarray_filenames_temp[k]}, output_dir=str(tmp_path))
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
     for k, full_frame_meta, each_input in zip(

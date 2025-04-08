@@ -29,11 +29,12 @@ if sys.version_info < tuple(
 from .flat_field import FlatFieldStep
 from .sky_subtraction import SkySubtractionImagerStep
 from .dark_subtraction import DarkSubtractionStep
-from .pipeline import Stage1Pipeline, ImagerStage2Pipeline, CreateFlatfield
+from .pipeline import *
 from .dq_init import DQInitStep
 from .normalize import NormalizeStep
 from .parse_subarray_map import ParseSubarrayMapStep
 from .merge_subarrays import MergeSubarraysStep
 from .assign_wcs import AssignWCSStep
 from .readout import NonlinearCorrectionStep, FitRampStep
+from .combine_frames import CombineFramesStep
 from .associations import L0Association, L1Association, L2Association

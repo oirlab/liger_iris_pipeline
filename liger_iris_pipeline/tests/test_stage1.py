@@ -3,19 +3,6 @@ import liger_iris_pipeline
 import numpy as np
 from liger_iris_pipeline.tests.utils import create_ramp
 
-def create_config():
-    conf = """
-    class = "liger_iris_pipeline.Stage1Pipeline"
-    save_results = True
-
-    [steps]
-        [[nonlinear_correction]]
-            skip = False
-        [[ramp_fit]]
-            method = "ols"
-    """
-    return conf
-
 def test_imager_stage1(tmp_path):
 
     meta = {
@@ -24,7 +11,7 @@ def test_imager_stage1(tmp_path):
         'target.ra' : 0.0,
         'target.dec' : 0.0,
         'target.airmass_start' : 1.0,
-        'exposure.itime' : 90,
+        'exposure.exposure_time' : 90,
         'exposure.nframes' : 1,
         'exposure.jd_start' : 2460577.5,
         'exposure.type' : 'SCI',
@@ -46,7 +33,16 @@ def test_imager_stage1(tmp_path):
     ramp_model.save(ramp_filename)
 
     # Create a temporary config file
-    conf = create_config()
+    conf = """
+    class = "liger_iris_pipeline.Stage1Pipeline"
+    save_results = True
+
+    [steps]
+        [[nonlinear_correction]]
+            skip = False
+        [[ramp_fit]]
+            method = "ols"
+    """
     config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)
@@ -56,20 +52,17 @@ def test_imager_stage1(tmp_path):
 
     # Test UTR
     pipeline.ramp_fit.method = "ols"
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
     
     # Test MCDS
     pipeline.ramp_fit.method = "mcds"
     pipeline.ramp_fit.num_coadd = 3
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
 
     # Test CDS
     pipeline.ramp_fit.method = "mcds"
     pipeline.ramp_fit.num_coadd = 1
-    results = pipeline.run(ramp_filename)
-    model_result = results[0]
+    model_result = pipeline.run(ramp_filename)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)

@@ -4,7 +4,7 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/core.schema"
 allOf: # NOTE: We drop observation schema from jwst
-- $ref: asn.schema
+#- $ref: asn.schema
 - $ref: instrument.schema
 - $ref: reference_files.schema
 - $ref: exposure.schema
