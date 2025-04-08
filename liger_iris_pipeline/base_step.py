@@ -131,7 +131,7 @@ class LigerIRISStep(Step):
             raise ValueError(f"Cannot open model from {name}")
     
 
-    def finalize_result(self, result : LigerIRISDataModel, reference_files_used : dict[str, str]):
+    def finalize_result(self, result : LigerIRISDataModel, reference_files_used : dict[str, str] | None = None):
         """
         Finalize the result by updating metadata.
 
@@ -151,7 +151,7 @@ class LigerIRISStep(Step):
                 self.log.warning(f"Could not update status for {result.meta.drs_step}.{self.class_alias} in datamodel.")
 
         # Set references files used
-        if len(reference_files_used) > 0:
+        if reference_files_used is not None and len(reference_files_used) > 0:
             for ref_name, filename in reference_files_used:
                 if hasattr(result.meta.ref_file, ref_name):
                     getattr(result.meta.ref_file, ref_name).name = filename
