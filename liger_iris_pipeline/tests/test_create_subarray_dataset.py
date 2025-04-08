@@ -23,19 +23,6 @@ def slice_subarray_mask(mask_array, subarray_params):
     ystart = ystart - 1
     return mask_array[ystart:ystart+ysize, xstart:xstart+xsize].copy()
 
-def create_config():
-    conf = """
-    class = "liger_iris_pipeline.ImagerStage2Pipeline"
-    save_results = True
-
-    [steps]
-        [[dark_sub]]
-        [[flat_field]]
-        [[sky_sub]]
-        [[assign_wcs]]
-            skip = False
-    """
-    return conf
 
 def test_create_subarray_dataset(tmp_path):
 
@@ -109,7 +96,17 @@ def test_create_subarray_dataset(tmp_path):
         sub_model.save(subarray_filenames_temp[k])
 
     # Create the config file
-    conf = create_config()
+    conf = """
+        class = "liger_iris_pipeline.ImagerStage2Pipeline"
+        save_results = True
+
+        [steps]
+            [[dark_sub]]
+            [[flat_field]]
+            [[sky_sub]]
+            [[assign_wcs]]
+                skip = False
+    """
     config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)

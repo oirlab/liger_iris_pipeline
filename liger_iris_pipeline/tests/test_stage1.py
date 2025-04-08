@@ -3,19 +3,6 @@ import liger_iris_pipeline
 import numpy as np
 from liger_iris_pipeline.tests.utils import create_ramp
 
-def create_config():
-    conf = """
-    class = "liger_iris_pipeline.Stage1Pipeline"
-    save_results = True
-
-    [steps]
-        [[nonlinear_correction]]
-            skip = False
-        [[ramp_fit]]
-            method = "ols"
-    """
-    return conf
-
 def test_imager_stage1(tmp_path):
 
     meta = {
@@ -46,7 +33,16 @@ def test_imager_stage1(tmp_path):
     ramp_model.save(ramp_filename)
 
     # Create a temporary config file
-    conf = create_config()
+    conf = """
+    class = "liger_iris_pipeline.Stage1Pipeline"
+    save_results = True
+
+    [steps]
+        [[nonlinear_correction]]
+            skip = False
+        [[ramp_fit]]
+            method = "ols"
+    """
     config_file = str(tmp_path / "test_config.cfg")
     with open(config_file, "w") as f:
         f.write(conf)

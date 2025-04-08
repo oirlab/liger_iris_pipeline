@@ -26,7 +26,7 @@ def create_subarray_model(name, xstart, ystart, xsize, ysize):
     return input_model
 
 
-def test_dark_subarray(tmp_path):
+def test_dark_subarray():
 
     # Get model
     name = "CUSTOM"
