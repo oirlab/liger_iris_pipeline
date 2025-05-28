@@ -10,6 +10,6 @@
    :toctree:
    :recursive:
 
-   maths
+   math
    subarray
    tests

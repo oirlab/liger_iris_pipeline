@@ -1,7 +1,7 @@
-﻿liger\_iris\_pipeline.utils.maths
-=================================
+liger\_iris\_pipeline.utils.math
+================================
 
-.. automodule:: liger_iris_pipeline.utils.maths
+.. automodule:: liger_iris_pipeline.utils.math
 
    
    .. rubric:: Functions

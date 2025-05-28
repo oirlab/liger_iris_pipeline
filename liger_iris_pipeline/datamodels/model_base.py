@@ -194,7 +194,7 @@ class LigerIRISDataModel(DataModel):
         Write the model to a FITS file using self._filepath as the output_path.
 
         Args:
-            **kwargs: Additional arguments to pass to the fits.writeto() function.
+            kwargs: Additional arguments to pass to the fits.writeto() function.
         """
         hdulist = fits_support.to_fits(self._instance, self._schema)
         if 'overwrite' not in kwargs:
