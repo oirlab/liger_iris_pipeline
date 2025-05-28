@@ -26,7 +26,6 @@ def get_subarray_model(sci_model, ref_model):
     sub_model: JWST data model
         subarray version of the reference file model
     """
-
     if sci_model.meta.subarray.name != "FULL":
 
         # Get the science model subarray params

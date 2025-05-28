@@ -24,7 +24,7 @@ class AssignWCSStep(LigerIRISStep):
 
     def process(self, input):
         reference_file_names = {}
-        with self.open_model(input, _copy=False) as input_model:
+        with self.open_model(input) as input_model:
             # Get reference files
             for reftype in self.reference_file_types:
                 reffile = self.get_reference_file(input_model, reftype)

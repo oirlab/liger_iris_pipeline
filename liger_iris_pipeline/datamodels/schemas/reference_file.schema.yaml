@@ -7,14 +7,10 @@ properties:
   meta:
     type: object
     properties:
-      reftype:
+      ref_type:
         title: Reference file type
         type: string
         fits_keyword: REFTYPE
-      pedigree:
-        title: The pedigree of the reference file
-        type: string
-        fits_keyword: PEDIGREE
       ref_version:
         title: The version number of the reference file
         type: string

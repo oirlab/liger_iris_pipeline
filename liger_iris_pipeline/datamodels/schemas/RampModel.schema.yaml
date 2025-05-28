@@ -7,10 +7,10 @@ allOf:
 - type: object
   properties:
     times:
-        title: 2-D times array
-        fits_hdu: TIMES
-        ndim: 2
-        datatype: float64
+      title: 2-D times array
+      fits_hdu: TIMES
+      ndim: 2
+      datatype: float64
     data:
       title: 4-D data array
       fits_hdu: DATA

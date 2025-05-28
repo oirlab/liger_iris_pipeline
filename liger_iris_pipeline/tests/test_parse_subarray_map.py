@@ -21,8 +21,8 @@ def test_parse_subarray_map():
     # Define simple subarray metadata and image ID map
     # ID is just the 1-based index in this list (1, 2, ...)
     subarray_maps_metadata = [
-        {"xstart" : 80, "ystart" : 70, "xsize" : 10, "ysize" : 10, "id" : 1, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
-        {"xstart" : 10, "ystart" : 20, "xsize" : 20, "ysize" : 20, "id" : 2, "detxsiz" : 100, "detysiz" : 100, "fastaxis" : 0, "slowaxis" : 1},
+        {"xstart" : 80, "ystart" : 70, "xsize" : 10, "ysize" : 10, "id" : 1, "detxsize" : 100, "detysize" : 100, "fastaxis" : 0, "slowaxis" : 1},
+        {"xstart" : 10, "ystart" : 20, "xsize" : 20, "ysize" : 20, "id" : 2, "detxsize" : 100, "detysize" : 100, "fastaxis" : 0, "slowaxis" : 1},
     ]
     subarr_map = np.zeros((100, 100), dtype=np.int8)
     for p in subarray_maps_metadata:
@@ -43,7 +43,7 @@ def test_parse_subarray_map():
     output = step.run(image)
 
     # Test each parsed subarray map is equal to what we defined above.
-    for each_parsed, each_input in zip(output.meta.subarray_map, subarray_maps_metadata):
+    for each_parsed, each_input in zip(output.meta.subarray, subarray_maps_metadata):
         assert each_parsed.instance == each_input
 
     # If a pixel is already flagged as subarray, don't mess it up

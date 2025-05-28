@@ -24,16 +24,16 @@ class FlatFieldStep(LigerIRISStep):
     def process(self, input):
 
         # Open the input data model
-        with self.open_model(input, _copy=False) as input_model:
+        with self.open_model(input) as input_model:
 
             # Get the name of the flat reference file to use
             if self.flat is None:
-                self.flat_filename = self.get_reference_file(input_model, "flat")
-                flat_model = self.open_model(self.flat_filename)
+                self.flat_filepath = self.get_reference_file(input_model, "flat")
+                flat_model = self.open_model(self.flat_filepath)
             else:
                 flat_model = self.open_model(self.flat)
-                self.flat_filename = flat_model._filename
-            self.log.info("Using flat reference file %s", self.flat_filename)
+                self.flat_filepath = flat_model._filepath
+            self.log.info("Using flat reference file %s", self.flat_filepath)
 
             flat_model = get_subarray_model(input_model, flat_model)
 

@@ -2,7 +2,7 @@
 import numpy as np
 import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
-from liger_iris_pipeline.tests.utils import add_meta_data
+from liger_iris_pipeline.tests.utils import get_meta
 
 
 def create_raw_dark(jd_start):
@@ -11,28 +11,16 @@ def create_raw_dark(jd_start):
     noise = err * np.random.randn(*data.shape)
     noise *= 0.01 / np.std(noise)
     data += noise
-    data = np.clip(data, 0, np.inf)
+    data = np.clip(data, 0, None)
     dq = np.zeros((4096, 4096), dtype=np.uint32)
     model = datamodels.ImagerModel(data=data, err=err, dq=dq)
-    meta = {
-        'model_type' : 'ImagerModel',
-        'target.name': 'DARK',
-        'target.ra' : 0.0,
-        'target.dec' : 0.0,
-        'target.airmass_start' : 1.0,
-        'exposure.exposure_time' : 3600,
-        'exposure.nframes' : 1,
-        'exposure.jd_start' : jd_start,
-        'exposure.type' : 'DARK',
-        'instrument.name' : 'IRIS',
-        'instrument.detector' : 'IMG1',
-        'instrument.grating' : 'None',
-        'instrument.mode' : 'IMG',
-        'instrument.ifumode' : 'None',
-        'instrument.filter' : 'Y',
-        'instrument.scale' : 0.004,
-    }
-    add_meta_data(model, meta)
+    model.meta.instrument.name = 'Liger'
+    model.meta.target.name = 'DARK'
+    model.meta.exposure.jd_start = jd_start
+    model.meta.exposure.exposure_time = 3600  # 1 hour exposure
+    model.meta.exposure.exposure_type = 'DARK'
+    model.meta.instrument.mode = 'IMG'
+    get_meta(model)
     return model
 
 
@@ -52,7 +40,7 @@ def test_create_dark():
     np.testing.assert_allclose(result.data, 1, rtol=1E-1)
 
     # Test model_blender
-    assert result.meta.instrument.name == 'IRIS'
+    assert result.meta.instrument.name == 'Liger'
     assert result.meta.exposure.jd_mid == np.mean([m.meta.exposure.jd_mid for m in input])
-    assert result.meta.exposure.type == 'DARK'
-    assert result.meta.reftype == 'dark'
+    assert result.meta.exposure.exposure_type == 'DARK'
+    assert result.meta.ref_type == 'dark'

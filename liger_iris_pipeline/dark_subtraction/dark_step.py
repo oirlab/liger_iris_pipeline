@@ -30,11 +30,11 @@ class DarkSubtractionStep(LigerIRISStep):
 
             # Get the name of the dark reference file to use
             if self.dark is None:
-                self.dark_filename = self.get_reference_file(input_model, "dark")
-                dark_model = self.open_model(self.dark_filename)
+                self.dark_filepath = self.get_reference_file(input_model, "dark")
+                dark_model = self.open_model(self.dark_filepath)
             else:
                 dark_model = self.open_model(self.dark, copy=False)
-                self.dark_filename = dark_model.filename
+                self.dark_filepath = dark_model._filepath
             self.log.info("Using dark reference %s", dark_model)
 
             # Get subarray model if needed

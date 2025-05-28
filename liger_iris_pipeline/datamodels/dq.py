@@ -17,6 +17,7 @@ class DQModel(ReferenceFileModel):
         DQ flag definitions
     """
     schema_url = "https://oirlab.github.io/schemas/DQModel.schema"
+    _ref_type = "dq"
 
     def __init__(self, init=None, **kwargs):
         super().__init__(init=init, **kwargs)

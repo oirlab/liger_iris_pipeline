@@ -20,8 +20,8 @@ class SkySubtractionImagerStep(LigerIRISStep):
     """
 
     def process(self, input):
-        with self.open_model(input, _copy=True) as input_model, \
-            self.open_model(self.sky, _copy=False) as sky_model:
+        with self.open_model(input, copy=True) as input_model, \
+            self.open_model(self.sky, copy=False) as sky_model:
 
             # Result (NOTE: Choose optimal way to handle copying here and with self.open_model)
             result = input_model.copy()
