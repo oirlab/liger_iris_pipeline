@@ -1,4 +1,4 @@
-﻿liger\_iris\_pipeline.flat\_field.flat\_field
+liger\_iris\_pipeline.flat\_field.flat\_field
 =============================================
 
 .. automodule:: liger_iris_pipeline.flat_field.flat_field
@@ -8,5 +8,5 @@
 
    .. autosummary::
    
-      apply_flatfield
+      apply_flat_field
    

@@ -8,3 +8,4 @@ class DarkModel(ReferenceFileModel):
     A data model for darks from either the Liger or IRIS Imager or IFU.
     """
     schema_url = "https://oirlab.github.io/schemas/DarkModel.schema"
+    _ref_type = "dark"

@@ -20,7 +20,7 @@ properties:
           era:
             title: Instrument era specified via semver
             type: string
-            fits_keyword: ERA
+            fits_keyword: INSTERA
           detector:
             title: Name of detector used to acquire the data
             type: string
@@ -31,15 +31,8 @@ properties:
           mode:
             title: Mode of the instrument (IMG or IFU)
             type: string
-            enum: [IMG, IFU]
-            fits_keyword: MODE
-            blend_table: True
-            blend_rule: multi
-          ifumode:
-            title: IFU mode of the instrument (LENSLET or SLICER)
-            type: string
-            enum: [LENSLET, SLICER, ANY, NONE, None]
-            fits_keyword: IFUMODE
+            enum: [IMG, SLICER, LENSLET]
+            fits_keyword: INSTMODE
             blend_table: True
             blend_rule: multi
           filter:
@@ -78,7 +71,7 @@ properties:
           grating:
             title: Name of the grating element used
             type: string
-            #enum: [] # NOTE: Add grating names here when desired
+            #enum: [] # NOTE: Add grating names here when needed
             fits_keyword: GRATING
             blend_table: True
             blend_rule: multi
@@ -98,7 +91,7 @@ properties:
             fits_keyword: TEMPGRAT
             blend_table: True
           scale:
-            title: Average expected plate scaling
+            title: Average expected plate scaling (arcsec/pixel)
             type: number
             fits_keyword: SCALE
             blend_table: True

@@ -52,13 +52,13 @@ properties:
             type: integer
             fits_keyword: SLOWAXIS
             blend_table: True
-          detxsiz:
+          detxsize:
             title: Number of pixels in detector x-axis direction
             type: integer
-            fits_keyword: DETXSIZ
+            fits_keyword: DETXSIZE
             blend_table: True
-          detysiz:
+          detysize:
             title: Number of pixels in detector y-axis direction
             type: integer
-            fits_keyword: DETYSIZ
+            fits_keyword: DETYSIZE
             blend_table: True

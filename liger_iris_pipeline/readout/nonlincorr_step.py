@@ -24,7 +24,7 @@ class NonlinearCorrectionStep(LigerIRISStep):
         Step for Nonlinearity correction
         """
         # Load the input data model
-        with self.open_model(input, _copy=False) as input_model:
+        with self.open_model(input) as input_model:
 
             # Result
             model_result = input_model.copy()
@@ -35,7 +35,7 @@ class NonlinearCorrectionStep(LigerIRISStep):
                 nonlincoeff_model = self.open_model(self.nonlincoeff_filename)
             else:
                 nonlincoeff_model = self.open_model(self.nonlincoeff)
-                self.nonlincoeff_filename = nonlincoeff_model._filename
+                self.nonlincoeff_filename = nonlincoeff_model._filepath
             
             self.log.info(f"Using nonlincoeff reference file {self.nonlincoeff_filename}")
 

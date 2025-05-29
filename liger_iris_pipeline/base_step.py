@@ -108,20 +108,20 @@ class LigerIRISStep(Step):
         return datamodels.open(init, **kwargs)
     
     
-    def open_model(self, name : str | LigerIRISDataModel, _copy : bool = False):
+    def open_model(self, name : str | LigerIRISDataModel, copy : bool = False):
         """
         Open a model from a file or copy an existing datamodel in the context of this Step.
         Any Step that opens a DataModel should call this method.
 
         Args:
             name (str | LigerIRISDataModel): The name of the file or the datamodel to open.
-            _copy (bool, optional): Copy and return the input if already a `LigerIRISDataModel`. Defaults to False.
+            copy (bool, optional): Copy and return the input if already a `LigerIRISDataModel`. Defaults to False.
 
         Returns:
             (LigerIRISDataModel): The opened or copied datamodel.
         """
         if isinstance(name, LigerIRISDataModel):
-            if _copy:
+            if copy:
                 return name.copy()
             else:
                 return name
@@ -203,15 +203,15 @@ class LigerIRISStep(Step):
             if output_dir is None:
                 output_dir = self.output_dir
             if output_filename is None:
-                output_filename = model.meta.filename
-            output_path = self.make_output_path(model, filename=output_filename, output_dir=output_dir, suffix=suffix)
-            output_path = model.save(output_path)
+                output_filename = model._filepath
+            filepath = self.make_output_path(model, filename=output_filename, output_dir=output_dir, suffix=suffix)
+            filepath = model.save(output_path)
 
         # Log
         self.log.info(f"Saved model in {output_path}")
 
         # Return the filepath
-        return output_path
+        return filepath
 
 
     def run(self, input, **kwargs):
@@ -327,12 +327,12 @@ class LigerIRISStep(Step):
 
 
     def make_output_path(
-            self,
-            model : LigerIRISDataModel,
-            output_dir : str | None = None,
-            filename : str | None = None,
-            suffix : str | None = None
-        ) -> str:
+        self,
+        model : LigerIRISDataModel,
+        output_dir : str | None = None,
+        filename : str | None = None,
+        suffix : str | None = None
+    ) -> str:
         """
         Generate the output path for the given model in the context of this Step instance.
 
@@ -354,11 +354,11 @@ class LigerIRISStep(Step):
 
     @staticmethod
     def _make_output_path(
-            model : LigerIRISDataModel,
-            output_dir : str | None,
-            filename : str | None,
-            suffix : str | None
-        ) -> str:
+        model : LigerIRISDataModel,
+        output_dir : str | None,
+        filename : str | None,
+        suffix : str | None
+    ) -> str:
         """
         Generate the output path for the given model with no Step instance.
 
@@ -369,13 +369,13 @@ class LigerIRISStep(Step):
             suffix (str, optional): An optional suffix to add to the filename.
 
         Returns:
-            (str): The full path to save the output file.
+            str: The full path to save the output file.
         """
             
         # Determine the directory
         if output_dir is None:
             if model._filename is not None:
-                output_dir = os.path.dirname(os.path.abspath(model._filename))
+                output_dir = os.path.dirname(os.path.abspath(model._filepath))
             else:
                 output_dir = os.getcwd()
         

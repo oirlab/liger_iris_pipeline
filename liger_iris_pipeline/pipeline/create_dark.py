@@ -22,5 +22,4 @@ class CreateDark(LigerIRISPipeline):
         result = self.combine_frames.run(input)
         dark = datamodels.DarkModel(data=result.data, err=result.err, dq=result.dq)
         dark.meta._instance.update(result.meta._instance)
-        dark.meta.reftype = "dark" # TODO: Check if this is the right way to set the reftype
         return dark

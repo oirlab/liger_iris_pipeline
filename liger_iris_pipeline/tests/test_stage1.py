@@ -1,68 +1,37 @@
 # Imports
 import liger_iris_pipeline
 import numpy as np
-from liger_iris_pipeline.tests.utils import create_ramp
+from liger_iris_pipeline.tests.utils import create_ramp, get_meta, download_osf_file
 
 def test_imager_stage1(tmp_path):
 
-    meta = {
-        'model_type' : 'RampModel',
-        'target.name': 'Uniform',
-        'target.ra' : 0.0,
-        'target.dec' : 0.0,
-        'target.airmass_start' : 1.0,
-        'exposure.exposure_time' : 90,
-        'exposure.nframes' : 1,
-        'exposure.jd_start' : 2460577.5,
-        'exposure.type' : 'SCI',
-        'instrument.name' : 'IRIS',
-        'instrument.detector' : 'IMG1',
-        'instrument.grating' : 'None',
-        'instrument.mode' : 'IMG',
-        'instrument.ifumode' : 'None',
-        'instrument.filter' : 'Y',
-        'instrument.scale' : 0.004,
-    }
+    # Get nonlin corr file
+    nonlincoeff_path = download_osf_file('Liger/Cals/Liger_IMG_NONLINCOEFF_20240924000000_0.0.1.fits', use_cached=True)
 
-    # Uniform photon rate
-    source = np.full((10, 10), 1000.0, dtype=np.float32)
-    
     # Create a ramp model
-    ramp_model = create_ramp(source, meta, readtime=1, n_reads_per_group=10, n_groups=5, nonlin_coeffs = None, noise=False)
-    ramp_filename = str(tmp_path / "2024B-P123-008_IRIS_IMG1_SCI-Y_LVL0_0001-00.fits")
-    ramp_model.save(ramp_filename)
-
-    # Create a temporary config file
-    conf = """
-    class = "liger_iris_pipeline.Stage1Pipeline"
-    save_results = True
-
-    [steps]
-        [[nonlinear_correction]]
-            skip = False
-        [[ramp_fit]]
-            method = "ols"
-    """
-    config_file = str(tmp_path / "test_config.cfg")
-    with open(config_file, "w") as f:
-        f.write(conf)
+    source = np.full((10, 10), 1000.0, dtype=np.float32)
+    ramp_model = create_ramp(source, readtime=1.0, n_reads_per_group=10, n_groups=5, read_noise=0, nonlin_coeffs=None, poisson_noise=False)
+    ramp_model.meta.instrument.name = 'Liger'
+    ramp_model.meta.instrument.mode = 'IMG'
+    get_meta(ramp_model)
 
     # Create the pipeline
-    pipeline = liger_iris_pipeline.Stage1Pipeline(config_file=config_file, output_dir=str(tmp_path))
+    pipeline = liger_iris_pipeline.Stage1Pipeline()
 
     # Test UTR
     pipeline.ramp_fit.method = "ols"
-    model_result = pipeline.run(ramp_filename)
+    pipeline.nonlinear_correction.nonlincoeff = nonlincoeff_path
+    model_result = pipeline.run(ramp_model)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
     
     # Test MCDS
     pipeline.ramp_fit.method = "mcds"
     pipeline.ramp_fit.num_coadd = 3
-    model_result = pipeline.run(ramp_filename)
+    model_result = pipeline.run(ramp_model)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)
 
     # Test CDS
-    pipeline.ramp_fit.method = "mcds"
-    pipeline.ramp_fit.num_coadd = 1
-    model_result = pipeline.run(ramp_filename)
+    pipeline.ramp_fit.method = "cds"
+    pipeline.ramp_fit.num_coadd = 1 # Redundant but explicit
+    model_result = pipeline.run(ramp_model)
     np.testing.assert_allclose(model_result.data, source, rtol=1e-6)

@@ -4,12 +4,10 @@ from liger_iris_pipeline import datamodels, FlatFieldStep
 from liger_iris_pipeline.tests.utils import download_osf_file
 
 def test_flat_step():
-    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
-    input_model = datamodels.open(sci_L1_filename)
-
+    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    flat_filepath = download_osf_file('Liger/Cals/Liger_IMG_FLAT_20240924000000_0.0.1.fits', use_cached=True)
     step = FlatFieldStep()
-    step_output = step.run(sci_L1_filename)
-    flat_model = datamodels.open(step.flat_filename)
-
+    step_output = step.run(sci_L1_filepath, flat=flat_filepath)
+    flat_model = datamodels.open(step.flat_filepath)
+    input_model = datamodels.open(sci_L1_filepath)
     np.testing.assert_allclose(step_output.data, input_model.data / flat_model.data)

@@ -21,8 +21,8 @@ def parse_subarray_map(subarray_map):
                 "ystart": int(subarray_indices[0][0] + 1),
                 "xsize": int(subarray_indices[1][-1] - subarray_indices[1][0] + 1),
                 "ysize": int(subarray_indices[0][-1] - subarray_indices[0][0] + 1),
-                "detxsiz": subarray_map.shape[1],
-                "detysiz": subarray_map.shape[0],
+                "detxsize": subarray_map.shape[1],
+                "detysize": subarray_map.shape[0],
                 "fastaxis": 0,
                 "slowaxis": 1,
             }

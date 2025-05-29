@@ -4,15 +4,14 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/core.schema"
 allOf: # NOTE: We drop observation schema from jwst
-#- $ref: asn.schema
 - $ref: instrument.schema
 - $ref: reference_files.schema
 - $ref: exposure.schema
 - $ref: instrument.schema
 - $ref: target.schema
 - $ref: barycenter.schema
-- $ref: subarray.schema # REMIND ME: Why do we have subarray and subarray_map in the metadata?
-- $ref: subarray_map.schema
+- $ref: subarray.schema # Params for single subarray
+- $ref: subarray_map.schema # Params for multiple subarrays collected into a full frame image
 - $ref: drs_steps.schema
 - $ref: adaptive_optics.schema
 - $ref: program.schema
@@ -21,13 +20,8 @@ properties:
   meta:
     type: object
     properties:
-      date:
-        title: "ISO 8601 datetime" # NOTE: TBD what this represents
-        type: string
-        fits_keyword: DATE
-        blend_table: True
       date_created:
-        title: "UTC date file created"
+        title: Date the file was created
         type: string
         fits_keyword: DATECRT
         blend_table: True
@@ -36,15 +30,12 @@ properties:
         type: integer
         fits_keyword: DATALVL
         blend_table: True
-      origin:
-        title: Origin
+      data_quality:
+        title: Data quality
         type: string
-        fits_keyword: ORIGIN
-        blend_table: True
-      organization:
-        title: Organization responsible for creating file
-        type: string
-        fits_keyword: ORG
+        enum: [GOOD, BAD, UNKNOWN]
+        default: "GOOD"
+        fits_keyword: DATAQUAL
         blend_table: True
       filename:
         title: Name of the file
@@ -54,13 +45,13 @@ properties:
       filetype:
         title: Type of data in the file
         type: string
+        default: "FITS"
         fits_keyword: FILETYPE
       telescope:
         title: Telescope used to acquire the data
         type: string
+        default: "Keck-I"
         fits_keyword: TELESCOP
-        blend_table: True
-        blend_rule: multi
       model_type:
         title: Type of data model
         type: string

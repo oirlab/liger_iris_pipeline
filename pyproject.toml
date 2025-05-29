@@ -11,6 +11,10 @@
 requires = ["setuptools>=38.3.0", "wheel", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools_scm]
+version_file = "liger_iris_pipeline/_version.py"
+version_scheme = "post-release"
+local_scheme = "no-local"
 
 [project]
 name = "liger_iris_pipeline"
@@ -51,7 +55,7 @@ dependencies = [
   "jwst>=1.16.0",
   "stpipe>=0.7.0",
   "stdatamodels>=2.1.1",
-  "crds @ git+https://github.com/oirlab/liger_iris_crds@master"
+  #"crds @ git+https://github.com/oirlab/liger_iris_crds@master"
 ]
 
 [project.optional-dependencies]

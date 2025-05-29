@@ -11,13 +11,8 @@ properties:
         title: Target information
         type: object
         properties:
-          type:
-            title: Type of target (fixed, moving, generic)
-            type: string
-            fits_keyword: TARGTYPE
-            blend_table: True
-          object:
-            title: Object name, internal or on-sky
+          name: # Revisit this once user interface is defined.
+            title: Target or object name, internal or on-sky
             type: string
             fits_keyword: OBJECT
             blend_table: True

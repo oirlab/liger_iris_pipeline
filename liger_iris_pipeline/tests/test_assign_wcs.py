@@ -9,9 +9,8 @@ from liger_iris_pipeline.tests.utils import download_osf_file
 def test_assign_wcs_step(tmp_path):
 
     # Grab simulated raw frame
-    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
-    input_model = datamodels.open(sci_L1_filename)
+    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    input_model = datamodels.open(sci_L1_filepath)
 
     # Ensure we haven't already performed the correction.
     # NOTE: Instead check for result.meta.cal_step.assign_wcs == "SKIPPED" vs. "COMPLETE"?
@@ -36,11 +35,11 @@ def test_assign_wcs_step(tmp_path):
 
     # Now test against astropy's WCS
     filename_wcs = str(tmp_path / "temp_wcs.fits")
-    input_model.to_fits(filename_wcs, overwrite=True)
+    input_model.save(filename_wcs, overwrite=True)
     # warning: FITSFixedWarning: RADECSYS= 'ICRS ' / Name of the coordinate
     # reference frame the RADECSYS keyword is deprecated, use RADESYSa.
     astropy_fits_wcs = wcs.WCS(filename_wcs)
-    pixels = [0, 4095] * u.pix
+    pixels = [0, input_model.data.shape[0]] * u.pix
 
     for pix_x in pixels:
         for pix_y in pixels:

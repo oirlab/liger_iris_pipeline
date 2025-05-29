@@ -6,11 +6,9 @@ from liger_iris_pipeline.tests.utils import download_osf_file
 
 
 def create_subarray_model(name, xstart, ystart, xsize, ysize):
-
     # Download the science frame and open
-    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
-    input_model = datamodels.ImagerModel(sci_L1_filename)
+    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    input_model = datamodels.ImagerModel(sci_L1_filepath)
 
     # Setup the subarray params
     input_model.meta.subarray.name = name
@@ -18,8 +16,8 @@ def create_subarray_model(name, xstart, ystart, xsize, ysize):
     input_model.meta.subarray.ystart = ystart
     input_model.meta.subarray.xsize = xsize
     input_model.meta.subarray.ysize = ysize
-    input_model.meta.subarray.detxsiz = 4096
-    input_model.meta.subarray.detysiz = 4096
+    input_model.meta.subarray.detxsize = 2048
+    input_model.meta.subarray.detysize = 2048
     input_model.meta.subarray.fastaxis = 0
     input_model.meta.subarray.slowaxis = 1
 
@@ -49,13 +47,14 @@ def test_dark_subarray():
     step = liger_iris_pipeline.DarkSubtractionStep()
 
     # Run on the subarray
-    step_output = step.run(input_model)
+    dark_filepath = download_osf_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
+    step_output = step.run(input_model, dark=dark_filepath)
 
     # Test the output shape
     assert step_output.data.shape == (ysize, xsize)
 
     # Open the dark cal that was used
-    dark_model = datamodels.ImagerModel(step.dark_filename)
+    dark_model = datamodels.DarkModel(step.dark_filepath)
 
     # Compare the output with a manual dark subtraction
     np.testing.assert_allclose(

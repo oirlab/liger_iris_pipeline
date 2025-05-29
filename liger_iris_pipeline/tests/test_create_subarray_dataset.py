@@ -27,9 +27,10 @@ def slice_subarray_mask(mask_array, subarray_params):
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    remote_sci_L1_filename = 'IRIS/L1/2024B-P123-008_IRIS_IMG1_SCI-J1458+1013-Y-4.0_LVL1_0001-00.fits'
-    sci_L1_filename = download_osf_file(remote_sci_L1_filename, use_cached=True)
-    input_model = datamodels.ImagerModel(sci_L1_filename)
+    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    dark_filepath = download_osf_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
+    flat_filepath = download_osf_file('Liger/Cals/Liger_IMG_FLAT_20240924000000_0.0.1.fits', use_cached=True)
+    input_model = datamodels.ImagerModel(sci_L1_filepath)
 
     # Setup the subarray params
     s1 = 300
@@ -43,8 +44,8 @@ def test_create_subarray_dataset(tmp_path):
         "ystart" : 2048 - s1 // 2,
         "xsize" : s1,
         "ysize" : s1,
-        "detxsiz" : 4096,
-        "detysiz" : 4096,
+        "detxsize" : 2048,
+        "detysize" : 2048,
         "fastaxis" : 0,
         "slowaxis" : 1,
     })
@@ -56,8 +57,8 @@ def test_create_subarray_dataset(tmp_path):
         "ystart" : 1040 - s2 // 2,
         "xsize" : s2,
         "ysize" : s2 // 2,
-        "detxsiz" : 4096,
-        "detysiz" : 4096,
+        "detxsize" : 2048,
+        "detysize" : 2048,
         "fastaxis" : 0,
         "slowaxis" : 1,
     })
@@ -86,33 +87,19 @@ def test_create_subarray_dataset(tmp_path):
     input_model.data[input_model.subarr_map != 0] = np.nan
 
     # Write the full frame
-    full_frame_filename_temp = str(tmp_path / os.path.basename(sci_L1_filename))
+    full_frame_filename_temp = str(tmp_path / os.path.basename(sci_L1_filepath))
     input_model.save(full_frame_filename_temp)
 
     # Write the subarrays
     subarray_filenames_temp = {}
     for k, sub_model in subarray_models.items():
-        subarray_filenames_temp[k] = str(tmp_path / os.path.basename(sci_L1_filename.replace('-00.fits', f'-0{k}.fits')))
+        subarray_filenames_temp[k] = str(tmp_path / os.path.basename(sci_L1_filepath.replace('-00.fits', f'-0{k}.fits')))
         sub_model.save(subarray_filenames_temp[k])
 
-    # Create the config file
-    conf = """
-        class = "liger_iris_pipeline.ImagerStage2Pipeline"
-        save_results = True
-
-        [steps]
-            [[dark_sub]]
-            [[flat_field]]
-            [[sky_sub]]
-            [[assign_wcs]]
-                skip = False
-    """
-    config_file = str(tmp_path / "test_config.cfg")
-    with open(config_file, "w") as f:
-        f.write(conf)
-
     # Create and run the pipeline on the full frame
-    pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+    pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
+    pipeline.dark_sub.dark = dark_filepath
+    pipeline.flat_field.flat = flat_filepath
     reduced_full_frame = pipeline.run({"SCI": full_frame_filename_temp}, output_dir=str(tmp_path))
 
     # Set the subarray metadata id to 0 (full frame)
@@ -121,7 +108,9 @@ def test_create_subarray_dataset(tmp_path):
     # Call the pipeline on the subarrays
     reduced_subarrays = {}
     for k in subarray_filenames_temp:
-        pipeline = liger_iris_pipeline.ImagerStage2Pipeline(config_file=config_file)
+        pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
+        pipeline.dark_sub.dark = dark_filepath
+        pipeline.flat_field.flat = flat_filepath
         reduced_subarrays[k] = pipeline.run({"SCI": subarray_filenames_temp[k]}, output_dir=str(tmp_path))
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
