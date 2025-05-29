@@ -23,15 +23,10 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install the package and dependencies
+    - name: Install the package and test dependencies
       run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install .
-    - name: Setup CRDS cache
-      run: |
-          git clone --depth 1 https://github.com/oirlab/liger-iris-crds-cache $HOME/crds_cache
+          pip install .[test]
     - name: Run tests
       run: |
-          pip install .[test]
-          source setup_local_crds.sh
           pytest -s 
