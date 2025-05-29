@@ -39,7 +39,7 @@ def test_assign_wcs_step(tmp_path):
     # warning: FITSFixedWarning: RADECSYS= 'ICRS ' / Name of the coordinate
     # reference frame the RADECSYS keyword is deprecated, use RADESYSa.
     astropy_fits_wcs = wcs.WCS(filename_wcs)
-    pixels = [0, 4095] * u.pix
+    pixels = [0, input_model.data.shape[0]] * u.pix
 
     for pix_x in pixels:
         for pix_y in pixels:

@@ -8,4 +8,4 @@ Examples
    :maxdepth: 1
    :glob:
     
-   demo_imager_binary.ipynb
+   liger_imager_m13.ipynb

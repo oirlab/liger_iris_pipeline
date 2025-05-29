@@ -10,14 +10,14 @@ from osfclient.utils import norm_remote_path
 def get_imager_wcs_meta(model : datamodels.ImagerModel):
     model.meta.wcsinfo.crpix1 = 0
     model.meta.wcsinfo.crpix2 = 0
-    model.meta.wcsinfo.crval1 = model.meta.target.ra - (model.shape[0] / 2 - 0.5) * model.meta.instrument.scale / 3600000
-    model.meta.wcsinfo.crval2 = model.meta.target.dec - (model.shape[1] / 2 - 0.5) * model.meta.instrument.scale / 3600000
+    model.meta.wcsinfo.crval1 = model.meta.target.ra - (model.shape[0] / 2 - 0.5) * model.meta.instrument.scale / 3600
+    model.meta.wcsinfo.crval2 = model.meta.target.dec - (model.shape[1] / 2 - 0.5) * model.meta.instrument.scale / 3600
     model.meta.wcsinfo.ctype1 = 'RA---TAN'
     model.meta.wcsinfo.ctype2 = 'DEC--TAN'
     model.meta.wcsinfo.cunit1 = 'deg'
     model.meta.wcsinfo.cunit2 = 'deg'
-    model.meta.wcsinfo.cdelt1 = model.meta.instrument.scale / 3600000
-    model.meta.wcsinfo.cdelt2 = model.meta.instrument.scale / 3600000
+    model.meta.wcsinfo.cdelt1 = model.meta.instrument.scale / 3600
+    model.meta.wcsinfo.cdelt2 = model.meta.instrument.scale / 3600
     return model
 
 
@@ -25,8 +25,8 @@ def get_ifu_wcs_meta(model : datamodels.IFUCubeModel):
     model.meta.wcsinfo.crpix1 = 0
     model.meta.wcsinfo.crpix2 = 0
     model.meta.wcsinfo.crpix3 = 0
-    model.meta.wcsinfo.crval1 = model.meta.target.ra - (model.shape[0] / 2 - 0.5) * model.meta.instrument.scale / 3600000
-    model.meta.wcsinfo.crval2 = model.meta.target.dec - (model.shape[1] / 2 - 0.5) * model.meta.instrument.scale / 3600000
+    model.meta.wcsinfo.crval1 = model.meta.target.ra - (model.shape[0] / 2 - 0.5) * model.meta.instrument.scale / 3600
+    model.meta.wcsinfo.crval2 = model.meta.target.dec - (model.shape[1] / 2 - 0.5) * model.meta.instrument.scale / 3600
     model.meta.wcsinfo.crval3 = model.wave[0]
     model.meta.wcsinfo.ctype1 = 'RA---TAN'
     model.meta.wcsinfo.ctype2 = 'DEC--TAN'
@@ -146,36 +146,36 @@ def update_model_meta(model, meta):
             setattr(target, attrs[-1], value)
 
 
-
-
-
-
 def create_ramp(
     source : np.ndarray, # e- / s / pixel including all sources
     readtime : float, # e- RMS
     n_reads_per_group : int, n_groups : int,
     read_noise : float = 0, first_read_noise : float | None = None,
     nonlin_coeffs : np.ndarray | None = None,
-    noise : bool = False,
+    poisson_noise : bool = True
 ) -> datamodels.RampModel:
     times = np.zeros(shape=(n_groups, n_reads_per_group), dtype=float)
     data = np.zeros(shape=(source.shape[0], source.shape[1], n_groups, n_reads_per_group), dtype=np.int16)
     dq = np.zeros(shape=(source.shape[0], source.shape[1], n_groups, n_reads_per_group), dtype=np.int16)
+    data_poisson = np.zeros(shape=(source.shape[0], source.shape[1], n_groups, n_reads_per_group), dtype=float)
     if first_read_noise is None:
         first_read_noise = read_noise
     for i in range(n_groups):
         for j in range(n_reads_per_group):
             t = (j + 1) * readtime
-            image = data[:, :, i, j-1] + source * readtime
-            if nonlin_coeffs is not None:
-                image *= np.round(np.polyval(nonlin_coeffs[::-1], t).astype(np.int16))
-            if noise:
-                if j == 0:
-                    image += np.random.normal(loc=0, scale=np.sqrt(source * t + first_read_noise**2), size=source.shape)
-                else:
-                    image += np.random.normal(loc=0, scale=np.sqrt(source * t + read_noise**2), size=source.shape)
+            image_prev = data_poisson[:, :, i, j-1] if j > 0 else np.zeros_like(source) # Previous read without read noise
+            image_new = image_prev + source * readtime # Add new read
+            if poisson_noise:
+                image_new = np.random.poisson(lam=image_new, size=source.shape)
+            data_poisson[:, :, i, j] = image_new
+            if j == 0 and first_read_noise > 0:
+                image_new += np.random.normal(loc=0, scale=first_read_noise, size=source.shape)
+            elif j > 0 and read_noise > 0:
+                image_new += np.random.normal(loc=0, scale=read_noise, size=source.shape)
             times[i, j] = t
-            data[:, :, i, j] = image.copy()
+            if nonlin_coeffs is not None:
+                image_new *= np.round(np.polyval(nonlin_coeffs[::-1], t).astype(np.int16))
+            data[:, :, i, j] = image_new.astype(np.int16)
     np.clip(data, 0, np.iinfo(np.int16).max)
     ramp_model = datamodels.RampModel(times=times, data=data, dq=dq)
     ramp_model.meta.data_level = 0
@@ -213,6 +213,7 @@ def download_osf_file(
     store = project.storage('osfstorage')
     success = False
     for file_ in store.files:
+        print(f"Checking {file_.path} against {remote_file_path}...")
         if norm_remote_path(file_.path) == remote_file_path:
             print(f"Downloading {remote_file_path} from OSF...")
             with open(output_path, 'wb') as fp:
