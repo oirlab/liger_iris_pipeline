@@ -76,6 +76,17 @@ def get_subarray_meta(model):
     return model
 
 
+def load_filter_summary(filepath : str | None = None):
+    if filepath is None:
+        import importlib.resources
+        filters_dir = importlib.resources.files("liger_iris_pipeline.data.filters")
+        filepath = filters_dir / "filters_summary.txt"
+    data = np.genfromtxt(filepath, dtype=None, names=True, delimiter=',', encoding='utf-8')
+    out = {}
+    for i, f in enumerate(data['filter']):
+        out[f] = {key : data[key][i] for key in data.dtype.names}
+    return out
+
 def get_instrument_meta(model : datamodels.LigerIRISDataModel):
     if model.meta.instrument.detector is None:
         if isinstance(model, datamodels.ImagerModel):
@@ -91,6 +102,10 @@ def get_instrument_meta(model : datamodels.LigerIRISDataModel):
             model.meta.instrument.detector = 'IMG'
         else:
             raise ValueError(f"Unknown model type {type(model)} to set instrument detector.")
+    filter_data = load_filter_summary()
+    model.meta.instrument.wave_min = filter_data[model.meta.instrument.filter]['wavemin']
+    model.meta.instrument.wave_center = filter_data[model.meta.instrument.filter]['wavecenter']
+    model.meta.instrument.wave_max = filter_data[model.meta.instrument.filter]['wavemax']
     return model
 
 
