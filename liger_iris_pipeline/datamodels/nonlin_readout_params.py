@@ -8,4 +8,4 @@ class NonlinearReadoutParametersModel(ReferenceFileModel):
     A data model for the detector nonlinear readout polynomial coeffs.
     """
     schema_url = "https://oirlab.github.io/schemas/NonlinearReadoutParametersModel.schema"
-    _ref_type = "nonlincoeff"
+    _ref_type = "nonlin"
