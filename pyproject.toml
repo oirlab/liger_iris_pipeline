@@ -54,6 +54,7 @@ dependencies = [
   "jwst>=1.18.1",
   "stpipe>=0.8.1",
   "stdatamodels>=3.0.2",
+  "gdown>=5.2.0",
 ]
 
 [project.optional-dependencies]
