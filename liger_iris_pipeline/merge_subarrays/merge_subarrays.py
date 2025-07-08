@@ -2,7 +2,6 @@ import numpy as np
 
 from ..base_step import LigerIRISStep
 from .. import datamodels
-from ..associations import L1Association
 
 __all__ = ["MergeSubarraysStep"]
 
@@ -14,9 +13,9 @@ class MergeSubarraysStep(LigerIRISStep):
     def process(self, input):
 
         # If single input, just return it
-        if not isinstance(input, L1Association):
-            self.log.info("No subarray files provided, return the original model")
-            return input
+        # if not isinstance(input, L1Association):
+        #     self.log.info("No subarray files provided, return the original model")
+        #     return input
         
         # Load the association
         self.asn = self.input_to_asn(input)
