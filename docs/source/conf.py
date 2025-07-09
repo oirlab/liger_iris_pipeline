@@ -29,18 +29,20 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    #'sphinx.ext.imgmath',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.autosummary',
     'sphinx.ext.inheritance_diagram',
     'sphinx_automodapi.automodapi',
+    'sphinx.ext.napoleon',
     'nbsphinx',
 ]
 
 # Don't execute notebooks yet
 #nbsphinx_execute = "never"
+
+napoleon_custom_sections = [('Returns', 'params_style')]
 
 autosummary_generate = True  # Generate autosummary stubs automatically
 autodoc_default_options = {

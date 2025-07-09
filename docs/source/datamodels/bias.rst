@@ -1,13 +1,13 @@
-Dark
+Bias
 ====
 
-The dark current (and any other contribution to the dark) is assumed to be linear with time and is stored as a rate map product (e-/s).
+The bias level is the pixel dependent zero point offset added to the data by the detector control software.
 
 **Classes:**
 
-* :py:class:`~liger_iris_pipeline.datamodels.dark.DarkModel`
+* :py:class:`~liger_iris_pipeline.datamodels.bias.BiasModel`
 
-**Calibration type:** dark
+**Calibration type:** bias
 
 
 Extensions

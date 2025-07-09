@@ -10,6 +10,8 @@
    :toctree:
    :recursive:
 
+   endian_utils
+   errors
+   gdrive
    math
    subarray
-   tests

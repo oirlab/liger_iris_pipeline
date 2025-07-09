@@ -8,10 +8,9 @@ Liger and IRIS level 0 data (L0) are a set of UTR images read out from the Hawai
 Extensions
 ----------
 
-.. csv-table:: 
-   :header: "#", "Name", "HDU Type", "Data Type", "Dimensions", "Units", "Description"
+.. csv-table::
+   :header: "HDU Name", "HDU Type", "Data Type", "Dimensions", "Units", "Description"
 
-   "1", "SCI", "Image", "Float32", "Ny x Nx x Ngroups x Nreads", "e-/s", "Individual reads split by groups."
-   "2", "TIMES", "Table", "See below", "See below", "See below", "Start time of each read."
-   "3", "PIXEL_DQ", "Image", "Uint32", "Ny x Nx", "N/A", "Data quality for groups."
-   "4", "GROUP_DQ", "Image", "Uint32", "Ny x Nx x Ngroups x Nreads", "N/A", "Data quality for each group of reads."
+   DATA, Image, Float32, "Ny x Nx", e-, "Rate map."
+   ERR, Image, Float32, "Ny x Nx", e-, "Rate map error (all sources)."
+   DQ, Image, UInt32, "Ny x Nx", None, "Data quality."
