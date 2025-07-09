@@ -29,7 +29,7 @@ class CalculateBackgroundImagerStep(LigerIRISStep):
         super().__init__(*args, **kwargs)
         self.background_result = None
 
-    def process(self, input) -> datamodels.ImagerModel:
+    def process(self, input):
         self.background_result = None
         if not isinstance(input, list):
             input = [input]
