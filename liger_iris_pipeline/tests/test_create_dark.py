@@ -20,6 +20,7 @@ def create_raw_dark(jd_start):
     model.meta.exposure.exposure_time = 3600  # 1 hour exposure
     model.meta.exposure.exposure_type = 'DARK'
     model.meta.instrument.mode = 'IMG'
+    model.meta.instrument.filter = 'J'
     get_meta(model)
     return model
 

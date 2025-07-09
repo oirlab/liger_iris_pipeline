@@ -16,6 +16,7 @@ def create_frame(jd_start, itime):
     model = datamodels.ImagerModel(data=data, err=err, dq=dq)
     model.meta.instrument.name = 'Liger'
     model.meta.instrument.mode = 'IMG'
+    model.meta.instrument.filter = 'J'
     model.meta.exposure.jd_start = jd_start
     model.meta.exposure.exposure_time = itime
     get_meta(model)

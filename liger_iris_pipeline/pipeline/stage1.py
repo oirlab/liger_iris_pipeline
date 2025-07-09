@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-import logging
-from collections import defaultdict
 from .base_pipeline import LigerIRISPipeline
-from liger_iris_pipeline import datamodels
-from ..associations import L0Association
 
 # step imports
 from ..readout import NonlinearCorrectionStep, FitRampStep
@@ -22,13 +17,15 @@ class Stage1Pipeline(LigerIRISPipeline):
 
     # Define aliases to steps
     step_defs = {
-        "nonlinear_correction": NonlinearCorrectionStep,
+        "nonlin_corr": NonlinearCorrectionStep,
         "ramp_fit": FitRampStep,
     }
 
     # start the actual processing
     def process(self, input):
-        with datamodels.RampModel(input) as input_model:
-            result = self.nonlinear_correction.run(input_model)
+        results = []
+        for sci in input:
+            result = self.nonlin_corr.run(sci)
             result = self.ramp_fit.run(result)
-        return result
+            results.append(result)
+        return results

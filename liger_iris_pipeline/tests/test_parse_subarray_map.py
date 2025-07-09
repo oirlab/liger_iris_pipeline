@@ -17,7 +17,6 @@ def set_subarray_mask(mask_array, p):
 
 def test_parse_subarray_map():
 
-
     # Define simple subarray metadata and image ID map
     # ID is just the 1-based index in this list (1, 2, ...)
     subarray_maps_metadata = [

@@ -26,15 +26,14 @@ if sys.version_info < tuple(
         "iris_pipeline does not support Python < {}".format(__minimum_python_version__)
     )
 
-from .flat_field import FlatFieldStep
-from .sky_subtraction import SkySubtractionImagerStep
-from .dark_subtraction import DarkSubtractionStep
+from .flat_field import *
+from .background import *
+from .dark_subtraction import *
 from .pipeline import *
-from .dq_init import DQInitStep
-from .normalize import NormalizeStep
-from .parse_subarray_map import ParseSubarrayMapStep
-from .merge_subarrays import MergeSubarraysStep
-from .assign_wcs import AssignWCSStep
-from .readout import NonlinearCorrectionStep, FitRampStep
-from .combine_frames import CombineFramesStep
-from .associations import L0Association, L1Association, L2Association
+from .dq_init import *
+from .normalize import *
+from .parse_subarray_map import *
+from .merge_subarrays import *
+from .assign_wcs import *
+from .readout import *
+from .combine_frames import *

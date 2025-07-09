@@ -1,11 +1,6 @@
 import numpy as np
 import astropy.time
 from liger_iris_pipeline import datamodels
-from astropy.utils.data import _get_download_cache_loc
-import os
-import osfclient
-from osfclient.utils import norm_remote_path
-
 
 def get_imager_wcs_meta(model : datamodels.ImagerModel):
     model.meta.wcsinfo.crpix1 = 0
@@ -76,6 +71,18 @@ def get_subarray_meta(model):
     return model
 
 
+def load_filter_summary(filepath : str | None = None):
+    if filepath is None:
+        import importlib.resources
+        filters_dir = importlib.resources.files("liger_iris_pipeline.data.filters")
+        filepath = filters_dir / "filters_summary.txt"
+    data = np.genfromtxt(filepath, dtype=None, names=True, delimiter=',', encoding='utf-8')
+    out = {}
+    for i, f in enumerate(data['filter']):
+        out[f] = {key : data[key][i] for key in data.dtype.names}
+    return out
+
+
 def get_instrument_meta(model : datamodels.LigerIRISDataModel):
     if model.meta.instrument.detector is None:
         if isinstance(model, datamodels.ImagerModel):
@@ -91,6 +98,10 @@ def get_instrument_meta(model : datamodels.LigerIRISDataModel):
             model.meta.instrument.detector = 'IMG'
         else:
             raise ValueError(f"Unknown model type {type(model)} to set instrument detector.")
+    filter_data = load_filter_summary()
+    model.meta.instrument.wave_min = filter_data[model.meta.instrument.filter]['wavemin']
+    model.meta.instrument.wave_center = filter_data[model.meta.instrument.filter]['wavecenter']
+    model.meta.instrument.wave_max = filter_data[model.meta.instrument.filter]['wavemax']
     return model
 
 
@@ -180,48 +191,3 @@ def create_ramp(
     ramp_model = datamodels.RampModel(times=times, data=data, dq=dq)
     ramp_model.meta.data_level = 0
     return ramp_model
-
-
-def download_osf_file(
-        remote_file_path: str,
-        output_dir: str | None = None,
-        preserve_path: bool = True,
-        use_cached : bool = True,
-        project_id : str = 's7uxg'
-    ) -> str:
-
-    # Output directory
-    if output_dir is None:
-        output_dir = _get_download_cache_loc()
-
-    # Set the output path
-    if preserve_path:
-        output_path = os.path.join(output_dir, remote_file_path)
-    else:
-        output_path = os.path.join(output_dir, os.path.basename(remote_file_path))
-
-    if os.path.exists(output_path) and use_cached:
-        return output_path
-    
-    # Ensure the output directory exists
-    if output_dir:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-    # Download
-    osf = osfclient.OSF()
-    project = osf.project(project_id)
-    store = project.storage('osfstorage')
-    success = False
-    for file_ in store.files:
-        print(f"Checking {file_.path} against {remote_file_path}...")
-        if norm_remote_path(file_.path) == remote_file_path:
-            print(f"Downloading {remote_file_path} from OSF...")
-            with open(output_path, 'wb') as fp:
-                file_.write_to(fp)
-            success = True
-            break
-
-    if not success:
-        raise FileNotFoundError(f"File {remote_file_path} not found in OSF project {project_id}.")
-    
-    return output_path

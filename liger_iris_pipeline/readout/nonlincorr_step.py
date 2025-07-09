@@ -10,13 +10,10 @@ __all__ = ["NonlinearCorrectionStep"]
 
 class NonlinearCorrectionStep(LigerIRISStep):
 
-    reference_file_types = ["nonlincoeff"]
-
-    class_alias = "nonlincorr"
+    class_alias = "nonlin_corr"
 
     spec = """
-        nonlincoeff_ouput_dir = string(default=None) # Output directory for the nonlinearity coefficients
-        nonlincoeff = is_string_or_datamodel(default=None) # Reference file of coefficients
+        nonlin = is_string_or_datamodel(default=None) # Reference file for nonlinearity correction
     """
 
     def process(self, input):
@@ -29,30 +26,26 @@ class NonlinearCorrectionStep(LigerIRISStep):
             # Result
             model_result = input_model.copy()
 
-            # Get the name of the nonlincoeff reference file to use
-            if self.nonlincoeff is None:
-                self.nonlincoeff_filename = self.get_reference_file(input_model, "nonlincoeff")
-                nonlincoeff_model = self.open_model(self.nonlincoeff_filename)
+            # Get the name of the nonlin reference file to use
+            if self.nonlin is None:
+                self.nonlin_filename = self.get_reference_file(input_model, "nonlin")
+                nonlin_model = self.open_model(self.nonlin_filename)
             else:
-                nonlincoeff_model = self.open_model(self.nonlincoeff)
-                self.nonlincoeff_filename = nonlincoeff_model._filepath
+                nonlin_model = self.open_model(self.nonlin)
+                self.nonlin_filename = nonlin_model._filepath
             
-            self.log.info(f"Using nonlincoeff reference file {self.nonlincoeff_filename}")
+            self.log.info(f"Using nonlin reference file {self.nonlin_filename}")
 
             # Alias coeffs and utr times
-            coeffs = nonlincoeff_model.coeffs
-            input_times = model_result.times
+            coeffs = nonlin_model.coeffs
 
             # Correct the nonlinearity
             data = model_result.data.astype(np.float32)
             coeffs = coeffs.astype(np.float32)
-            model_result.data = correct_nonlinearity(
-                data,
-                coeffs,
-            )
+            model_result.data = correct_nonlinearity(data, coeffs)
 
             # Close the nonlinearity file
-            nonlincoeff_model.close()
+            nonlin_model.close()
 
             self.status = "COMPLETE"
 

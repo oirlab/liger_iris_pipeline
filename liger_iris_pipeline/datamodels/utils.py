@@ -6,8 +6,6 @@ import warnings
 import numpy as np
 from astropy.io import fits
 
-from stdatamodels.jwst.datamodels.util import is_association
-
 import asdf
 from stdatamodels import filetype
 from stdatamodels.model_base import _FileReference
@@ -42,8 +40,6 @@ def open(init=None, memmap : bool = False, copy : bool = False, **kwargs):
     """
 
     from .model_base import LigerIRISDataModel
-    #from .container import LigerIRISModelContainer
-    from ..associations import load_asn
 
     # If init is already a datamodel, copy and return
     if isinstance(init, LigerIRISDataModel):
@@ -75,10 +71,6 @@ def open(init=None, memmap : bool = False, copy : bool = False, **kwargs):
         # File type
         file_type = filetype.check(init)
 
-        # Read the file as an association / model container
-        if file_type == "asn":
-            return load_asn(init)
-
         # Load FITS or ASDF file
         if file_type == "fits":
             hdulist = fits.open(init, memmap=memmap)
@@ -100,8 +92,8 @@ def open(init=None, memmap : bool = False, copy : bool = False, **kwargs):
 
     elif isinstance(init, fits.HDUList):
         hdulist = init
-    elif is_association(init) or isinstance(init, list):
-        return ModelContainer(init, **kwargs)
+    else:
+        raise ValueError(f"Unsupported type for init: {type(init)}.")
 
     # If we have it, determine the shape from the science hdu
     if hdulist:

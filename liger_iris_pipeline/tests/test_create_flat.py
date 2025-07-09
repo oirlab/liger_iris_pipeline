@@ -2,7 +2,8 @@
 import numpy as np
 import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
-from liger_iris_pipeline.tests.utils import get_meta, download_osf_file
+from liger_iris_pipeline.tests.utils import get_meta
+from liger_iris_pipeline.utils.gdrive import download_gdrive_file
 
 
 def create_raw_flat(jd_start):
@@ -20,6 +21,7 @@ def create_raw_flat(jd_start):
     model.meta.exposure.exposure_time = 180  # 3 minute exposure
     model.meta.exposure.exposure_type = 'FLAT'
     model.meta.instrument.mode = 'IMG'
+    model.meta.instrument.filter = 'J'
     get_meta(model)
     return model
 
@@ -33,7 +35,7 @@ def test_create_flat():
     # Initialize and run step
     pipeline = liger_iris_pipeline.CreateFlatfield()
     pipeline.combine_frames.method = 'median'
-    dark_filepath = download_osf_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
+    dark_filepath = download_gdrive_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
     pipeline.dark_sub.dark = dark_filepath
     pipeline.combine_frames.error_calc = 'propagate'
     result = pipeline.run(input, save_result=False)

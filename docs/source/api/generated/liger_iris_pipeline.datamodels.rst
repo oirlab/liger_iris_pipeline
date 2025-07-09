@@ -19,7 +19,7 @@
    imager
    integration
    model_base
-   nonlin_readout_params
+   nonlin
    ramp
    referencefile
    utils

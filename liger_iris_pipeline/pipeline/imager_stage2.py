@@ -1,11 +1,10 @@
-#from ..associations import L1Association
 from .base_pipeline import LigerIRISPipeline
 from liger_iris_pipeline import datamodels
 from ..parse_subarray_map import ParseSubarrayMapStep
 from ..dark_subtraction import DarkSubtractionStep
 from ..flat_field import FlatFieldStep
 from ..assign_wcs import AssignWCSStep
-from ..sky_subtraction import SkySubtractionImagerStep
+from ..background import CalculateBackgroundImagerStep, SubtractBackgroundImagerStep
 #from jwst.photom import PhotomStep as JWSTPhotomStep
 #from jwst.resample import ResampleStep as JWSTResampleStep
 
@@ -27,39 +26,60 @@ class ImagerStage2Pipeline(LigerIRISPipeline):
         ResampleStep (JWST)
     """
 
-    #default_association = L1Association
-
     # Define alias to steps
     step_defs = {
         "parse_subarray_map": ParseSubarrayMapStep,
         "dark_sub": DarkSubtractionStep,
         "flat_field": FlatFieldStep,
-        "sky_sub": SkySubtractionImagerStep,
-        #"fluxcal": JWSTPhotomStep,
+        "calc_background": CalculateBackgroundImagerStep,
+        "background_sub": SubtractBackgroundImagerStep,
         "assign_wcs": AssignWCSStep,
-        #"resample": JWSTResampleStep,
     }
 
-    def process(self, input):
+    def process(self, input : dict) -> dict:
 
-        # Each exposure is a product in the association.
-        # Process each exposure.
-        science = input["SCI"]
-        with self.open_model(science) as input_model:
-            input_model = self.parse_subarray_map.run(input_model)
-            input_model = self.dark_sub.run(input_model)
-            input_model = self.flat_field.run(input_model)
-            if "SKY" in input:
-                input_model = self.sky_sub.run(input_model, sky=input['SKY'])
-            elif not self.sky_sub.skip:
-                self.log.warning(f"No sky background found for {input_model} but {self.sky_sub.__class__.__name__}.skip=False. Skipping Sky Subtraction")
-                self.sky_sub.on_skip(input_model)
-                self.sky_sub.finalize_result(input_model)
+        # Correct dark and flat
+        sci_models = []
+        for sci in input['SCI']:
+            sci_model = self.parse_subarray_map.run(sci)
+            sci_model = self.dark_sub.run(sci_model)
+            sci_model = self.flat_field.run(sci_model)
+            sci_models.append(sci_model)
+        
+        # Calculate the background from the science or sky data
+        if not self.calc_background.skip:
+            if 'SKY' in input and len(input['SKY']) > 0:
+                sky_models = []
+                for sky in input['SKY']:
+                    sky_model = self.parse_subarray_map.run(sky)
+                    sky_model = self.dark_sub.run(sky_model)
+                    sky_model = self.flat_field.run(sky_model)
+                    sky_models.append(sky_model)
+                self.background = self.calc_background.run(sky_models)
+            else:
+                self.background = self.calc_background.run(sci_models)
+        else:
+            self.background = None
+            self.calc_background.on_skip()
 
-        input_model = self.assign_wcs.run(input_model)
-        #input_model = self.fluxcal(input_model)
+        # Subtract the background from each science model
+        for i in range(len(sci_models)):
+            sci_models[i] = self.background_sub.run(sci_models[i], background=self.background)
 
-        # Update the data level
-        input_model.meta.data_level = 2 # NOTE: Automate this somehow?
+        # Assign the WCS to each science model
+        for i in range(len(sci_models)):
+            sci_models[i] = self.assign_wcs.run(sci_models[i])
 
-        return input_model
+        # Flux calibrate each science model
+        # NOTE: Commenting this out until we implement flux calibration step
+        #for i in range(len(sci_models)):
+        #    sci_models[i] = self.flux_cal.run(sci_models[i])
+
+        # Save the science models
+        for sci_model in sci_models:
+            sci_model.meta.data_level = 2 # NOTE: Automate this somehow?
+            if self.save_results: # NOTE: Use HISPEC approach to manage saving results
+                sci_model.save(output_dir=self.ouptut_dir)
+
+        # Return the list of science models
+        return sci_models

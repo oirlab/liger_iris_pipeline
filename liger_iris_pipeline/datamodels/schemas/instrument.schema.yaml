@@ -100,3 +100,18 @@ properties:
             type: number
             fits_keyword: SPECRES
             blend_table: True
+          wave_min:
+            title: Minimum wavelength of the spectral range in microns
+            type: number
+            fits_keyword: WAVEMIN
+            blend_table: True
+          wave_max:
+            title: Maximum wavelength of the spectral range in microns
+            type: number
+            fits_keyword: WAVEMAX
+            blend_table: True
+          wave_center:
+            title: Central wavelength of the spectral range in microns
+            type: number
+            fits_keyword: WAVECEN
+            blend_table: True

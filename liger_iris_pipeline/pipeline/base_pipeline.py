@@ -6,7 +6,6 @@ from .. import datamodels
 from ..base_step import LigerIRISStep
 from pathlib import Path
 import stpipe
-from ..associations import LigerIRISAssociation, load_asn
 
 from stpipe import config_parser
 
@@ -15,8 +14,6 @@ __all__ = [
 ]
 
 class LigerIRISPipeline(LigerIRISStep, Pipeline):
-
-    #default_association : LigerIRISAssociation = None
 
     def __init__(self, config_file : str | None = None, **kwargs):
         """

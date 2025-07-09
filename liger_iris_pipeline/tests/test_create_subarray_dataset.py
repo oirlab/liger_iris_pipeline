@@ -3,7 +3,7 @@ import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
 import numpy as np
 import os
-from liger_iris_pipeline.tests.utils import download_osf_file
+from liger_iris_pipeline.utils.gdrive import download_gdrive_file
 
 
 # Converts 1->0 indexing, sets the subarray index
@@ -27,9 +27,9 @@ def slice_subarray_mask(mask_array, subarray_params):
 def test_create_subarray_dataset(tmp_path):
 
     # Download the science frame and open
-    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
-    dark_filepath = download_osf_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
-    flat_filepath = download_osf_file('Liger/Cals/Liger_IMG_FLAT_20240924000000_0.0.1.fits', use_cached=True)
+    sci_L1_filepath = download_gdrive_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas-skyscale1.0.fits', use_cached=True)
+    dark_filepath = download_gdrive_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
+    flat_filepath = download_gdrive_file('Liger/Cals/Liger_IMG_FLAT_20240924000000_0.0.1.fits', use_cached=True)
     input_model = datamodels.ImagerModel(sci_L1_filepath)
 
     # Setup the subarray params
@@ -100,7 +100,7 @@ def test_create_subarray_dataset(tmp_path):
     pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
     pipeline.dark_sub.dark = dark_filepath
     pipeline.flat_field.flat = flat_filepath
-    reduced_full_frame = pipeline.run({"SCI": full_frame_filename_temp}, output_dir=str(tmp_path))
+    reduced_full_frame = pipeline.run({"SCI": [full_frame_filename_temp]}, output_dir=str(tmp_path))[0]
 
     # Set the subarray metadata id to 0 (full frame)
     reduced_full_frame.meta.subarray.id = 0
@@ -111,7 +111,7 @@ def test_create_subarray_dataset(tmp_path):
         pipeline = liger_iris_pipeline.ImagerStage2Pipeline()
         pipeline.dark_sub.dark = dark_filepath
         pipeline.flat_field.flat = flat_filepath
-        reduced_subarrays[k] = pipeline.run({"SCI": subarray_filenames_temp[k]}, output_dir=str(tmp_path))
+        reduced_subarrays[k] = pipeline.run({"SCI": [subarray_filenames_temp[k]]}, output_dir=str(tmp_path))[0]
 
     # Check the metadata on the reduced full frame model and each reduced subarray model
     for k, full_frame_meta, each_input in zip(
