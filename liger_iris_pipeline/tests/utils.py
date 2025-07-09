@@ -1,11 +1,6 @@
 import numpy as np
 import astropy.time
 from liger_iris_pipeline import datamodels
-from astropy.utils.data import _get_download_cache_loc
-import os
-import osfclient
-from osfclient.utils import norm_remote_path
-
 
 def get_imager_wcs_meta(model : datamodels.ImagerModel):
     model.meta.wcsinfo.crpix1 = 0
@@ -86,6 +81,7 @@ def load_filter_summary(filepath : str | None = None):
     for i, f in enumerate(data['filter']):
         out[f] = {key : data[key][i] for key in data.dtype.names}
     return out
+
 
 def get_instrument_meta(model : datamodels.LigerIRISDataModel):
     if model.meta.instrument.detector is None:
@@ -195,48 +191,3 @@ def create_ramp(
     ramp_model = datamodels.RampModel(times=times, data=data, dq=dq)
     ramp_model.meta.data_level = 0
     return ramp_model
-
-
-def download_osf_file(
-        remote_file_path: str,
-        output_dir: str | None = None,
-        preserve_path: bool = True,
-        use_cached : bool = True,
-        project_id : str = 's7uxg'
-    ) -> str:
-
-    # Output directory
-    if output_dir is None:
-        output_dir = _get_download_cache_loc()
-
-    # Set the output path
-    if preserve_path:
-        output_path = os.path.join(output_dir, remote_file_path)
-    else:
-        output_path = os.path.join(output_dir, os.path.basename(remote_file_path))
-
-    if os.path.exists(output_path) and use_cached:
-        return output_path
-    
-    # Ensure the output directory exists
-    if output_dir:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-
-    # Download
-    osf = osfclient.OSF()
-    project = osf.project(project_id)
-    store = project.storage('osfstorage')
-    success = False
-    for file_ in store.files:
-        print(f"Checking {file_.path} against {remote_file_path}...")
-        if norm_remote_path(file_.path) == remote_file_path:
-            print(f"Downloading {remote_file_path} from OSF...")
-            with open(output_path, 'wb') as fp:
-                file_.write_to(fp)
-            success = True
-            break
-
-    if not success:
-        raise FileNotFoundError(f"File {remote_file_path} not found in OSF project {project_id}.")
-    
-    return output_path
