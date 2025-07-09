@@ -2,23 +2,16 @@
 from functools import wraps
 from collections.abc import Sequence
 import warnings
-import copy
 import gc
 
 import stpipe.utilities
 from . import datamodels
 from .datamodels import LigerIRISDataModel
-from astropy.io import fits
-from pathlib import Path
 import stpipe.log
 import os
-from typing import Self
-import yaml
-from collections import defaultdict
 
 
 import stpipe
-from stpipe import cmdline
 from stpipe import Step
 from stpipe import config_parser
 from . import datamodels
@@ -34,9 +27,6 @@ class LigerIRISStep(Step):
     1. Manual control on deriving the configuration from spec, a config file, and additional kwargs.
     2. Broader signatures for run, process, (and eventually call if appropriate).
     Once the DRS is robust enough, we will realign (although not completely) with stpipe.step.Step methods.
-
-    Attributes:
-        exclude_spec (list[str]): A list of attributes to exclude from the spec.
     """
 
     exclude_spec = [
