@@ -1,0 +1,25 @@
+liger\_iris\_pipeline.combine\_frames.combine\_frames\_step
+===========================================================
+
+.. automodule:: liger_iris_pipeline.combine_frames.combine_frames_step
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      combine_frames
+      make_cubes
+      mask_outliers
+      meaure_error_cube
+      propagate_error_cube
+      sigma_clip
+      sigma_clip_cube
+      weighted_quantile_cube
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CombineFramesStep
+   
