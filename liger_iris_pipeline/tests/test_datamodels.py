@@ -1,11 +1,9 @@
-
-# See README.md for notes on testing data
 from liger_iris_pipeline import datamodels
-from liger_iris_pipeline.tests.utils import download_osf_file
+from liger_iris_pipeline.utils.gdrive import download_gdrive_file
 
 
 def test_load_liger_image():
-    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    sci_L1_filepath = download_gdrive_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas-skyscale1.0.fits', use_cached=True)
     model = datamodels.open(sci_L1_filepath)
     
     assert model.meta.model_type == "ImagerModel"
@@ -18,7 +16,7 @@ def test_load_liger_image():
 
 
 def test_load_iris_image():
-    sci_L1_filepath = download_osf_file('IRIS/L1/2024B-P001-001_IRIS_IMG1_SCI_LVL1_0001_M13-J-4mas.fits', use_cached=True)
+    sci_L1_filepath = download_gdrive_file('IRIS/L1/2024B-P001-001_IRIS_IMG1_SCI_LVL1_0001_M13-J-4mas.fits', use_cached=True)
     input_model = datamodels.open(sci_L1_filepath)
     
     assert input_model.meta.model_type == "ImagerModel"

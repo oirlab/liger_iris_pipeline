@@ -9,7 +9,6 @@ API Reference
 
    base_step
    assign_wcs
-   associations
    dark_subtraction
    datamodels
    dq_init
@@ -17,7 +16,8 @@ API Reference
    merge_subarrays
    normalize
    parse_subarray_map
-   sky_subtraction
+   background
    readout
    pipeline
    utils
+   combine_frames

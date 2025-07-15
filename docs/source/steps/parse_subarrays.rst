@@ -1,15 +1,17 @@
-==================
 Parse Subarray Map
 ==================
 
-Description
------------
 
-The step :py:class:`~liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step.ParseSubarrayMapStep` is only useful for full raw science frames which have been acquired concurrently with subarrays. This step parses the extension ``SUBARR_MAP`` and determines the parameters defining each specified subarray. These parameters are copied it into ImagerModel.meta.subarray_map, which is a ASDF-based property in the FITS file which encodes the metadata of the subarrays as a list of dictionaries.
+Overview
+--------
+
+The step is only useful for full raw science frames which have been acquired concurrently with subarrays. This step parses the extension ``SUBARR_MAP`` and determines the parameters defining each specified subarray. These parameters are copied it into ImagerModel.meta.subarray_map, which is a ASDF-based property in the FITS file which encodes the metadata of the subarrays as a list of dictionaries.
 
 Each subarray is processed separately and the full science frame is also acquired and has missing values at the location of each of the subarrays (up to 10) which are currently being acquired.
 
 The raw science frame from the detector has a dedicated FITS extension that encodes the location of the subarrays, i.e. has zeros everywhere, then a rectangle of 1 at the location of subarray 1, a rectangle of 2 at the location of subarray 2 and so on. Subarrays cannot overlap.
+
+**Class**: :py:class:`~liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step.ParseSubarrayMapStep`
 
 
 Algorithm
@@ -27,3 +29,13 @@ Arguments
 
 **input** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.imager.ImagerModel`
     The input file or imager model to process.
+
+Subarrays
+---------
+
+TBD
+
+Calibration Files
+-----------------
+
+None.

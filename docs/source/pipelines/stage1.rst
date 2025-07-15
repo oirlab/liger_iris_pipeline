@@ -1,25 +1,22 @@
 Stage 1 (Readout Processing)
 ============================
 
-Description
------------
+Overview
+--------
 
-The pipeline :py:class:`~liger_iris_pipeline.pipeline.stage1.Stage1Pipeline` performs readout processing for the raw readouts from the detector and creates 2D rate-maps (phot / s).
+Processes the raw UTR 3D cube of reads and calculates the 2D rate-maps for each pixel.
 
-
-Input
------
-
-What the pipeline accepts for the single input.
-
-
-Keyword Arguments
------------------
-
-Pipeline specific arguments.
+**Class**: :py:class:`~liger_iris_pipeline.pipeline.stage1.Stage1Pipeline`
 
 
 Steps
 -----
 
-List of steps.
+1. :doc:`Nonlinear Correction <../steps/nonlinear_correction>`
+2. :doc:`Fit Ramp <../steps/ramp_fitting>`
+
+
+Arguments
+---------
+
+None.

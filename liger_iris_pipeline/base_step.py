@@ -2,24 +2,16 @@
 from functools import wraps
 from collections.abc import Sequence
 import warnings
-import copy
 import gc
 
 import stpipe.utilities
 from . import datamodels
 from .datamodels import LigerIRISDataModel
-from .associations import LigerIRISAssociation
-from astropy.io import fits
-from pathlib import Path
 import stpipe.log
 import os
-from typing import Self
-import yaml
-from collections import defaultdict
 
 
 import stpipe
-from stpipe import cmdline
 from stpipe import Step
 from stpipe import config_parser
 from . import datamodels
@@ -35,9 +27,6 @@ class LigerIRISStep(Step):
     1. Manual control on deriving the configuration from spec, a config file, and additional kwargs.
     2. Broader signatures for run, process, (and eventually call if appropriate).
     Once the DRS is robust enough, we will realign (although not completely) with stpipe.step.Step methods.
-
-    Attributes:
-        exclude_spec (list[str]): A list of attributes to exclude from the spec.
     """
 
     exclude_spec = [
@@ -91,11 +80,11 @@ class LigerIRISStep(Step):
                 setattr(self, key, _val)
 
 
-    def process(self, input : str | LigerIRISDataModel | LigerIRISAssociation):
+    def process(self, input : str | LigerIRISDataModel):
         """
         This is where real work happens. Every Step subclass has to
         override this method. The default behaviour is to raise a
-        NotImplementedError exception. The signature must be `process(self, input : str | LigerIRISDataModel | LigerIRISAssociation)`.
+        NotImplementedError exception. The signature must be `process(self, input : str | LigerIRISDataModel)`.
         """
         raise NotImplementedError(f"Class {self.__class__} does not implement instance method `process`.")
     
@@ -219,7 +208,7 @@ class LigerIRISStep(Step):
         Run handles the generic setup and teardown that happens with the running of each step. The real work that is unique to each step type is done in the `process` method.
 
         Args:
-            input (str | LigerIRISDataModel | LigerIRISAssociation): The input to process:
+            input (str | LigerIRISDataModel): The input to process:
                 1. filename of datamodel
                 2. filename of ASN
                 3. datamodel
@@ -231,7 +220,9 @@ class LigerIRISStep(Step):
             (LigerIRISDataModel | list[LigerIRISDataModel]): The result(s) of the step. Steps can only return a single model, but Pipelines can return a list of datamodels.
         """
         gc.collect()
+        
         with stpipe.log.record_logs(formatter=self._log_records_formatter) as log_records:
+
             self._log_records = log_records
 
             # Make generic log messages go to this step's logger
@@ -242,23 +233,13 @@ class LigerIRISStep(Step):
 
             # Update the params based on kwargs
             self.update_pars(kwargs)
+            pars = self.get_pars()
+            pars = '\n'.join(f"{k}={repr(v)}" for k, v in pars.items())
 
             # log Step or Pipeline parameters from top level only
             if self.parent is None:
                 self.log.info(
-                    "Step %s parameters are:%s",
-                    self.name,
-                    # Add an indent to each line of the YAML output
-                    "\n  "
-                    + "\n  ".join(
-                        yaml.dump(self.get_pars(), sort_keys=False)
-                        .strip()
-                        # Convert serialized YAML types true/false/null to Python types
-                        .replace(" false", " False")
-                        .replace(" true", " True")
-                        .replace(" null", " None")
-                        .splitlines()
-                    ),
+                    f"Running step {self} with parameters:\n{pars}"
                 )
             
             # Main try block
@@ -304,7 +285,6 @@ class LigerIRISStep(Step):
                     self.log.info(f"Step {self.name} done")
             finally:
                 stpipe.log.delegator.log = orig_log
-
         return step_result
 
 
@@ -458,52 +438,3 @@ class LigerIRISStep(Step):
             input (str | LigerIRISDataModel):
         """
         self.status = "SKIPPED"
-
-
-    # def input_to_asn(self, input):
-    #     """
-    #     Convert input to an association.
-
-    #     Parameters:
-    #         input (str | Path | LigerIRISAssociation): The input file.
-
-    #     Returns:
-    #         LigerIRISAssociation: An instance of the appropriate LigerIRISAssociation.
-    #     """
-
-    #     # Input already is an association
-    #     if isinstance(input, LigerIRISAssociation):
-    #         return input
-        
-    #     # Input is a file
-    #     if isinstance(input, str | Path):
-    #         input = str(input)
-    #         if os.path.splitext(input)[1] == '.json': # Association file
-    #             asn = load_asn(input) # TODO: FIX This
-    #         else:
-    #             asn = self.default_association.from_member(input) # DataModel file
-    #     elif isinstance(input, datamodels.LigerIRISDataModel):
-    #         asn = self.default_association.from_member(input)
-    #     elif isinstance(input, dict):
-    #         asn = self.default_association.from_product(input) # Single product (dict):
-    #     else:
-    #         raise ValueError(f"Input type {type(input)} not supported.")
-        
-    #     return asn
-    
-
-    @staticmethod
-    def asn_product_by_types(exp_product : dict):
-        """
-        Get the members of an exposure product by type.
-
-        Parameters:
-            exp_product (dict): The exposure product.
-
-        Returns:
-            dict: The members of the exposure product by type.
-        """
-        members_by_type = defaultdict(list)
-        for member in exp_product["members"]:
-            members_by_type[member["exptype"].lower()].append(member["expname"])
-        return members_by_type

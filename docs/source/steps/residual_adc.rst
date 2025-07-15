@@ -1,11 +1,10 @@
-================================
-Residual Atmos. Disp. Correction
-================================
+Differential Atmospheric Dispersion Correction (ADC)
+====================================================
 
-Description
------------
+Overview
+--------
 
-TBD.
+Corrects the residual atmospheric dispersion in the input data.
 
 
 Algorithm

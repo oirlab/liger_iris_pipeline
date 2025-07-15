@@ -1,16 +1,21 @@
-====
 Dark
 ====
 
-The dark current (and any other contribution to the dark) is assumed to be linear with time.
+The dark current (and any other contribution to the dark) is assumed to be linear with time and is stored as a rate map product (e-/s).
+
+**Classes:**
+
+* :py:class:`~liger_iris_pipeline.datamodels.dark.DarkModel`
+
+**Calibration type:** dark
 
 
 Extensions
 ----------
 
 .. csv-table::
-   :header: "#", "Name", "HDU TYPE", "Data Type", "Dimensions", "Units", "Description"
+   :header: "HDU Name", "HDU Type", "Data Type", "Dimensions", "Units", "Description"
 
-   1, DATA, Image, Float32, "4096 x 4096", "e/s", "Dark current data."
-   2, ERR, Image, Float32, "4096 x 4096", "e/s", "Dark current error (all sources)."
-   5, DQ, Image, UInt32, "4096 x 4096", None, "Data quality."
+   DATA, Image, Float32, "Ny x Nx", "e-/s", "Dark current data."
+   ERR, Image, Float32, "Ny x Nx", "e-/s", "Dark current error."
+   DQ, Image, UInt32, "Ny x Nx", None, "Data quality (:doc:`DQ flags <data_quality>`)."

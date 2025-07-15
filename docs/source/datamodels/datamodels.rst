@@ -5,10 +5,10 @@ Data Models
 .. toctree::
    :maxdepth: 1
    
-   level0
-   imager_level1
-   imager_level2
-   dq_flags
+   ramp
+   imager
+   ifu_image
+   ifu_cube
 
 
 Calibration Models
@@ -17,5 +17,9 @@ Calibration Models
 .. toctree::
    :maxdepth: 1
 
+   data_quality
+   bias
    dark
    flat
+   nonlin
+   

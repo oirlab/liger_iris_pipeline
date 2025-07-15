@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 from astropy.time import Time
 from astropy.io import fits
@@ -19,20 +18,6 @@ class LigerIRISDataModel(DataModel):
     This class should not be instantiated on its own.
     """
     schema_url = "https://oirlab.github.io/schemas/LigerIRISDataModel.schema"
-    
-
-    def get_crds_parameters(self):
-        """
-        Collect the parameters used by CRDS to select references for this model.
-
-        Returns:
-            dict : the CRDS parameters
-        """
-        return {
-            key: val
-            for key, val in self.to_flat_dict(include_arrays=False).items()
-            if isinstance(val, (str, int, float, complex, bool))
-        }
     
     @staticmethod
     def get_sem_id(jd : float) -> str:
@@ -206,10 +191,3 @@ class LigerIRISDataModel(DataModel):
                 if "ASDF" in hdulist:
                     del hdulist["ASDF"]
             hdulist.writeto(self._filepath, **kwargs)
-    
-    # def copy(self, memo=None):
-    #     """
-    #     Returns a deep copy of this model.
-    #     """
-    #     result = super().copy(memo=memo)
-    #     return self.clone(result, self, deepcopy=True, memo=memo)

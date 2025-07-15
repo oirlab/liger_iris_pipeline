@@ -1,11 +1,12 @@
-============
 Ramp Fitting
 ============
 
-Description
------------
+Overview
+--------
 
-The step :py:class:`~liger_iris_pipeline.readout.fit_ramp_step.FitRampStep` determines the effective slope for a sequence of UTR reads. This is currently implemented with `numba <https://numba.readthedocs.io/en/stable/index.html#>`_.
+The step  determines the effective slope for a sequence of UTR reads. This is currently implemented with `numba <https://numba.readthedocs.io/en/stable/index.html#>`_.
+
+**Class**: :py:class:`~liger_iris_pipeline.readout.fit_ramp_step.FitRampStep`
 
 
 Algorithm
@@ -31,3 +32,14 @@ Arguments
 
 **num_coadds** : ``int``
     Number of coadds to use for ramp fitting in MCDS mode. Default is 1 (equivalent to ``method='CDS'``).
+
+
+Subarrays
+---------
+
+TBD
+
+Calibration Files
+-----------------
+
+None.

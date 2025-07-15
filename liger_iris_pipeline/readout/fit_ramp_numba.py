@@ -33,7 +33,7 @@ def _fit_ramp_ols(times, ramp):
     return slope, slope_err
 
 
-#@njit(nogil=True)
+@njit(nogil=True)
 def _fit_ramps_ols(times, ramps):
     ny, nx, n_groups, _ = ramps.shape
     slope = np.zeros((ny, nx), dtype=np.float32)
@@ -51,14 +51,14 @@ def _fit_ramps_ols(times, ramps):
 @njit(nogil=True)
 def _combine_group_slopes(slopes, slope_errors):
     if slope_errors[0] == 0:
-        return slopes[0], slope_errors[0]
+        return slopes[0], slope_errors[0] # NOTE: This will fail if some errors are zero, moving to jwst alg soon anyway...
     else:
         w = 1 / slope_errors**2
         slope_combined = np.sum(slopes * w) / np.sum(w)
         slope_error_combined = np.sqrt(1 / np.sum(slope_errors**2))
         return slope_combined, slope_error_combined
 
-
+@njit(nogil=True)
 def fit_ramps_ols(times, ramps):
     """
     Top-level function for fitting ramps.

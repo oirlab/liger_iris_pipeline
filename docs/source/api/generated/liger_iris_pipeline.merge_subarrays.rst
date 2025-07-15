@@ -10,4 +10,4 @@
    :toctree:
    :recursive:
 
-   merge_subarrays
+   merge_subarrays_step

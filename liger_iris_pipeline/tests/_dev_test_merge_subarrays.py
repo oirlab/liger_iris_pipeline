@@ -1,7 +1,6 @@
 # TODO: UPDATE THIS TEST
 # # Imports
 from liger_iris_pipeline import MergeSubarraysStep
-from liger_iris_pipeline.associations import L1Association
 import numpy as np
 import json
 

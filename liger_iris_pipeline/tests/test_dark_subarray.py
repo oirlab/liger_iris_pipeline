@@ -2,12 +2,12 @@
 import liger_iris_pipeline
 from liger_iris_pipeline import datamodels
 import numpy as np
-from liger_iris_pipeline.tests.utils import download_osf_file
+from liger_iris_pipeline.utils.gdrive import download_gdrive_file
 
 
 def create_subarray_model(name, xstart, ystart, xsize, ysize):
     # Download the science frame and open
-    sci_L1_filepath = download_osf_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas.fits', use_cached=True)
+    sci_L1_filepath = download_gdrive_file('Liger/L1/2024B-P001-001_Liger_IMG_SCI_LVL1_0001_M13-J-10mas-skyscale1.0.fits', use_cached=True)
     input_model = datamodels.ImagerModel(sci_L1_filepath)
 
     # Setup the subarray params
@@ -47,7 +47,7 @@ def test_dark_subarray():
     step = liger_iris_pipeline.DarkSubtractionStep()
 
     # Run on the subarray
-    dark_filepath = download_osf_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
+    dark_filepath = download_gdrive_file('Liger/Cals/Liger_IMG_DARK_20240924000000_0.0.1.fits', use_cached=True)
     step_output = step.run(input_model, dark=dark_filepath)
 
     # Test the output shape

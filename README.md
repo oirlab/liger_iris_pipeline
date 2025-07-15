@@ -28,4 +28,4 @@ This project is Copyright (c) Bryson Cale, Andrea Zonca, and Arun Surya and lice
 Testing Data
 ------------
 
-Testing data is hosted on the open science framework (OSF). See project [here](https://osf.io/s7uxg/?view_only=c5e7b122aa9948f6a11de5cc8703ab9b).
+Testing data is hosted on Google Drive. See folder [here](https://drive.google.com/drive/folders/1y7dPZp-dqNuMgQVTiZJyiUZVVL9v1vOj?usp=drive_link).
