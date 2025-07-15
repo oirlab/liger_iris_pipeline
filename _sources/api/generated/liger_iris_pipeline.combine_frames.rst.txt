@@ -1,0 +1,13 @@
+﻿liger\_iris\_pipeline.combine\_frames
+=====================================
+
+.. automodule:: liger_iris_pipeline.combine_frames
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   combine_frames_step

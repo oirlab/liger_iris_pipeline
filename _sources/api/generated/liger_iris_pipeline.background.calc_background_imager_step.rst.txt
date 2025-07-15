@@ -1,0 +1,19 @@
+liger\_iris\_pipeline.background.calc\_background\_imager\_step
+===============================================================
+
+.. automodule:: liger_iris_pipeline.background.calc_background_imager_step
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      calc_scaled_sky_imager
+      calc_sky_imager
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CalculateBackgroundImagerStep
+   
