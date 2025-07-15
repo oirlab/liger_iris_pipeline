@@ -16,4 +16,4 @@ Extensions
 .. csv-table::
    :header: "HDU Name", "HDU Type", "Data Type", "Dimensions", "Units", "Description"
 
-   COEFF, Image, Float32, "Ny x Nx x Ncoeff", "None", "Polynomial coefficients describing the linear response of the detector."
+   COEFF, Image, Float32, "Ny x Nx x Ncoeff", "None", "Polynomial coeffs"

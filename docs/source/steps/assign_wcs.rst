@@ -1,11 +1,15 @@
-==========
 Assign WCS
 ==========
 
-Description
------------
 
-The step :py:class:`~liger_iris_pipeline.assign_wcs.assign_wcs_step.AssignWCSStep` associates a world coordinate system (WCS) object with each science exposure.
+Overview
+--------
+
+Associates a world coordinate system (WCS) object with each science exposure.
+
+
+**Class**: :py:class:`~liger_iris_pipeline.assign_wcs.assign_wcs_step.AssignWCSStep`
+
 
 Algorithm
 ---------
@@ -19,30 +23,19 @@ The forward direction of the transforms is from detector to world coordinates an
 :py:class:`~liger_iris_pipeline.assign_wcs.assign_wcs_step.AssignWCSStep` expects to find the basic WCS keywords in the PRIMARY extension header. Distortion and spectral models are not implemented yet and will be stored in reference files in the `ASDF <http://asdf-standard.readthedocs.org/en/latest/>`__ format.
 
 
-Example
--------
-
-See an example script to process a file with FITS WCS keywords in the header::
-
-    import liger_iris_pipeline
-    import astropy.units as u
-
-    input_filename ="iris_sim_gc_filterKN3_fix.fits"
-    output = liger_iris_pipeline.assign_wcs.AssignWCSStep.run(input_filename)
-    print(output.meta.wcs([0, 4095] * u.pix, [0, 4095] * u.pix))
-
-
 Arguments
 ---------
 
-**input** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.model_base.LigerIRISDataModel`
-    The input file or data model to process.
-**distortion** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.distorion.DistorionModel` (FIX LINK)
-    The name of the distorion reference file or a distorion model instance. If not provided, the distorion is retrieved from CRDS.
+**input** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.imager.ImagerModel` | :py:class:`~liger_iris_pipeline.datamodels.ifu.IFUCubeModel`
+    The input data to assign a WCS for.
 
+Subarrays
+---------
 
-Reference Files
----------------
+TBD.
+
+Calibration Files
+-----------------
 
 WCS reference files are in the Advanced Scientific Data Format (ASDF). The best way to create the file is to programmatically create the model and then save it to a file. A tutorial on creating reference files in ASDF format is available at:
 

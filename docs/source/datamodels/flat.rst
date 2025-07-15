@@ -18,4 +18,4 @@ Extensions
 
    DATA, Image, Float32, "Ny x Nx", "e-/s", "Normalized flat field."
    ERR, Image, Float32, "Ny x Nx", "e-/s", "Normalized flat field errors."
-   DQ, Image, UInt32, "Ny x Nx", None, "Data quality."
+   DQ, Image, UInt32, "Ny x Nx", None, "Data quality (:doc:`DQ flags <data_quality>`)."

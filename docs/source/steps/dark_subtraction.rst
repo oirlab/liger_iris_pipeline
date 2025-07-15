@@ -21,7 +21,7 @@ Any pixel values in the dark reference data that are set to ``NaN`` will have th
 Arguments
 ---------
 
-**input** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.model_base.LigerIRISDataModel`
+**input** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.imager.ImagerModel` | :py:class:`~liger_iris_pipeline.datamodels.ifu.IFUImageModel`
     The input data to remove the dark from.
 **dark** : ``str`` | :py:class:`~liger_iris_pipeline.datamodels.dark.DarkModel`
     The name of the dark reference file or a dark model instance. If not provided, the dark is retrieved from the appropriate archive.

@@ -12,11 +12,9 @@ Stage 1
    :maxdepth: 1
 
    dq_init
-   bias
+   bias_subtraction
    nonlinear_correction
-   detector_artifacts
    ramp_fitting
-   combine_frames
 
 
 Stage 2
@@ -25,20 +23,13 @@ Stage 2
 .. toctree::
    :maxdepth: 1
 
-   normalize
+   parse_subarrays
    dark_subtraction
    flat_field
    assign_wcs
-   merge_subarrays
-   parse_subarrays
-   sky_imager
-   sky_ifs
-   spectral_extraction
+   background_subtraction_imager
    residual_adc
-   cube_assembly
    flux_calibration
-   tellurics
-   psfr
 
 
 Stage 3
@@ -47,8 +38,6 @@ Stage 3
 .. toctree::
    :maxdepth: 1
 
-   field_distortion
-   mosaic
    merge_subarrays
 
 
@@ -58,5 +47,5 @@ Calibration
 .. toctree::
    :maxdepth: 1
 
-   rectmat
-   wavecal
+   normalize
+   combine_frames

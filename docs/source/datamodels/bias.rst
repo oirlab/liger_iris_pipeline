@@ -18,4 +18,4 @@ Extensions
 
    DATA, Image, Float32, "Ny x Nx", "e-/s", "Dark current data."
    ERR, Image, Float32, "Ny x Nx", "e-/s", "Dark current error."
-   DQ, Image, UInt32, "Ny x Nx", None, "Data quality."
+   DQ, Image, UInt32, "Ny x Nx", None, "Data quality (:doc:`DQ flags <data_quality>`)."

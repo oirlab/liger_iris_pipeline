@@ -5,9 +5,9 @@ The data quality flags describe the quality of a given pixel. A static DQ Model 
 
 **Classes:**
 
-* :py:class:`~liger_iris_pipeline.datamodels.dark.DarkModel`
+* :py:class:`~liger_iris_pipeline.datamodels.dq.DQModel`
 
-**Calibration type:** dark
+**Calibration type:** dq
 
 
 Extensions
@@ -18,6 +18,9 @@ Extensions
 
    DQ, Image, UInt32, "Ny x Nx", None, "Data quality."
 
+
+DQ flags
+--------
 
 .. csv-table::
    :header: "Bit", "Value", "Name", "Description"
