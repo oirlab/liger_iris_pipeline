@@ -29,7 +29,6 @@ class CombineFramesStep(LigerIRISStep):
         min_batch_size = integer(default = 3) # Minimum batch size for sigma clipping.
         maxiters = integer(default = 50) # Maximum number of iterations for sigma clipping.
         error_calc = string(default = 'measure') # Method for calculating the error - 'measure' or 'propagate'. Default is 'measure'.
-        target_model = string(default = None) # Model type for the output. Default is the same as the input.
     """
 
     class_alias = "combine_frames"
@@ -46,14 +45,8 @@ class CombineFramesStep(LigerIRISStep):
             do_sigma_clip=self.do_sigma_clip,
             dq_reduce='or'
         )
-        if self.target_model is None:
-            with datamodels.open(input[0]) as model:
-                target_model = model.__class__
-        else:
-            if isinstance(self.target_model, str):
-                target_model = eval('datamodels.' + self.target_model)
-            else:
-                target_model = self.target_model
+        with datamodels.open(input[0]) as model:
+            target_model = model.__class__
         result = target_model(data=result['data'], err=result['err'], dq=result['dq'])
         model_blender.blendmodels(result, input) # TODO: Make sure individual models are stored in header
         self.status = "COMPLETE"
@@ -78,7 +71,6 @@ def combine_frames(input : list[str | datamodels.LigerIRISDataModel], **kwargs) 
             - 'wmean' : Weighted mean.
             - 'median' : Unweighted median.
             - 'wmedian' : Weighted median.
-
         error_calc (str): Method to use for calculating the error ('measure' or 'propagate').
             - 'measure' : Error is calcualted from the distribution (stddev) of the data relative to the final mean.
             - 'propagate' : Error is calculated by coadding the individual errors.
