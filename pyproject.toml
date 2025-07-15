@@ -51,9 +51,9 @@ dependencies = [
   "matplotlib",
   "astropy>=6.1.0",
   "scipy",
-  "jwst>=1.18.1",
-  "stpipe>=0.8.1",
-  "stdatamodels>=3.0.2",
+  "jwst==1.18.1",
+  "stpipe==0.8.1",
+  "stdatamodels==3.0.2",
 ]
 
 [project.optional-dependencies]
