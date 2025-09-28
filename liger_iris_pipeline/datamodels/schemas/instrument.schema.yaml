@@ -115,3 +115,9 @@ properties:
             type: number
             fits_keyword: WAVECEN
             blend_table: True
+          rotator_angle:
+            title: Rotator angle in degrees
+            type: number
+            fits_keyword: INSTANGL
+            blend_table: True
+            blend_rule: multi
