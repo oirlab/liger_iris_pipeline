@@ -101,6 +101,16 @@ properties:
             type: number
             fits_keyword: ELEND
             blend_table: True
+          parallactic_angle_start:
+            title: Parallactic angle of the target at the start of the exposure.
+            type: number
+            fits_keyword: PLANGST
+            blend_table: True
+          parallactic_angle_end:
+            title: Parallactic angle of the target at the end of the exposure.
+            type: number
+            fits_keyword: PLANGEND
+            blend_table: True
           equinox:
             title: Equinox of target coordinates
             type: number
