@@ -58,5 +58,5 @@ class ReferenceFileModel(LigerIRISDataModel):
     def generate_filename(self, suffix : str | None = None):
         return self._generate_filename(
             instrument=self.meta.instrument.name, detector=self.meta.instrument.detector, ref_type=self._ref_type,
-            date_time=self.meta.exposure.datetime_start, version=self.meta.ref_version, suffix=suffix
+            date_time=self.meta.datetime_obs, version=self.meta.ref_version, suffix=suffix
         )

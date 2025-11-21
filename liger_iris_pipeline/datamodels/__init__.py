@@ -8,6 +8,7 @@ from .dark import *
 from .flat import *
 from .ifu import *
 from .dq import *
+from .distortion_map import *
 
 _local_dict = locals()
 DEFINED_MODELS = {name : _local_dict[name] for name in _local_dict if name.endswith('Model')}

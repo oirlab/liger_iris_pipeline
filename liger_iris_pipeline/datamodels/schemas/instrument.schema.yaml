@@ -121,3 +121,4 @@ properties:
             fits_keyword: INSTANGL
             blend_table: True
             blend_rule: multi
+            default: 0.0

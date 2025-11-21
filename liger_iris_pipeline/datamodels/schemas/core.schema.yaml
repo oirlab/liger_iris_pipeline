@@ -7,7 +7,6 @@ allOf: # NOTE: We drop observation schema from jwst
 - $ref: instrument.schema
 - $ref: reference_files.schema
 - $ref: exposure.schema
-- $ref: instrument.schema
 - $ref: target.schema
 - $ref: barycenter.schema
 - $ref: subarray.schema # Params for single subarray
@@ -20,6 +19,11 @@ properties:
   meta:
     type: object
     properties:
+      datetime_obs:
+        title: "Effective datetime of the datamodel in YYYY-MM-DDTHH:MM:SS.SSS format"
+        type: string
+        fits_keyword: DATETOBS
+        blend_table: False
       date_created:
         title: Date the file was created
         type: string

@@ -25,39 +25,18 @@ properties:
             title: "Exposure number"
             type: integer
             fits_keyword: EXPNUM
-          jd_start:
+          mjd_start:
             title: "Exposure start time in MJD"
             type: number
             fits_keyword: EXPJDST
             blend_table: True
             blend_rule: min
-          jd_mid:
-            title: "Exposure mid time in MJD"
-            type: number
-            fits_keyword: EXPJDMID
-            blend_table: True
-            blend_rule: mean
-          jd_end:
+          mjd_end:
             title: "Exposure end time in MJD"
             type: number
             fits_keyword: EXPJDEND
             blend_table: True
             blend_rule: max
-          datetime_start:
-            title: "Exposure start datetime in YYYYMMDDHHMMSS"
-            type: string
-            fits_keyword: EXPDTST
-            blend_table: False
-          datetime_mid:
-            title: "Exposure mid datetime in YYYYMMDDHHMMSS"
-            type: string
-            fits_keyword: EXPDTMID
-            blend_table: False
-          datetime_end:
-            title: "Exposure end datetime in YYYYMMDDHHMMSS"
-            type: string
-            fits_keyword: EXPDTEND
-            blend_table: False
           readmode:
             title: Readout mode
             type: string

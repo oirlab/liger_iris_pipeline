@@ -1,0 +1,18 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/DistortionMapModel.schema"
+allOf:
+- $ref: ReferenceFileModel.schema
+- type: object
+  properties:
+    dx:
+      title: 2-D array describing the X-displacement correction
+      fits_hdu: DX
+      ndim: 2
+      datatype: float32
+    dy:
+      title: 2-D array describing the Y-displacement correction
+      fits_hdu: DY
+      ndim: 2
+      datatype: float32

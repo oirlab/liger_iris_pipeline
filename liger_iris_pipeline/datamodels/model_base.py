@@ -20,8 +20,8 @@ class LigerIRISDataModel(DataModel):
     schema_url = "https://oirlab.github.io/schemas/LigerIRISDataModel.schema"
     
     @staticmethod
-    def get_sem_id(jd : float) -> str:
-        t = Time(jd, format='jd')
+    def get_sem_id(mjd : float) -> str:
+        t = Time(mjd, format='mjd')
         year = t.datetime.year
         month = t.datetime.month
         day = t.datetime.day
@@ -45,8 +45,8 @@ class LigerIRISDataModel(DataModel):
         self.meta.model_type = self.__class__.__name__
 
         # Semester ID
-        if self.meta.program.sem_id is None and self.meta.exposure.jd_start is not None:
-            self.meta.program.sem_id = self.get_sem_id(self.meta.exposure.jd_start)
+        if self.meta.program.sem_id is None and self.meta.exposure.mjd_start is not None:
+            self.meta.program.sem_id = self.get_sem_id(self.meta.exposure.mjd_start)
 
 
     def on_save(self):
@@ -89,7 +89,7 @@ class LigerIRISDataModel(DataModel):
             subarray_id (int | str, optional): The subarray ID. Defaults to None for IRIS. Liger does not use subarrays.
         """
         if sem_id is None:
-            sem_id = LigerIRISDataModel.get_sem_id(Time.now().jd)
+            sem_id = LigerIRISDataModel.get_sem_id(Time.now().mjd)
         if program_number is None:
            program_number = 'P001'
         if obs_number is None:
@@ -126,7 +126,7 @@ class LigerIRISDataModel(DataModel):
 
         # Get semester ID
         if self.meta.program.sem_id is None:
-            self.meta.program.sem_id = self.get_sem_id(self.meta.exposure.jd_start)
+            self.meta.program.sem_id = self.get_sem_id(self.meta.exposure.mjd_start)
 
         return self._generate_filename(
             instrument=self.meta.instrument.name,
