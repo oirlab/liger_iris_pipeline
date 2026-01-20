@@ -1,0 +1,61 @@
+/* Remove divider lines between API entries */
+dl.py dd {
+    border-top: none !important;
+}
+
+dl.py > dt {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+/* Make text in code blocks semi-bold */
+.highlight {
+    font-weight: 500; /* Semi-bold */
+}
+
+/* Optional: Ensure pre-formatted text is also semi-bold */
+pre {
+    font-weight: 500; /* Semi-bold */
+}
+
+/* Custom table styling */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.custom-table th,
+.custom-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.custom-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.custom-table tr:hover {
+    background-color: #e2e2e2;
+}
+
+/* Responsive: Allow horizontal scrolling for large tables */
+.custom-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Make sure the table is not overly wide on smaller screens */
+@media (max-width: 768px) {
+    .custom-table {
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,12 @@
+﻿liger\_iris\_pipeline.datamodels.nonlin
+=======================================
+
+.. automodule:: liger_iris_pipeline.datamodels.nonlin
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NonlinearCorrectionModel
+   
