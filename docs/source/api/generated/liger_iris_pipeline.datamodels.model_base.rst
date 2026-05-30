@@ -8,5 +8,6 @@ liger\_iris\_pipeline.datamodels.model\_base
 
    .. autosummary::
    
+      CalibrationModel
       LigerIRISDataModel
    

@@ -12,8 +12,8 @@ liger\_iris\_pipeline.utils.math
       any_sc
       biweight_location
       biweight_midvariance
-      mad
       median_absolute_deviation
+      polyval1d
       robust_mean
       robust_stddev
       weighted_mean

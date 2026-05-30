@@ -12,3 +12,4 @@
 
    dark_step
    dark_sub
+   make_dark_step

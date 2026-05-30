@@ -1,12 +1,11 @@
 import logging
-from ..datamodels import FlatModel, DarkModel, ImagerModel
+from .. import datamodels
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-def get_subarray_model(sci_model, ref_model):
-
+def get_subarray_model(input_model : datamodels.LigerIRISDataModel, ref_model : datamodels.LigerIRISDataModel):
     """
     Create a subarray version of a reference file model that matches
     the subarray characteristics of a science data model. A new
@@ -15,24 +14,30 @@ def get_subarray_model(sci_model, ref_model):
 
     Parameters
     ----------
-    sci_model: JWST data model
-        science data model
+    input_model: LigerIRISDataModel
+        The input datamodel that might have subarray(s).
 
-    ref_model: JWST data model
-        reference file data model
+    ref_model: LigerIRISDataModel
+        The full datamodel to get the subarray frame for.
 
     Returns
     -------
-    sub_model: JWST data model
+    sub_model: LigerIRISDataModel
         subarray version of the reference file model
     """
-    if sci_model.meta.subarray.name != "FULL":
+
+    # This is the easiest solution for now to ignore Liger models
+    if input_model.meta.instrument.name != 'IRIS' or input_model.meta.instrument.mode != 'IMG': # Or detector
+        return ref_model
+    
+    # Extract subarray if not full frame
+    if input_model.meta.subarray.name != "FULL":
 
         # Get the science model subarray params
-        xstart_sci = sci_model.meta.subarray.xstart
-        xsize_sci = sci_model.meta.subarray.xsize
-        ystart_sci = sci_model.meta.subarray.ystart
-        ysize_sci = sci_model.meta.subarray.ysize
+        xstart_sci = input_model.meta.subarray.xstart
+        xsize_sci = input_model.meta.subarray.xsize
+        ystart_sci = input_model.meta.subarray.ystart
+        ysize_sci = input_model.meta.subarray.ysize
 
         # Get the reference model subarray params
         xstart_ref = ref_model.meta.subarray.xstart or 1
@@ -46,7 +51,7 @@ def get_subarray_model(sci_model, ref_model):
         xstop = xstart + xsize_sci
         ystop = ystart + ysize_sci
         log.debug(
-            "slice xstart=%d, xstop=%d, ystart=%d, ystop=%d", xstart, xstop, ystart, ystop
+            f"slice xstart={xstart}, xstop={xstop}, ystart={ystart}, ystop={ystop}"
         )
 
         # Make sure that the slice limits are within the bounds of
@@ -57,55 +62,35 @@ def get_subarray_model(sci_model, ref_model):
             or xstop > xsize_ref
             or ystop > ysize_ref
         ):
-            log.error(
-                "Computed reference file slice indexes are incompatible with size of reference data array"
-            )
-            log.error(
-                "Science: SUBSTRT1=%d, SUBSTRT2=%d, SUBSIZE1=%d, SUBSIZE2=%d",
-                xstart_sci,
-                ystart_sci,
-                xsize_sci,
-                ysize_sci,
-            )
-            log.error(
-                "Reference: SUBSTRT1=%d, SUBSTRT2=%d, SUBSIZE1=%d, SUBSIZE2=%d",
-                xstart_ref,
-                ystart_ref,
-                xsize_ref,
-                ysize_ref,
-            )
-            log.error(
-                "Slice indexes: xstart=%d, xstop=%d, ystart=%d, ystop=%d",
-                xstart,
-                xstop,
-                ystart,
-                ystop,
-            )
+            log.error("Computed reference file slice indexes are incompatible with size of reference data array")
+            log.error(f"Science: SUBSTRT1={xstart_sci}, SUBSTRT2={ystart_sci}, SUBSIZE1={xsize_sci}, SUBSIZE2={ysize_sci}")
+            log.error(f"Reference: SUBSTRT1={xstart_ref}, SUBSTRT2={ystart_ref}, SUBSIZE1={xsize_ref}, SUBSIZE2={ysize_ref}")
+            log.error(f"Slice indexes: xstart={xstart}, xstop={xstop}, ystart={ystart}, ystop={ystop}")
             raise ValueError("Bad reference file slice indexes")
 
         # Extract subarrays from each data attribute in the particular
         # type of reference file model and return a new copy of the
         # data model
-        if isinstance(ref_model, FlatModel):
+        # TODO: Consider automating this by detecting array dtypes with shape == ref_model.shape?
+        ref_model_class = ref_model.__class__
+        if isinstance(ref_model, (
+            datamodels.DetectorFlatModel,
+            datamodels.DarkModel,
+            datamodels.ImagerModel,
+        )):
             sub_data = ref_model.data[ystart:ystop, xstart:xstop]
             sub_err = ref_model.err[ystart:ystop, xstart:xstop]
             sub_dq = ref_model.dq[ystart:ystop, xstart:xstop]
-            sub_model = FlatModel(data=sub_data, err=sub_err, dq=sub_dq)
-            sub_model.update(ref_model)
-        elif isinstance(ref_model, DarkModel):
-            sub_data = ref_model.data[ystart:ystop, xstart:xstop]
-            sub_err = ref_model.err[ystart:ystop, xstart:xstop]
+            sub_model = ref_model_class(data=sub_data, err=sub_err, dq=sub_dq, meta=ref_model.meta)
+        elif isinstance(ref_model, datamodels.DQModel):
             sub_dq = ref_model.dq[ystart:ystop, xstart:xstop]
-            sub_model = DarkModel(data=sub_data, err=sub_err, dq=sub_dq)
-            sub_model.update(ref_model)
-        elif isinstance(ref_model, ImagerModel):
-            sub_data = ref_model.data[ystart:ystop, xstart:xstop]
-            sub_err = ref_model.err[ystart:ystop, xstart:xstop]
+            sub_model = ref_model_class(dq=sub_dq)
+        elif isinstance(ref_model, datamodels.SaturationModel):
+            sub_data = ref_model.sat_thresh[ystart:ystop, xstart:xstop]
             sub_dq = ref_model.dq[ystart:ystop, xstart:xstop]
-            sub_model = ImagerModel(data=sub_data, err=sub_err, dq=sub_dq)
-            sub_model.update(ref_model)
+            sub_model = ref_model_class(sat_thresh=sub_data, dq=sub_dq)
         else:
-            log.warning("Unsupported reference file model type")
+            log.warning("Unsupported file model type")
             sub_model = None
 
         return sub_model

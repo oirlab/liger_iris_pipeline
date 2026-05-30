@@ -3,7 +3,7 @@
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/DistortionMapModel.schema"
 allOf:
-- $ref: ReferenceFileModel.schema
+- $ref: calibration_core.schema
 - type: object
   properties:
     dx:
@@ -16,3 +16,21 @@ allOf:
       fits_hdu: DY
       ndim: 2
       datatype: float32
+    dx_err:
+      title: 2-D array describing the error in X-displacement correction
+      fits_hdu: DX_ERR
+      default: 0
+      ndim: 2
+      datatype: float32
+    dy_err:
+      title: 2-D array describing the error in Y-displacement correction
+      fits_hdu: DY_ERR
+      default: 0
+      ndim: 2
+      datatype: float32
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

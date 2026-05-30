@@ -8,5 +8,6 @@ liger\_iris\_pipeline.datamodels.ramp
 
    .. autosummary::
    
+      ProcessedRampModel
       RampModel
    

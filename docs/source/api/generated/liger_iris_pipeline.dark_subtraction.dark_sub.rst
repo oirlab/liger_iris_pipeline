@@ -8,5 +8,6 @@ liger\_iris\_pipeline.dark\_subtraction.dark\_sub
 
    .. autosummary::
    
-      subtract_dark
+      _dark_subtraction_rate_numba
+      dark_subtraction_rate
    

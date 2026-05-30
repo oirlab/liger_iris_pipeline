@@ -1,11 +1,21 @@
-from .referencefile import ReferenceFileModel
+from .model_base import CalibrationModel
+from .mixins import DefaultDQMixin, DefaultErrMixin
 
 __all__ = ['BiasModel']
 
 
-class BiasModel(ReferenceFileModel):
+class BiasModel(DefaultErrMixin, DefaultDQMixin, CalibrationModel):
     """
-    A bias model for bias levels from either the Liger or IRIS Imager or IFU.
+    Class for bias reference files.
+
+    Extensions
+    ----------
+
+    HDU Name  HDU Type  Data Type  Dimensions  Units  Description
+    --------  --------  ---------  ----------  -----  -----------
+    DATA      Image     Float32    Ny x Nx     DN     Bias level
+    ERR       Image     Float32    Ny x Nx     DN     Bias error
+    DQ        Image     UInt32     Ny x Nx     None   Data quality
     """
     schema_url = "https://oirlab.github.io/schemas/BiasModel.schema"
-    _ref_type = "bias"
+    _cal_type = "bias"

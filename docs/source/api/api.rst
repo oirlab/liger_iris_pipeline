@@ -1,5 +1,5 @@
 API Reference
-=============
+-------------
 
 .. currentmodule:: liger_iris_pipeline
 
@@ -7,17 +7,27 @@ API Reference
    :toctree: generated/
    :recursive:
 
-   base_step
    assign_wcs
+   background
+   bias_subtraction
+   calibrations
+   coadd
    dark_subtraction
    datamodels
+   detector_flat
+   distortion
    dq_init
-   flat_field
+   gain
+   jump_detection
    merge_subarrays
+   nonlinear_correction
    normalize
    parse_subarray_map
-   background
-   readout
    pipeline
+   ramp_fitting
+   read_noise
+   refpix
+   saturation
+   simulations
+   stpipe
    utils
-   combine_frames

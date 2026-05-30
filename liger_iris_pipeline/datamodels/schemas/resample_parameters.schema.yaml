@@ -2,6 +2,7 @@
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
 id: "https://oirlab.github.io/schemas/resample_parameters.schema"
+# TODO: Revisit this once mosaicking is developed
 resample:
   title: Resample Parameters
   type: object

@@ -1,0 +1,14 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/DQModel.schema"
+allOf:
+- $ref: calibration_core.schema
+- type: object
+  properties:
+    dq:
+      title: 2-D data array describing the pixel data quality
+      fits_hdu: DQ
+      ndim: 2
+      default: 0
+      datatype: uint32

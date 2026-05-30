@@ -1,0 +1,9 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/iris_core.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties: {}

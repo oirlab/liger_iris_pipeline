@@ -1,0 +1,24 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/ReadNoiseModel.schema"
+allOf:
+- $ref: calibration_core.schema
+- type: object
+  properties:
+    rn:
+      title: 2-D data array
+      fits_hdu: READNOISE
+      ndim: 2
+      datatype: float32
+    rn_err:
+      title: 2-D error array
+      fits_hdu: READNOISE_ERR
+      ndim: 2
+      datatype: float32
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

@@ -1,32 +1,22 @@
-from .referencefile import ReferenceFileModel
-from stdatamodels.dynamicdq import dynamic_mask
-from .dqflags import pixel
+from .model_base import CalibrationModel
+from .mixins import DefaultDQMixin
 
 __all__ = ['DQModel']
 
-class DQModel(ReferenceFileModel):
+# NOTE: Does DQModel inherit from DefaultDQMixin?
+class DQModel(DefaultDQMixin, CalibrationModel):
     """
-    A data model for 2D masks for Liger data.
+    Class for data quality (DQ) reference files.
 
-    Parameters
-    __________
-    dq : numpy uint32 array
-        The mask
+    Extensions
+    ----------
 
-    dq_def : numpy table
-        DQ flag definitions
+    HDU Name  HDU Type  Data Type  Dimensions  Units  Description
+    --------  --------  ---------  ----------  -----  ------------------
+    DQ        Image     UInt32     Ny x Nx     None   Data quality flags
     """
     schema_url = "https://oirlab.github.io/schemas/DQModel.schema"
-    _ref_type = "dq"
-
-    def __init__(self, init=None, **kwargs):
-        super().__init__(init=init, **kwargs)
-
-        if self.dq is not None or self.dq_def is not None:
-            self.dq = dynamic_mask(self, pixel)
-
-        # Implicitly create arrays
-        self.dq = self.dq
+    _cal_type = "dq"
 
     def get_primary_array_name(self):
         """

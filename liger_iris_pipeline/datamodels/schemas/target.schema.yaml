@@ -15,104 +15,101 @@ properties:
             title: Target or object name, internal or on-sky
             type: string
             fits_keyword: OBJECT
+            blend_rule: first
             blend_table: True
-          ra:
-            title: Target RA at mid time of exposure
-            type: number
-            fits_keyword: RA
-            blend_table: True
-          dec:
-            title: Target Dec at mid time of exposure
-            type: number
-            fits_keyword: DEC
-            blend_table: True
-          ra_uncertainty:
-            title: Target RA uncertainty
-            type: number
-            fits_keyword: URA
-            blend_table: True
-          dec_uncertainty:
-            title: Target Dec uncertainty
-            type: number
-            fits_keyword: UDEC
-            blend_table: True
-          proper_motion_ra:
-            title: Target proper motion in RA
-            type: number
-            fits_keyword: MURA
-            blend_table: True
-          proper_motion_dec:
-            title: Target proper motion in Dec
-            type: number
-            fits_keyword: MUDEC
-            blend_table: True
-          proper_motion_epoch:
-            title: Target proper motion epoch
-            type: number
-            fits_keyword: MUEPOCH
-            blend_table: True
-          source_type:
-            title: Source type
-            type: string
-            enum: [EXTENDED, POINT, UNKNOWN]
-            fits_keyword: SRCTYPE
-          airmass_start:
-            title: Airmass at start of exposure
-            type: number
-            fits_keyword: AIRMAST
-            blend_table: True
-          airmass_mid:
-            title: Airmass at exposure midpoint
-            type: number
-            fits_keyword: AIRMAMID
-            blend_table: True
-          airmass_end:
-            title: Airmass at end of exposure
-            type: number
-            fits_keyword: AIRMAEND
-            blend_table: True
-          azimuth_start:
-            title: Azimuth at start of exposure
-            type: number
-            fits_keyword: AZST
-            blend_table: True
-          azimuth_mid:
-            title: Azimuth at exposure midpoint
-            type: number
-            fits_keyword: AZMID
-            blend_table: True
-          azimuth_end:
-            title: Azimuth at end of exposure
-            type: number
-            fits_keyword: AZEND
-            blend_table: True
-          elevation_start:
-            title: Elevation at start of exposure
-            type: number
-            fits_keyword: ELST
-            blend_table: True
-          elevation_mid:
-            title: Elevation of target at exposure midpoint
-            type: number
-            fits_keyword: ELMID
-            blend_table: True
-          elevation_end:
-            title: Elevation at end of exposure
-            type: number
-            fits_keyword: ELEND
-            blend_table: True
-          parallactic_angle_start:
-            title: Parallactic angle of the target at the start of the exposure.
-            type: number
-            fits_keyword: PLANGST
-            blend_table: True
-          parallactic_angle_end:
-            title: Parallactic angle of the target at the end of the exposure.
-            type: number
-            fits_keyword: PLANGEND
-            blend_table: True
+            cal_db: target_name
           equinox:
             title: Equinox of target coordinates
             type: number
             fits_keyword: EQUINOX
+            blend_rule: multi
+          ra:
+            title: Target RA
+            type: number
+            fits_keyword: RA
+            blend_rule: first
             blend_table: True
+          dec:
+            title: Target Dec
+            type: number
+            fits_keyword: DEC
+            blend_rule: first
+            blend_table: True
+          ra_uncertainty:
+            title: Target RA uncertainty
+            type: number
+            fits_keyword: RAUNC
+            blend_rule: first
+          dec_uncertainty:
+            title: Target Dec uncertainty
+            type: number
+            fits_keyword: DECUNC
+            blend_rule: first
+          proper_motion_ra:
+            title: Target proper motion in RA
+            type: number
+            fits_keyword: MURA
+            blend_rule: first
+          proper_motion_dec:
+            title: Target proper motion in Dec
+            type: number
+            fits_keyword: MUDEC
+            blend_rule: first
+          proper_motion_epoch:
+            title: Target proper motion epoch
+            type: number
+            fits_keyword: MUEPOCH
+            blend_rule: first
+          source_type:
+            title: Source type
+            type: string
+            # enum: [EXTENDED, POINT, UNKNOWN, CALIBRATION] # TODO: Uncomment once model blender supports enums
+            fits_keyword: SRCTYPE
+            blend_rule: first
+            blend_table: True
+          airmass_start:
+            title: Airmass at start of exposure
+            type: number
+            fits_keyword: AIRMST
+            blend_rule: mean
+            blend_table: True
+          airmass_end:
+            title: Airmass at end of exposure
+            type: number
+            fits_keyword: AIRMEND
+            blend_rule: mean
+            blend_table: True
+          azimuth_start:
+            title: Azimuth at start of exposure
+            type: number
+            fits_keyword: AZIMST
+            blend_rule: mean
+            blend_table: True
+          azimuth_end:
+            title: Azimuth at end of exposure
+            type: number
+            fits_keyword: AZIMEND
+            blend_rule: mean
+            blend_table: True
+          elevation_start:
+            title: Elevation at start of exposure
+            type: number
+            fits_keyword: ELEVAST
+            blend_rule: mean
+            blend_table: True
+          elevation_end:
+            title: Elevation at end of exposure
+            type: number
+            fits_keyword: ELEVAEND
+            blend_rule: mean
+            blend_table: True
+          parallactic_angle_start:
+            title: Parallactic angle of the target at the start of the exposure.
+            type: number
+            fits_keyword: PANGST
+            blend_rule: mean
+          parallactic_angle_end:
+            title: Parallactic angle of the target at the end of the exposure.
+            type: number
+            fits_keyword: PANGEND
+            blend_rule: mean

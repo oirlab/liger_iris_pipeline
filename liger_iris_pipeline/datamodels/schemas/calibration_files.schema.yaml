@@ -1,0 +1,143 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/calibration_files.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      cal_file:
+        title: Calibration file information
+        type: object
+        properties:
+          bias:
+            title: Bias calibration file information
+            type: object
+            properties:
+              filename:
+                title: Bias calibration file name
+                type: string
+                fits_keyword: C_BIAS
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Bias calibration file ID
+                type: string
+          dark:
+            title: Dark calibration file information
+            type: object
+            properties:
+              filename:
+                title: Dark calibration file name
+                type: string
+                fits_keyword: C_DARK
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Dark calibration file ID
+                type: string
+          dq:
+            title: Data quality calibration file information
+            type: object
+            properties:
+              filename:
+                title: Data quality calibration file name
+                type: string
+                fits_keyword: C_DQ
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Data quality calibration file ID
+                type: string
+          distortion:
+            title: Distortion calibration file information
+            type: object
+            properties:
+              filename:
+                title: Distortion calibration file name
+                type: string
+                fits_keyword: C_DISTOR
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Distortion calibration file ID
+                type: string
+          detflat:
+            title: Detector flat calibration file information
+            type: object
+            properties:
+              filename:
+                title: Detector flat calibration file name
+                type: string
+                fits_keyword: C_DFLAT
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Detector flat calibration file ID
+                type: string
+          gain:
+            title: Gain calibration file information
+            type: object
+            properties:
+              filename:
+                title: Gain calibration file name
+                type: string
+                fits_keyword: C_GAIN
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Gain calibration file ID
+                type: string
+          nonlin:
+            title: Non-Linearity calibration file information
+            type: object
+            properties:
+              filename:
+                title: Non-Linearity calibration file name
+                type: string
+                fits_keyword: C_NONLIN
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Non-Linearity calibration file ID
+                type: string
+          rn:
+            title: Read noise calibration file information
+            type: object
+            properties:
+              filename:
+                title: Read noise calibration file name
+                type: string
+                fits_keyword: C_RNOISE
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Read noise calibration file ID
+                type: string
+          saturation:
+            title: Saturation calibration file information
+            type: object
+            properties:
+              filename:
+                title: Saturation calibration file name
+                type: string
+                fits_keyword: C_SATUR
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Saturation calibration file ID
+                type: string
+          wavesol:
+            title: Wavelength solution calibration
+            type: object
+            properties:
+              filename:
+                title: Wavelength solution calibration file name
+                type: string
+                fits_keyword: C_WAVSOL
+                blend_rule: multi
+                blend_table: True
+              id:
+                title: Wavelength solution calibration file ID
+                type: string

@@ -8,6 +8,13 @@ liger\_iris\_pipeline.datamodels.utils
 
    .. autosummary::
    
-      class_from_model_type
+      _get_meta_from_hdulist
+      get_instrument_config
+      get_instrument_name
+      get_meta
+      get_model_type
+      get_receipt_table
+      get_schema
       open
+      walk_schema_values
    

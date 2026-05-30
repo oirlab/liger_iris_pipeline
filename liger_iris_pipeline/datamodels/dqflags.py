@@ -1,76 +1,40 @@
-"""
-Liger and IRIS Data Quality Flags copied from jwst.
+import numpy as np
 
-The definitions are documented in the JWST RTD:
+__all__ = ['DQ_FLAGS']
 
-https://jwst-pipeline.readthedocs.io/en/latest/jwst/references_general/references_general.html#data-quality-flags
-
-Implementation
---------------
-
-The flags are implemented as "bit flags": Each flag is assigned a bit position
-in a byte, or multi-byte word, of memory. If that bit is set, the flag assigned
-to that bit is interpreted as being set or active.
-
-The data structure that stores bit flags is just the standard Python `int`,
-which provides 32 bits. Bits of an integer are most easily referred to using
-the formula `2**bit_number` where `bit_number` is the 0-index bit of interest.
-"""
-
-# These imports are here for backwards compatibility
-from astropy.nddata.bitmask import interpret_bit_flags as ap_interpret_bit_flags
-from stdatamodels.dqflags import interpret_bit_flags, dqflags_to_mnemonics
-from stdatamodels.basic_utils import multiple_replace
-
-# Pixel-specific flags
-pixel = {
-    'GOOD':             0,      # No bits set, all is good
-    'DO_NOT_USE':       2**0,   # Bad pixel. Do not use.
-    'SATURATED':        2**1,   # Pixel saturated during exposure
-    'JUMP_DET':         2**2,   # Jump detected during exposure
-    'DROPOUT':          2**3,   # Data lost in transmission
-    'OUTLIER':          2**4,   # Flagged by outlier detection (was RESERVED_1)
-    'PERSISTENCE':      2**5,   # High persistence (was RESERVED_2)
-    'AD_FLOOR':         2**6,   # Below A/D floor (0 DN, was RESERVED_3)
-    'CHARGELOSS':       2**7,   # Charge migration (was RESERVED_4)
-    'UNRELIABLE_ERROR': 2**8,   # Uncertainty exceeds quoted error
-    'NON_SCIENCE':      2**9,   # Pixel not on science portion of detector
-    'DEAD':             2**10,  # Dead pixel
-    'HOT':              2**11,  # Hot pixel
-    'WARM':             2**12,  # Warm pixel
-    'LOW_QE':           2**13,  # Low quantum efficiency
-    'RC':               2**14,  # RC pixel
-    'TELEGRAPH':        2**15,  # Telegraph pixel
-    'NONLINEAR':        2**16,  # Pixel highly nonlinear
-    'BAD_REF_PIXEL':    2**17,  # Reference pixel cannot be used
-    'NO_FLAT_FIELD':    2**18,  # Flat field cannot be measured
-    'NO_GAIN_VALUE':    2**19,  # Gain cannot be measured
-    'NO_LIN_CORR':      2**20,  # Linearity correction not available
-    'NO_SAT_CHECK':     2**21,  # Saturation check not available
-    'UNRELIABLE_BIAS':  2**22,  # Bias variance large
-    'UNRELIABLE_DARK':  2**23,  # Dark variance large
-    'UNRELIABLE_SLOPE': 2**24,  # Slope variance large (i.e., noisy pixel)
-    'UNRELIABLE_FLAT':  2**25,  # Flat variance large
-    'OPEN':             2**26,  # Open pixel (counts move to adjacent pixels)
-    'ADJ_OPEN':         2**27,  # Adjacent to open pixel
-    'FLUX_ESTIMATED':   2**28,  # Pixel flux estimated due to missing/bad data
-    'MSA_FAILED_OPEN':  2**29,  # Pixel sees light from failed-open shutter
-    'OTHER_BAD_PIXEL':  2**30,  # A catch-all flag
-    'REFERENCE_PIXEL':  2**31,  # Pixel is a reference pixel
+# Detector pixel quality flags
+DQ_FLAGS = {
+    'GOOD':             np.uint32(0),      # No bits set, all is good
+    'DO_NOT_USE':       np.uint32(2**0),   # Bad pixel. Do not use.
+    'SATURATED':        np.uint32(2**1),   # Pixel saturated during exposure
+    'JUMP_DET':         np.uint32(2**2),   # Jump detected during exposure
+    'DROPOUT':          np.uint32(2**3),   # Data lost in transmission
+    'OUTLIER':          np.uint32(2**4),   # Flagged by outlier detection
+    'PERSISTENCE':      np.uint32(2**5),   # High persistence
+    'AD_FLOOR':         np.uint32(2**6),   # Below A/D floor (0 DN)
+    'CHARGELOSS':       np.uint32(2**7),   # Charge migration
+    'SUBARRAY':         np.uint32(2**8),   # Is subarray
+    'NON_SCIENCE':      np.uint32(2**9),   # Pixel not on science portion of detector
+    'DEAD':             np.uint32(2**10),  # Dead pixel
+    'HOT':              np.uint32(2**11),  # Hot pixel
+    'WARM':             np.uint32(2**12),  # Warm pixel
+    'LOW_QE':           np.uint32(2**13),  # Low quantum efficiency
+    'COLD':             np.uint32(2**14),  # Cold pixel
+    'TELEGRAPH':        np.uint32(2**15),  # Telegraph pixel
+    'NONLINEAR':        np.uint32(2**16),  # Pixel highly nonlinear
+    'BAD_REF_PIXEL':    np.uint32(2**17),  # Reference pixel cannot be used
+    'NO_FLAT_FIELD':    np.uint32(2**18),  # Flat field cannot be measured
+    'NO_GAIN_VALUE':    np.uint32(2**19),  # Gain cannot be measured
+    'NO_LIN_CORR':      np.uint32(2**20),  # Linearity correction not available
+    'NO_SAT_CHECK':     np.uint32(2**21),  # Saturation check not available
+    'UNRELIABLE_BIAS':  np.uint32(2**22),  # Bias variance large
+    'UNRELIABLE_DARK':  np.uint32(2**23),  # Dark variance large
+    'UNRELIABLE_SLOPE': np.uint32(2**24),  # Slope variance large (i.e., noisy pixel)
+    'UNRELIABLE_FLAT':  np.uint32(2**25),  # Flat variance large
+    'UNRELIABLE_WS':    np.uint32(2**26),  # Unreliable wavelength solution
+    'FLUX_ESTIMATED':   np.uint32(2**27),  # Pixel flux estimated due to missing/bad data
+    'TELLURIC':         np.uint32(2**28),  # Telluric absorption line
+    'OH_LINE':          np.uint32(2**29),  # OH emission line
+    'CROSS_BAD':        np.uint32(2**30),  # Cross-shaped bad pixel
+    'REFERENCE_PIXEL':  np.uint32(2**31),  # Pixel is a reference pixel
 }
-
-
-# Group-specific flags. Once groups are combined, these flags
-# are equivalent to the pixel-specific flags.
-group = {
-    'GOOD':       pixel['GOOD'],
-    'DO_NOT_USE': pixel['DO_NOT_USE'],
-    'SATURATED':  pixel['SATURATED'],
-    'JUMP_DET':   pixel['JUMP_DET'],
-    'DROPOUT':    pixel['DROPOUT'],
-    'AD_FLOOR':   pixel['AD_FLOOR'],
-    'CHARGELOSS': pixel['CHARGELOSS'],
-}
-
-__all__ = ["ap_interpret_bit_flags", "interpret_bit_flags", "dqflags_to_mnemonics",
-           "multiple_replace", "pixel", "group"]

@@ -1,0 +1,29 @@
+
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/receipt_table.schema"
+type: object
+properties:
+  receipt:
+    title: Receipt of Data Processing Steps
+    fits_hdu: RECEIPT
+    datatype:
+      - name: CLASS
+        datatype: [ascii, 256]  # full module + class path
+      - name: PROC_START_TIME
+        datatype: [ascii, 23]   # ISO-8601 with milliseconds
+      - name: PROC_END_TIME
+        datatype: [ascii, 23]   # ISO-8601 with milliseconds
+      - name: FILENAME
+        datatype: [ascii, 128]  # base filename only
+      - name: PARAMETERS
+        datatype: [ascii, 2048] # JSON/YAML-serialized args (truncated if needed)
+      - name: CALIBRATIONS
+        datatype: [ascii, 2048] # JSON/YAML-serialized list of reference files
+      - name: DRP_VERSION
+        datatype: [ascii, 64]   # DRP version string
+      - name: DRP_GIT_COMMIT_ID
+        datatype: [ascii, 40]   # full SHA1
+      - name: STATUS
+        datatype: [ascii, 16]   # COMPLETED / FAILED / SKIPPED

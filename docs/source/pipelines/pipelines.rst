@@ -22,5 +22,7 @@ Calibration Pipelines
    :maxdepth: 1
    :glob:
     
-   create_dark
-   create_flatfield
+   process_bias
+   process_darks
+   process_detflats
+   process_satdetflats

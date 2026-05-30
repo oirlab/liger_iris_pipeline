@@ -11,28 +11,33 @@ properties:
         title: Program information
         type: object
         properties:
-          title:
-            title: Proposal title
+          program_title:
+            title: Program Title
             type: string
             fits_keyword: PROGTITL
+            blend_rule: multi
             blend_table: True
-          pi_name:
-            title: Principal investigator name
+          principal_investigator:
+            title: Principal Investigator Name
             type: string
             fits_keyword: PROGPI
+            blend_rule: multi
             blend_table: True
-          sem_id:
+          semester_id:
             title: Semester ID
             type: string
             fits_keyword: SEMID
+            blend_rule: multi
             blend_table: True
-          program_number:
-            title: Program number in the semester
+          program_id:
+            title: Program ID
             type: string
-            fits_keyword: PROGNUM
+            fits_keyword: PROGID
+            blend_rule: multi
             blend_table: True
-          obs_number:
-            title: Observation number in the semester
-            type: string
+          observation_number:
+            title: Observation Number
+            type: integer
             fits_keyword: OBSNUM
+            blend_rule: multi
             blend_table: True

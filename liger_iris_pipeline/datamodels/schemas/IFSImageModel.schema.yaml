@@ -1,0 +1,36 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/IFSImageModel.schema"
+allOf:
+- $ref: core.schema
+- type: object
+  properties:
+    data:
+      title: 2-D data array
+      fits_hdu: DATA
+      ndim: 2
+      datatype: float32
+    err:
+      title: 2-D error array
+      fits_hdu: ERR
+      ndim: 2
+      datatype: float32
+    var_poisson:
+      title: 2-D Poisson variance array
+      fits_hdu: VAR_POISSON
+      default: 0
+      ndim: 2
+      datatype: float32
+    var_rnoise:
+      title: 2-D read noise variance array
+      fits_hdu: VAR_RNOISE
+      default: 0
+      ndim: 2
+      datatype: float32
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

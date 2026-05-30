@@ -1,27 +1,54 @@
-Stage 2 Imager
-==============
+=========================
+Stage 2 Pipeline - Imager
+=========================
 
 Overview
 --------
 
-The pipeline  converts the raw 2D rate-maps from stage 1 into fully calibrated individual exposures.
+The `Stage2ImagerPipeline` is the main pipeline for processing raw 2D science frames (level 1) from the imager and converting them into level 2 fully calibrated frames.
 
-**Class**: :py:class:`~liger_iris_pipeline.pipeline.imager_stage2.ImagerStage2Pipeline`
+1. **Parse Subarrays** (parse_subarrays) - *IRIS only*:
+    The `ParseSubarrayMapStep` parses the subarray map array (``model.subarray_map``) to populate the subarray metadata (``meta.subarray``).
 
-Steps
------
+2.  **Dark Subtraction** (dark_sub):
+    The `DarkSubtractionStep` subtracts the dark current from the input frames.
 
-1. :doc:`Combine Frames <../steps/parse_subarrays>`
-2. :doc:`Dark Subtraction <../steps/dark_subtraction>`
-3. :doc:`Flat Field <../steps/flat_field>`
-4. :doc:`Background Subtraction <../steps/background_subtraction_imager>`
-5. :doc:`Assign WCS <../steps/assign_wcs>`
-6. ``Photom`` (*Under development*)
-7. ``Resample`` (*Under development*)
+3.  **Gain Correction** (gain_corr):
+    The `GainStep` applies a gain correction to the input frames to convert from DN/s to e-/s.
 
-Arguments
----------
+4.  **Detector Flat Field Correction** (detflat):
+    The `DetectorFlatStep` applies a flat field correction to the input frames.
 
-Pipeline specific arguments.
+5.  **Background Calculation** (background_calc):
+    The `CalculateBackgroundImagerStep` calculates the relative and spatially varying background level. If multiple inputs are provided, the calculated background is the average background up to a scale unique factor for each input.
+
+6.  **Background Subtraction** (background_sub):
+    The `BackgroundSubtractionImagerStep` subtracts the calculated background from the input frames.
+
+7.  **Distortion Correction** (distortion):
+    The `DistortionCorrectionStep` applies a distortion correction to the input frames.
+
+8.  **Assign WCS** (assign_wcs):
+    The `AssignWCSStep` assigns a WCS solution to the input frames.
 
 
+Input
++++++
+
+- Level 1 imager data: An `ImagerModel` or a list of them.
+
+Outputs
++++++++
+
+- A single 2D `ImagerModel` model or a list if given multiple inputs.
+
+
+API
+---
+
+.. autoclass:: liger_iris_pipeline.pipeline.stage2_imager_pipeline.Stage2ImagerPipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :no-index:
+   :exclude-members: process

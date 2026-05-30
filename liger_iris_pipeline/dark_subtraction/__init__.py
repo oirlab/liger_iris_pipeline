@@ -1,3 +1,2 @@
-from .dark_step import DarkSubtractionStep
-
-__all__ = ['DarkSubtractionStep']
+from .dark_step import *
+from .make_dark_step import *

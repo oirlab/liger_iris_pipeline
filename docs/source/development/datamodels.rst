@@ -1,7 +1,8 @@
+===========
 Data Models
 ===========
 
-Data models specify an interface between the data files and DRS. They ensure that the data files conform to a specific structure and contain the necessary information for processing. All data models are defined in the module :mod:`liger_iris_pipeline.datamodels`.
+Data models specify an interface between the data files and DRS. They ensure that the data files conform to a specific structure and contain the necessary information for processing. All data models are defined in the module :py:mod:`liger_iris_pipeline.datamodels`.
 
 File format specification
 -------------------------
@@ -12,7 +13,7 @@ The structure of all FITS files used by the DRS are encoded as schemas in YAML f
 
 One crucial entry in the schema is meta.model_type, which is specified by the FITS header key ``DATAMODL``.
 
-For example the data model for processed Imager frames is :py:class:`~liger_iris_pipeline.datamodels.ImagerModel`, and is referenced in the FITS keyword ``DATAMODL``::
+For example the data model for processed Imager frames is `ImagerModel`, and is referenced in the FITS keyword ``DATAMODL``::
 
     DATAMODL= 'ImagerModel'
 
@@ -22,7 +23,7 @@ Filenames
 
 Standard Liger and IRIS files follow this naming convention
 
-``{sem_id}-{program_number}-{obs_number}_{instrument}_{detector}_{exptype}_LVL{level}_{exp}-{subarray}.fits``
+``{sem_id}_{program_number}_{obs_number}_{instrument}_{detector}_{exptype}_LVL{level}_{exp}-{subarray}.fits``
 
 where:
 
@@ -30,15 +31,15 @@ where:
 - **program_number**: The program number (*Example* ``P123``)
 - **obs_number**: The observation number (*Example* ``008``)
 - **instrument**: The instrument name (*Example* ``IRIS``)
-- **detector**: The detector name (*Example* ``IMG``, ``IMG1``, ``IFU``)
+- **detector**: The detector name (*Example* ``IMG``, ``IMG1``, ``IFS``)
 - **exptype**: The exposure type (*Example* ``SCI``, ``DARK``, ``SKY``)
 - **level**: The data processing level (*Example* ``1``, ``2``)
-- **exp**: The exposure number (*Example* ``0001``, ``0002``, ``IFU``)
+- **exp**: The exposure number (*Example* ``0001``, ``0002``, ``IFS``)
 - **subarray**: The subarray ID (*Example* ``00``, ``01``, ``02``)
 
 *Example:*
 
-``2024B-P123-008_IRIS_IMG1_SCI_LVL0_0001-00.fits``
+``2024B-P123-008_IRIS_IMG1_SCI_LVL0_0001.fits``
 
 
 Calibration files
@@ -46,12 +47,12 @@ Calibration files
 
 Calibration files have their own format:
 
-``{instrument}_{detector}_{reftype}_{date}_{version}.fits``
+``{instrument}_{mode/ifs_mode}_{reftype}_{date}_{version}.fits``
 
 where:
 
 - **instrument**: The instrument name (*Example* ``IRIS``)
-- **detector**: The detector name (*Example* ``IMG``, ``IMG1``, ``IFU``)
+- **detector**: The detector name (*Example* ``IMG``, ``IMG1``, ``IFS``)
 - **reftype**: The reference file type (*Example* ``BIAS``, ``FLAT``)
 - **date**: The ISO8601 timestamp for this reference file, corresponding to the start time of the first exposure that went into generating this calibration (*Example* ``20240101T000000``)
 - **version**: The semver of the reference file, always starting at 0.0.1 (*Example* ``0.0.1``)
@@ -86,19 +87,19 @@ Metadata
 
 All metadata is specified via the data model `schemas <https://github.com/oirlab/liger_iris_pipeline/blob/4e85942b481ab948e0ea790b509432479d5bd6b9/liger_iris_pipeline/datamodels/schemas/>`_. Some of this metadata is injected by the DRS, while other metadata comes from instrument or observatory telemetry.
 
-At TMT, telemetry from other subsystems is specified in the `DRS Assembly <https://github.com/tmt-icd/IRIS-Model-Files/tree/master/drs/drs-assembly>`.
+At TMT, telemetry from other subsystems is specified in the `DRS Assembly <https://github.com/tmt-icd/IRIS-Model-Files/tree/master/drs/drs-assembly>`_.
 
 
 Implement new datamodel
 -----------------------
 
-To implement a new datamodel, define a new class that inherits from :py:class:`~liger_iris_pipeline.datamodels.model_base.LigerIRISDataModel`, or from :py:class:`~liger_iris_pipeline.datamodels.referencefile.ReferenceFileModel` for a new reference file model.
+To implement a new datamodel, define a new class that inherits from `LigerIRISDataModel`, or from `CalibrationModel` for a new reference file model.
 
 For most datamodels, the only tasks are to create a new merged schema, and to specify this schema in the new datamodel class:
 
 .. code-block:: python
 
-    class MyCustomDataModel(ReferenceFileModel):
+    class MyCustomDataModel(CalibrationModel):
         """
         Summary of MyCustomDataModel.
         """
@@ -109,4 +110,4 @@ For most datamodels, the only tasks are to create a new merged schema, and to sp
 Create test data
 ----------------
 
-To create a new FITS file for developing the DRP, see methods in :py:mod:`~liger_iris_pipeline.tests.utils`.
+To create a new FITS file for developing the DRP, see methods in :py:mod:`utils`.

@@ -3,57 +3,21 @@ from numba import njit
 
 @njit(nogil=True)
 def weighted_mean(x, w):
-    """
-    Computes the weighted mean of a dataset.
-
-    Args:
-        x (np.ndarray): The input array.
-        w (np.ndarray): The input weights, same shape as x.
-        axis (int): Axis or tuple of axes along which to compute the mean. Default is None.
-
-    Returns:
-        float: The weighted mean.
-    """
     return np.nansum(x * w) / np.nansum(w)
 
 
 @njit(nogil=True)
-def mad(x : np.ndarray):
-    """
-    Calculate the median absolute deviation of an array.
-    
-    Args:
-        x: Array of values.
-        w: Array of weights.
-    
-    Returns:
-    - Weighted standard deviation or NaN if no valid data
-    """
-    return np.nanmedian(np.abs(x - np.nanmedian(x)))
-
-
-@njit(nogil=True)
-def weighted_stddev(x : np.ndarray, w : np.ndarray, M : float | None = None):
-    """
-    Calculate the weighted standard deviation of an array.
-    
-    Args:
-        x: Array of values.
-        w: Array of weights.
-    
-    Returns:
-    - Weighted standard deviation or NaN if no valid data
-    """
+def weighted_stddev(x : np.ndarray, w : np.ndarray, center : float | None = None):
     w = w / np.nansum(w)
-    if M is None:
-        M = np.sum(x * w)
-    dev = x - M
+    if center is None:
+        center = np.sum(x * w)
+    dev = x - center
     bias_estimator = 1.0 - np.nansum(w**2)
     var = np.nansum(dev ** 2 * w) / bias_estimator
     return np.sqrt(var)
 
 
-@njit
+@njit(nogil=True)
 def weighted_quantile(values : np.ndarray, weights : np.ndarray, q : float = 0.5):
 
     if len(values.shape) > 1:
@@ -89,19 +53,8 @@ def weighted_quantile(values : np.ndarray, weights : np.ndarray, q : float = 0.5
     
 
 
-@njit
+@njit(nogil=True)
 def robust_stddev(x, w=None, n_sigma=4):
-    """
-    Calculate robust standard deviation using outlier rejection.
-    
-    Parameters:
-    - x: Array of values
-    - w: Array of weights (default: uniform weights)
-    - n_sigma: Number of sigma for outlier rejection
-    
-    Returns:
-    - Robust standard deviation or NaN if insufficient valid data
-    """
     if w is None:
         w = np.ones(x.shape)
     
@@ -128,18 +81,24 @@ def robust_stddev(x, w=None, n_sigma=4):
     else:
         return np.nan
 
-@njit
+@njit(nogil=True)
 def robust_mean(x, w=None, n_sigma=4):
     """
     Calculate robust mean using outlier rejection.
     
-    Parameters:
-    - x: Array of values
-    - w: Array of weights (default: uniform weights)
-    - n_sigma: Number of sigma for outlier rejection
-    
-    Returns:
-    - Robust mean or NaN if insufficient valid data
+    Parameters
+    ----------
+    x : np.ndarray
+        Array of values.
+    w : np.ndarray, optional
+        Array of weights (default: uniform weights).
+    n_sigma : float, optional
+        Number of sigma for outlier rejection (default: 4).
+
+    Returns
+    -------
+    float
+        Robust mean or NaN if insufficient valid data.
     """
     if w is None:
         w = np.ones(x.shape)
@@ -166,73 +125,68 @@ def robust_mean(x, w=None, n_sigma=4):
         return np.sum(x_good * w_good) / np.sum(w_good)
     else:
         return np.nan
-    
+
 
 @njit(nogil=True)
-def median_absolute_deviation(data : np.ndarray, M : float | None = None):
-    if M is None:
-        M = np.nanmedian(data)
-    return np.nanmedian(np.abs(data - M))
+def median_absolute_deviation(data : np.ndarray, center : float | None = None):
+    if center is None:
+        center = np.nanmedian(data)
+    return np.nanmedian(np.abs(data - center))
 
 
 @njit(nogil=True)
 def biweight_location(
     data : np.ndarray,
-    c : float | None = 6.0,
-    M : float | None = None
+    c : float = 6.0,
+    center : float | None = None
 ) -> float:
     
     # Flatten
     data = data.ravel()
 
     # Median value
-    if M is None:
-        M = np.nanmedian(data)
+    if center is None:
+        center = np.nanmedian(data)
 
     # MAD
-    mad = median_absolute_deviation(data, M)
+    mad = median_absolute_deviation(data, center)
     if mad == 0.0 or not np.isfinite(mad):
-        return M
+        return center
 
     # Center the data
     n = data.size
     result_num = 0
     result_den = 0
     for i in range(n):
-        u = (data[i] - M) / (c * mad)
+        u = (data[i] - center) / (c * mad)
         if np.abs(u) < 1:
             w = (1 - u**2)**2
-            result_num += (data[i] - M) * w
+            result_num += (data[i] - center) * w
             result_den += w
 
     if result_den == 0:
-        return M
+        return center
 
-    return M + result_num / result_den
-
-
-@njit(nogil=True)
-def _value_like(x, value):
-    return np.full((), value, dtype=value.dtype).item()
+    return center + result_num / result_den
 
 
 @njit(nogil=True)
 def biweight_midvariance(
     data : np.ndarray,
     c : float = 9.0,
-    M : float | None = None,
+    center : float | None = None,
 ) -> float:
     
     # Flatten
     data = data.ravel()
 
     # Median value
-    if M is None:
-        M = np.nanmedian(data)
+    if center is None:
+        center = np.nanmedian(data)
 
     # Center the data
-    d = data - M
-    mad_val = median_absolute_deviation(data, M)
+    d = data - center
+    mad_val = median_absolute_deviation(data, center)
 
     if mad_val == 0.0 or not np.isfinite(mad_val):
         return mad_val
@@ -275,3 +229,21 @@ def all_sc(arr : np.ndarray) -> bool:
         else:
             return False
     return True
+
+
+@njit(nogil=True)
+def polyval1d(coeffs : np.ndarray, x : np.ndarray) -> np.ndarray:
+    """
+    Evaluate a polynomial with given coefficients at specified points using the Horner method.
+
+    Parameters
+    ----------
+    coeffs : np.ndarray
+        Coefficients of the polynomial, ordered from lowest degree to highest (NOTE: numpy is reversed).
+    x : np.ndarray
+        Points at which to evaluate the polynomial.
+    """
+    v = np.zeros(x.shape, dtype=coeffs.dtype)
+    for coeff in coeffs[::-1]:
+        v = v * x + coeff
+    return v

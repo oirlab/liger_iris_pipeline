@@ -1,59 +1,76 @@
 %YAML 1.1
 ---
-$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/exposure.schema"
+$schema: http://stsci.edu/schemas/fits-schema/fits-schema
+id: https://oirlab.github.io/schemas/exposure.schema
 type: object
 properties:
   meta:
     type: object
     properties:
       exposure:
-        title: "Exposure information"
+        title: Exposure information
         type: object
         properties:
-          exposure_type:
-            title: Type of data in the exposure  # NOTE: This may drive a lot of the pipeline logic
+          type:
+            title: Type of data in the exposure
             type: string
+            enum: [DARK, BIAS, DETFLAT, SCI, BKG, NONE, MULTIPLE, UNKNOWN, N/A]
             fits_keyword: IMTYPE
             blend_table: True
+            default: "SCI"
           exposure_time:
-            title: "Exposure time per frame [s]"
+            title: Total exposure time [s]
             type: number
             fits_keyword: EXPTIME
+            blend_rule: sum
             blend_table: True
           exposure_number:
-            title: "Exposure number"
+            title: Exposure number
             type: integer
             fits_keyword: EXPNUM
+            blend_rule: multi
+            blend_table: True
           mjd_start:
-            title: "Exposure start time in MJD"
+            title: Exposure start time in MJD
             type: number
-            fits_keyword: EXPJDST
-            blend_table: True
+            fits_keyword: EXPMJDST
             blend_rule: min
-          mjd_end:
-            title: "Exposure end time in MJD"
-            type: number
-            fits_keyword: EXPJDEND
             blend_table: True
+            cal_db: mjd_start
+          mjd_end:
+            title: Exposure end time in MJD
+            type: number
+            fits_keyword: EXPMJDEN
             blend_rule: max
-          readmode:
+            blend_table: True
+          read_mode:
             title: Readout mode
             type: string
             fits_keyword: READMODE
+            blend_rule: multi
             blend_table: True
+            cal_db: read_mode
           nframes:
             title: Number of coadds
             type: integer
             fits_keyword: NFRAMES
+            blend_rule: sum
             blend_table: True
           ngroups:
             title: Number of groups in integration
             type: integer
             fits_keyword: NGROUPS
+            blend_rule: sum
             blend_table: True
           nreads:
             title: Number of reads per group
             type: integer
             fits_keyword: NREADS
+            blend_rule: sum
+            blend_table: True
+          clock_rate:
+            title: Clock rate
+            type: number
+            fits_keyword: CLOCKRAT
+            blend_rule: first
             blend_table: True

@@ -5,14 +5,11 @@ from astropy.table import Table
 import astropy.units as u
 
 from . import slalib
-from ..utils.sky_utils import calc_parallactic_angle
+from ..utils.sky_utils import calc_parallactic_angle, KECK_LOCATION
 
 import os
 import urllib.request
 from astropy.utils.data import _get_download_cache_loc
-
-KECK_LOCATION = EarthLocation.of_site('Keck Observatory')
-
 
 def calc_dar_coeffs(
     location : EarthLocation,
@@ -66,8 +63,8 @@ def calc_dar_coeffs(
 
 
 def calc_dar_shifts(
-    location : EarthLocation,
     altaz_coord : AltAz,
+    location : EarthLocation,
     size : tuple[int, int],
     scale : float,
     wave : float,
@@ -81,6 +78,10 @@ def calc_dar_shifts(
 
     Parameters
     ----------
+    altaz_coord : AltAz
+        AltAz coordinates of the observation.
+    location : EarthLocation
+        astropy observatory location.
     wave : float
         Wavelength in microns.
     scale : float
@@ -112,7 +113,8 @@ def calc_dar_shifts(
     altitude = altaz_coord.alt.deg
 
     # Calculate the parallactic angle
-    parallactic_angle = calc_parallactic_angle(location, altaz_coord)
+    breakpoint()
+    parallactic_angle = calc_parallactic_angle(altaz_coord, location)
     
     # Calculate zenith angle effects
     Z = 90 - altitude
@@ -165,10 +167,13 @@ def get_koa_weather_data(date_time : Time, use_cached : bool = True) -> dict[str
     -------
     dict[str, float]
         Dictionary with keys:
+        
         - temperature : float
             Atmospheric temperature in Kelvin.
+        
         - humidity : float
             Atmospheric humidity as a fraction.
+
         - pressure : float
             Atmospheric pressure in hPa.
     """

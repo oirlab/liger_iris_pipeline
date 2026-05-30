@@ -18,14 +18,27 @@ allOf:
       default: 0
       ndim: 2
       datatype: float32
+    var_poisson:
+      title: 2-D Poisson variance array
+      fits_hdu: VAR_POISSON
+      default: 0
+      ndim: 2
+      datatype: float32
+    var_rnoise:
+      title: 2-D read noise variance array
+      fits_hdu: VAR_RNOISE
+      default: 0
+      ndim: 2
+      datatype: float32
     dq:
       title: 2-D data quality array
       fits_hdu: DQ
       default: 0
+      ndim: 2
       datatype: uint32
-    subarr_map:
+    subarray_map:
       title: Subarray map
-      fits_hdu: SUBARR_MAP
+      fits_hdu: SUBARRAY_MAP
       default: 0
       ndim: 2
-      datatype: uint16
+      datatype: uint8

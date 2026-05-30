@@ -2,7 +2,7 @@
 Liger IRIS DRS Documentation
 ****************************
 
-The Liger IRIS Data Reduction System/Software (DRS) processes data from Liger, which will be installed at the W.M. Keck Observatory, and the Infrared Imaging Spectrograph (IRIS) which will be installed at the Thirty Meter Telescope (TMT). Liger and IRIS are both near infrared imager + integral field spectrographs (IFS). They share many design aspects and will utilize the same DRS. This site will be under active development as the DRS is created.
+The Liger-IRIS Data Reduction System/Software (DRS) processes data from Liger, which will be installed at the W.M. Keck Observatory, and the Infrared Imaging Spectrograph (IRIS) which will be installed at the Thirty Meter Telescope (TMT). Liger and IRIS are both near infrared imager + integral field spectrographs (IFS). They share many design aspects and will utilize the same reduction codes. This site will be under active development as the DRS is created.
 
 Installation
 ============
@@ -12,49 +12,32 @@ Installation
    installation
 
 
-Examples
-========
+Quickstart
+==========
 
 .. toctree::
    :maxdepth: 2
 
-   examples/examples
-
-
-Steps
-=====
-
-.. toctree::
-   :maxdepth: 2
-
-   steps/steps
+   quickstart/quickstart
 
 
 Pipelines
 =========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    pipelines/pipelines
 
 
-Data Models
-===========
-
-.. toctree::
-   :maxdepth: 2
-
-   datamodels/datamodels
-
-
-Calibrations and CRDS
-=====================
+Calibrations
+============
 
 .. toctree::
    :maxdepth: 2
 
    calibrations/calibrations
+
 
 Subarrays
 =========
@@ -63,6 +46,15 @@ Subarrays
    :maxdepth: 2
 
    subarrays/subarrays
+
+
+Algorithms
+==========
+
+.. toctree::
+   :maxdepth: 2
+
+   algorithms/algorithms
 
 
 Development

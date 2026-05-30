@@ -1,18 +1,34 @@
 %YAML 1.1
 ---
 $schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/NonlinearReadoutParametersModel.schema"
+id: "https://oirlab.github.io/schemas/NonlinearCorrectionModel.schema"
 allOf:
-- $ref: ReferenceFileModel.schema
+- $ref: calibration_core.schema
 - type: object
   properties:
     coeffs:
       title: 3-D data array of coeffs
       fits_hdu: COEFFS
       ndim: 3
-      datatype: float32
+      datatype: float64
     coeffs_err:
       title: 3-D error array for coeffs
       fits_hdu: COEFFS_ERR
       ndim: 3
-      datatype: float32
+      datatype: float64
+    nonlin_thresh:
+      title: Non-linearity threshold for each pixel
+      fits_hdu: NONLIN_THRESH
+      ndim: 2
+      datatype: uint16
+    nonlin_max:
+      title: Maximum signal for non-linearity correction
+      fits_hdu: NONLIN_MAX
+      ndim: 2
+      datatype: uint16
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

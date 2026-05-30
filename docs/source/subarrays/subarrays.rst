@@ -2,10 +2,9 @@
 Subarrays
 =========
 
-Subarrays are exposures captured using a custom rectangular window within the detector array. Subarrays are only supported for the Imager.
+Subarrays are exposures captured using a custom rectangular window within the detector array. Subarrays are only supported for the IRIS Imager.
 
-The meta keywords of :py:class:`~liger_iris_pipeline.datamodels.imager.ImagerModel` which defines the parameters of the subarray are stored in ``model.meta.subarray_map``:
-
+The meta keywords ``model.meta.subarray`` for `ImagerModel` define the subarray parameters used for that exposure:
 
 * ``name (str)``: The name of the subarray. This can be "FULL" for full frame or any other name for a subarray.
 * ``id (int)``: The id of the subarray. This is 0 for full frame and 1 for the first subarray, etc.
@@ -15,27 +14,21 @@ The meta keywords of :py:class:`~liger_iris_pipeline.datamodels.imager.ImagerMod
 * ``ysize (int)``: The height of the subarray.
 * ``detysiz (int)``: The height of the detector (full frame).
 * ``detxsiz (int)``: The width of the detector (full frame).
-* ``fastaxis (int)``: The fast axis of the subarray {0,1}.
-* ``slowaxis (int)``: The slow axis of the subarray {0,1}.
+* ``fastaxis (int)``: The fast axis of the subarray (0 or 1).
+* ``slowaxis (int)``: The slow axis of the subarray (0 or 1).
+
+The extension SUBARRAY_MAP (``model.subarray_map``) is a 2D array (Uint8) of subarray ids.
+
+The data quality array (``model.dq``) uses a special bit called SUBARRAY to denote a pixel is part of a subarray.
 
 
-Subarrays and Reference Files
------------------------------
+Subarrays Support
+-----------------
 
-The following reference files support subarrays due to the unique read mode used for that subarray:
+Any steps that can process imager data can also process subarray data. The subarray metadata is preserved throughout the pipeline processing. Formally defining support will be done in future releases.
 
-* **dark**: Dark current reference file.
-* **linearity**: Linearity correction reference file.
-* **saturation**: Saturation reference file.
-* **bias**: Superbias reference file.
-* **gain**: Gain reference file.
-* **readnoise**: Read noise reference file.
-* **ipc**: Interpixel capacitance reference file.
-* **flat**: Flat field reference file.
-
-
-Example
--------
+Examples
+--------
 
 See the test scripts in the DRS tests directory:
 
@@ -49,7 +42,10 @@ See the test scripts in the DRS tests directory:
 Subarray-specific Steps
 -----------------------
 
-Many steps use specific processing for subarrays.
+Several steps are specifically designed to parse or transform the subarray metadata:
 
-* :py:class:`~liger_iris_pipeline.merge_subarrays.merge_subarrays.MergeSubarraysStep`
-* :py:class:`~liger_iris_pipeline.parse_subarray_map.parse_subarray_map_step.ParseSubarrayMapStep`
+- `ParseSubarrayMapStep`
+    Parse a single DataModel's ``model.subarray_map`` extension (2D array) and populate the attribute ``model.meta.subarray``, and object describing a single subarray.
+
+- `MergeSubarraysStep`
+    Merge multiple subarrays into one DataModel.

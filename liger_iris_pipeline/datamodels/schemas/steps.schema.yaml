@@ -1,0 +1,114 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/steps.schema"
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      step:
+        # NOTE: S_ is for Step
+        # Pipelines not included
+        title: Steps performed by liger_iris_pipeline
+        type: object
+        properties:
+          assign_wcs:
+            title: Assign World Coordinate System
+            type: string
+            fits_keyword: S_WCS
+            blend_rule: first
+          background_sub:
+            title: Background subtraction
+            type: string
+            fits_keyword: S_BKGSUB
+            blend_rule: first
+          bias_sub:
+            title: Bias subtraction
+            type: string
+            fits_keyword: S_BIAS
+            blend_rule: first
+          dark_sub:
+            title: Dark subtraction
+            type: string
+            fits_keyword: S_DARK
+            blend_rule: first
+            blend_table: True
+          detector_flat:
+            title: Detector flat correction
+            type: string
+            fits_keyword: S_DFLAT
+            blend_rule: first
+            blend_table: True
+          distortion:
+            title: Distortion correction
+            type: string
+            fits_keyword: S_DISTC
+            blend_rule: first
+            blend_table: True
+          dq_init:
+            title: Data quality initialization
+            type: string
+            fits_keyword: S_DQINIT
+            blend_rule: first
+            blend_table: True
+          fluxcal:
+            title: Flux calibration
+            type: string
+            fits_keyword: S_FLUXCL
+            blend_rule: first
+            blend_table: True
+          gain:
+            title: Detector gain correction
+            type: string
+            fits_keyword: S_GAIN
+            blend_rule: first
+            blend_table: True
+          jump_detection:
+            title: Jump detection
+            type: string
+            fits_keyword: S_JUMPD
+            blend_rule: first
+            blend_table: True
+          merge_subarrays:
+            title: Merge subarrays
+            type: string
+            fits_keyword: S_MERGSA
+            blend_rule: first
+            blend_table: True
+          nonlincorr:
+            title: Nonlinear readout correction
+            type: string
+            fits_keyword: S_NLCORR
+            blend_rule: first
+            blend_table: True
+          normalize:
+            title: Normalize data
+            type: string
+            fits_keyword: S_NORMAL
+            blend_rule: first
+            blend_table: True
+          parse_subarrays:
+            title: Parse subarrays
+            type: string
+            fits_keyword: S_PARSSA
+            blend_rule: first
+            blend_table: True
+          ramp_fit:
+            title: Ramp fitting
+            type: string
+            fits_keyword: S_RAMPFI
+            blend_rule: first
+            blend_table: True
+          sat_check:
+            title: Flagging saturated pixels
+            type: string
+            fits_keyword: S_SATCHK
+            blend_rule: first
+            blend_table: True
+          wavecal:
+            title: Wavelength calibration
+            type: string
+            fits_keyword: S_WAVCAL
+            blend_rule: first
+            blend_table: True

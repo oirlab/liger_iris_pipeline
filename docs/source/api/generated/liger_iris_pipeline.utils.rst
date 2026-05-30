@@ -12,6 +12,10 @@
 
    endian_utils
    errors
+   filter_utils
    gdrive
    math
+   parallelization_utils
+   sky_utils
+   stats
    subarray

@@ -1,0 +1,42 @@
+%YAML 1.1
+---
+$schema: http://stsci.edu/schemas/fits-schema/fits-schema
+id: https://oirlab.github.io/schemas/data_quality.schema
+type: object
+properties:
+  meta:
+    type: object
+    properties:
+      data_quality:
+        title: Overall data quality
+        type: string
+        enum: [GOOD, BAD]
+        default: GOOD
+        fits_keyword: DATAQUAL
+        blend_table: True
+        blend_rule: multi
+        cal_db: true
+      median_dark_current:
+        title: Median dark current level in DN/s
+        type: number
+        fits_keyword: MEDDARK
+        blend_table: True
+        blend_rule: mean
+      median_bias_level:
+        title: Median bias level in DN
+        type: number
+        fits_keyword: MEDBIAS
+        blend_table: True
+        blend_rule: mean
+      median_kTC_level:
+        title: Median kTC noise level in DN
+        type: number
+        fits_keyword: MEDKTC
+        blend_table: True
+        blend_rule: mean
+      median_flat_whitelamp_intensity:
+        title: Median flat white lamp intensity in relative e-/s
+        type: number
+        fits_keyword: MEDFLAT
+        blend_table: True
+        blend_rule: mean

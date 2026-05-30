@@ -1,0 +1,19 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/SaturationModel.schema"
+allOf:
+- $ref: calibration_core.schema
+- type: object
+  properties:
+    sat_thresh:
+      title: 2-D data array describing the saturation threshold
+      fits_hdu: SAT_THRESH
+      ndim: 2
+      datatype: uint16
+    dq:
+      title: 2-D data quality array
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

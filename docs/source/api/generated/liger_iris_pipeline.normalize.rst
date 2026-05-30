@@ -10,5 +10,4 @@
    :toctree:
    :recursive:
 
-   normalize
    normalize_step

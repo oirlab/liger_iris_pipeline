@@ -8,7 +8,8 @@ properties:
     type: object
     properties:
       adaptive_optics:
-        title: Adaptive optics system
+        title: Adaptive optics system information
+        # NOTE: THIS WILL CHANGE AS KAPA AND NFIRAOS INTERFACES ARE IMPLEMENTED
         type: object
         properties:
           TRKWTYST:

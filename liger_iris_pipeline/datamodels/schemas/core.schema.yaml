@@ -1,67 +1,83 @@
-# For common header keywords we can force between Liger and IRIS either at Keck/TMT or in the DRS
+# core.schema
 %YAML 1.1
 ---
-$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
-id: "https://oirlab.github.io/schemas/core.schema"
-allOf: # NOTE: We drop observation schema from jwst
+$schema: http://stsci.edu/schemas/fits-schema/fits-schema
+id: https://oirlab.github.io/schemas/core.schema
+type: object
+allOf:
 - $ref: instrument.schema
-- $ref: reference_files.schema
+- $ref: data_quality.schema
 - $ref: exposure.schema
 - $ref: target.schema
 - $ref: barycenter.schema
-- $ref: subarray.schema # Params for single subarray
-- $ref: subarray_map.schema # Params for multiple subarrays collected into a full frame image
-- $ref: drs_steps.schema
+- $ref: subarray.schema
+- $ref: subarray_map.schema
+- $ref: steps.schema
 - $ref: adaptive_optics.schema
 - $ref: program.schema
-type: object
+- $ref: calibration_files.schema
+- $ref: calibrations_table.schema
+- $ref: receipt_table.schema
 properties:
   meta:
     type: object
     properties:
       datetime_obs:
-        title: "Effective datetime of the datamodel in YYYY-MM-DDTHH:MM:SS.SSS format"
+        title: Datetime of the datamodel in ISOT format.
         type: string
-        fits_keyword: DATETOBS
-        blend_table: False
-      date_created:
-        title: Date the file was created
-        type: string
-        fits_keyword: DATECRT
+        fits_keyword: DATEOBS
         blend_table: True
+        blend_rule: mindatetime
+        cal_db: datetime_obs
       data_level:
         title: Data level
-        type: integer
-        fits_keyword: DATALVL
-        blend_table: True
-      data_quality:
-        title: Data quality
         type: string
-        enum: [GOOD, BAD, UNKNOWN]
-        default: "GOOD"
-        fits_keyword: DATAQUAL
-        blend_table: True
+        fits_keyword: DATALVL
+        blend_table: False
+        blend_rule: multi
       filename:
         title: Name of the file
         type: string
         fits_keyword: FILENAME
-        blend_table: True
+        blend_table: true
+        blend_rule: multi
+        cal_db: filename
       filetype:
         title: Type of data in the file
         type: string
-        default: "FITS"
+        default: FITS
         fits_keyword: FILETYPE
+        blend_table: False
+        blend_rule: multi
       telescope:
         title: Telescope used to acquire the data
         type: string
         fits_keyword: TELESCOP
+        blend_table: False
+        blend_rule: multi
       model_type:
         title: Type of data model
         type: string
         fits_keyword: DATAMODL
         blend_table: True
-      drs_version:
-        title: DRS version used to process data
+        blend_rule: multi
+      last_processed:
+        title: Date and time when model was last processed
         type: string
-        fits_keyword: DRSVER
+        fits_keyword: LASTPROC
+        blend_rule: maxdatetime
         blend_table: True
+        cal_db: last_processed
+      drp_version:
+        title: Version of liger_iris_pipeline used to process data
+        type: string
+        fits_keyword: DRPSOFTV
+        blend_table: True
+        blend_rule: multi
+        cal_db: drp_version
+      middleware_version:
+        title: Version of the middleware used to process data for retrieving references
+        type: string
+        fits_keyword: MIDLVER
+        blend_table: False
+        blend_rule: multi

@@ -6,19 +6,21 @@ allOf:
 - $ref: core.schema
 - type: object
   properties:
-    times:
-      title: 2-D times array
-      fits_hdu: TIMES
-      ndim: 2
-      datatype: float64
+    # NOTE: Format of read times will be implemented in future versions as additional HDU.
     data:
-      title: 4-D data array
+      title: 3-D data array of reads # May change to 4D in future versions
       fits_hdu: DATA
-      ndim: 4
+      ndim: 3
       datatype: uint16
+    dq_raw:
+      title: 3-D data quality array for each read. # May change to 4D in future versions
+      fits_hdu: DQ_RAW
+      default: 0
+      ndim: 3
+      datatype: uint8
     dq:
-      title: 4-D data quality array
+      title: 2-D data quality array for all reads.
       fits_hdu: DQ
       default: 0
-      ndim: 4
-      datatype: uint16
+      ndim: 2
+      datatype: uint32

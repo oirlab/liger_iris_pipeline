@@ -1,0 +1,26 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/ProcessedRampModel.schema"
+allOf:
+- $ref: core.schema
+- type: object
+  properties:
+    # NOTE: Format of read times will be implemented in future versions as additional HDU.
+    data:
+      title: 3-D data array of reads # May change to 4D in future versions
+      fits_hdu: DATA
+      ndim: 3
+      datatype: float32
+    dq_raw:
+      title: 3-D data quality array for each read. # May change to 4D in future versions
+      fits_hdu: DQ_RAW
+      default: 0
+      ndim: 3
+      datatype: uint8
+    dq:
+      title: 2-D data quality array for all reads.
+      fits_hdu: DQ
+      default: 0
+      ndim: 2
+      datatype: uint32

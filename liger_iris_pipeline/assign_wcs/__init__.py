@@ -1,3 +1,1 @@
-from .assign_wcs_step import AssignWCSStep
-
-__all__ = ["AssignWCSStep"]
+from .assign_wcs_step import *

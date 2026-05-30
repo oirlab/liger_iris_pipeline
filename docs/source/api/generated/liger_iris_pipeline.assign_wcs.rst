@@ -10,5 +10,5 @@
    :toctree:
    :recursive:
 
-   assign_wcs
    assign_wcs_step
+   assign_wcs_utils

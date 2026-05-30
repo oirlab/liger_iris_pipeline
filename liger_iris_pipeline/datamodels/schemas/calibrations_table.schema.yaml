@@ -1,0 +1,29 @@
+
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/fits-schema/fits-schema"
+id: "https://oirlab.github.io/schemas/calibrations_table.schema"
+type: object
+properties:
+  calibrations:
+    title: Calibration files used in processing.
+    fits_hdu: CALIBRATIONS
+    datatype:
+      - name: ROLE
+        datatype: [ascii, 16]   # Role of calibration file
+      - name: CAL_TYPE
+        datatype: [ascii, 16]   # Type of calibration file
+      - name: FILENAME
+        datatype: [ascii, 128]  # Base filename of calibration file
+      - name: ID
+        datatype: [ascii, 36]   # UUID of calibration file
+      - name: DATETIME_OBS
+        datatype: [ascii, 23]   # Date time of calibration file
+      - name: LAST_PROCESSED
+        datatype: [ascii, 23]   # Date time of when calibration file was last processed.
+      - name: TIME_APPLIED
+        datatype: [ascii, 23]   # Date time of when calibration file was used.
+      - name: CLASS
+        datatype: [ascii, 256]  # full module + class path
+      - name: DRP_VERSION
+        datatype: [ascii, 64]   # DRP version calibration file was generated with

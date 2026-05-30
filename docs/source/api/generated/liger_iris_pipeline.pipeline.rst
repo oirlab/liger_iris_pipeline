@@ -10,8 +10,9 @@
    :toctree:
    :recursive:
 
-   base_pipeline
-   create_dark
-   create_flatfield
-   imager_stage2
-   stage1
+   process_bias_pipeline
+   process_darks_pipeline
+   process_detflats_pipeline
+   process_satdetflats_pipeline
+   stage1_pipeline
+   stage2_imager_pipeline

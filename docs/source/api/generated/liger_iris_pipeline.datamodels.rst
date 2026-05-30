@@ -12,14 +12,20 @@
 
    bias
    dark
+   detector_flat
+   distortion_map
    dq
    dqflags
-   flat
-   ifu
+   gain
+   ifs
    imager
    integration
+   iris_config
+   liger_config
+   meta_utils
    model_base
    nonlin
    ramp
-   referencefile
+   read_noise
+   saturation
    utils
